@@ -58,7 +58,7 @@ const RandomSlotControl = () => {
         } else {
             randomCalculations();
         }
-    }, [skipRolls]);
+    }, [skipRolls, auto, handleCustom, randomCalculations]);
 
     useEffect(() => {
         if (auto) {
