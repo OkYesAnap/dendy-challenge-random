@@ -5,8 +5,13 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const nextConfig: NextConfig = {
   output: 'export',
+  reactStrictMode: true,
   basePath: isProduction ? '/dendy-challenge-random' : '',
   assetPrefix: isProduction ? '/dendy-challenge-random/' : '',
+  images:{
+    domains: ['localhost'],
+    unoptimized: true,
+  }
 };
 
-export default nextConfig;
+module.exports = nextConfig
