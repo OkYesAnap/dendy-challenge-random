@@ -2,6 +2,7 @@ import {
     beginEvent as sBeginEvent,
     currentSlot as sCurrentSlot,
     gamesInEvent as sGamesInEvent,
+    allGamesList as sAllGamesList,
     resetStatistics,
     setCurrentSlot,
     setGamesInEvent,
@@ -9,16 +10,17 @@ import {
     addRoll,
 }
     from "@/redux/slices/gamesSlice";
-import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import React, { SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const RandomSlotControl = () => {
     const [blackSlotsCount, setBlackSlotsCount] = useState<number>(5);
     const [skipRolls, setSkipRolls] = useState<number>(0);
-    const [autoDelay, setAutoDelay] = useState<number>(0);
+    const [autoDelay, setAutoDelay] = useState<number>(1000);
     const beginEvent = useSelector(sBeginEvent);
     const currentSlot = useSelector(sCurrentSlot);
     const gamesInEvent = useSelector(sGamesInEvent);
+    const allGamesList = useSelector(sAllGamesList);
     const dispatch = useDispatch();
     const [zero, setZero] = useState<boolean>(true);
     const [auto, setAuto] = useState<boolean>(false);
@@ -28,7 +30,7 @@ const RandomSlotControl = () => {
         const customSlots: string[] = [];
         if (zero) customSlots.push('Zero');
         dispatch(addBlackSlots({ blackSlots: blackSlotsCount, customSlots }));
-    }, [blackSlotsCount, zero]);
+    }, [blackSlotsCount, zero, allGamesList, dispatch]);
 
     const randomCalculations = () => {
         if (beginEvent.length) {
@@ -44,25 +46,30 @@ const RandomSlotControl = () => {
         }, 1000);
     }
 
-    const handleRandom = () => {
-        if (skipRolls > 0)
-            for (let i = 0; i < skipRolls; i++) {
-                randomCalculations()
-            } else {
-            randomCalculations()
-        }
+    const handleCustom = () => {
+        setRandom();
     }
+
+    const setRandom = useCallback(() => {
+        if (skipRolls > 0) {
+            for (let i = 0; i < skipRolls; i++) {
+                randomCalculations();
+            }
+        } else {
+            randomCalculations();
+        }
+    }, [skipRolls]);
 
     useEffect(() => {
         if (auto) {
             timerForRandom.current = setInterval(() => {
-                handleRandom();
+                setRandom();
             }, autoDelay);
         }
         return () => {
             if (timerForRandom.current) clearInterval(timerForRandom.current);
         }
-    }, [auto, handleRandom])
+    }, [auto, setRandom, autoDelay])
 
     const incrementBlackSlots = () => {
         setBlackSlotsCount(prevValue => prevValue + 1);
@@ -92,9 +99,9 @@ const RandomSlotControl = () => {
 
     return (
         <div>
-            <div className="fixed text-xl left-1/2 transform -translate-x-1/2 bottom-30 bg-black">
+            {currentSlot && (<div className="fixed text-xl left-1/2 transform -translate-x-1/2 bottom-30 bg-black p-4 border rounded">
                 {currentSlot}
-            </div>
+            </div>)}
             <div className="fixed bottom-0 left-1/2 transform items-center -translate-x-1/2 flex justify-between bg-black p-3 border">
             <div className={`flex-1 flex-col items-center text-center border pl-1 pr-1 ${auto ? 'text-gray-500' : ''}`}>
             <div >Games in event</div>
@@ -151,7 +158,7 @@ const RandomSlotControl = () => {
                 <div className="flex-col items-center text-center border pl-1 pr-1">
                     <div>Generate</div>
                     <div className="flex flex-row">
-                        <button disabled={auto} className={`border p-2  flex-1 ${auto ? 'text-gray-500' : ''}`} onClick={handleRandom}>Custom</button>
+                        <button disabled={auto} className={`border p-2  flex-1 ${auto ? 'text-gray-500' : ''}`} onClick={handleCustom}>Custom</button>
                         <button className="border p-2  flex-1" onClick={() => setAuto(!auto)}>{auto ? "Stop" : "Auto"}</button>
                         <button disabled={auto} className={`border p-2  flex-1 ${auto ? 'text-gray-500' : ''}`} onClick={() => dispatch(resetStatistics())}>Reset</button>
                     </div>

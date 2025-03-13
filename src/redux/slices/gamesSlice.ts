@@ -61,11 +61,8 @@ const gamesSlice = createSlice({
             const slotNumber = Math.floor((Math.random() * state.beginEvent.length));
             const value = state.beginEvent[slotNumber];
             state.currentSlot = state.beginEvent[slotNumber];
-            state.currentRolls.push(value);
             state.beginEvent.splice(slotNumber, 1);
-            if (state.showVisualEvents <= state.eventsList.length) {
-                state.eventsList = []
-            }
+
 
             if (state.gamesInEvent <= state.currentRolls.length) {
                 state.eventsList.push(state.currentRolls);
@@ -76,7 +73,10 @@ const gamesSlice = createSlice({
                 state.beginEvent = state.startSlots;
                 state.eventsCounter += 1;
             }
-
+            state.currentRolls.push(value);
+            if (state.showVisualEvents <= state.eventsList.length) {
+                state.eventsList = []
+            }
             state.statistics[value] += 1 || 0;
             state.rollCounter += 1;
         },
@@ -87,7 +87,12 @@ const gamesSlice = createSlice({
             state.currentSlot = action.payload;
         },
         setGamesInEvent(state, action: PayloadAction<number>) {
-            state.gamesInEvent = action.payload
+            let val = action.payload;
+            const max = state.allGamesList.length;
+            const min = 1;
+            if (val > max) val = max;
+            if (val < min) val = min;
+            state.gamesInEvent = val;
         },
         resetStatistics(state) {
             state.currentRolls = [];
