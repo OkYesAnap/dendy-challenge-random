@@ -46,7 +46,6 @@ const gamesSlice = createSlice({
         },
         addBlackSlots(state, action: PayloadAction<{ blackSlots?: number, customSlots: string[] }>) {
             const blackSlotsArray = [];
-            state.statistics = {};
             const { customSlots, blackSlots } = action.payload
             if (blackSlots) {
                 for (let i = 0; i < blackSlots; i++) {
@@ -60,9 +59,9 @@ const gamesSlice = createSlice({
         addRoll(state) {
             const slotNumber = Math.floor((Math.random() * state.beginEvent.length));
             const value = state.beginEvent[slotNumber];
-            state.currentSlot = state.beginEvent[slotNumber];
+            state.currentSlot = value;
             state.beginEvent.splice(slotNumber, 1);
-
+            state.currentRolls.push(value);
 
             if (state.gamesInEvent <= state.currentRolls.length) {
                 state.eventsList.push(state.currentRolls);
@@ -73,7 +72,6 @@ const gamesSlice = createSlice({
                 state.beginEvent = state.startSlots;
                 state.eventsCounter += 1;
             }
-            state.currentRolls.push(value);
             if (state.showVisualEvents <= state.eventsList.length) {
                 state.eventsList = []
             }
@@ -95,6 +93,7 @@ const gamesSlice = createSlice({
             state.gamesInEvent = val;
         },
         resetStatistics(state) {
+            state.statistics = {};
             state.currentRolls = [];
             state.eventsList = [];
             state.startSlots.forEach(item => state.statistics[item] = 0);
