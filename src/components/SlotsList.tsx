@@ -45,7 +45,7 @@ const FieldsList: React.FC = () => {
                         <span className={`flex-10 w-30 overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
                         <span className="flex-1 pl-2">{item[1]}</span>
                     </div>
-                ))}</>) : <div className="fixed text-lg text-cen w-full">Loading List</div>}
+                ))}</>) : <div className="fixed text-lg text-center w-full">Loading List</div>}
         </div>
     )
 }

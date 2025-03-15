@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 import type { NextConfig } from "next";
-
+const isDev = process.env.NODE_ENV === 'development';
 const nextConfig: NextConfig = {
   output: 'export',
   reactStrictMode: true,
-  basePath: '/dendy-challenge-random',
-  // assetPrefix: '/dendy-challenge-random/',
+  basePath: isDev ? '' : '/dendy-challenge-random',
+  assetPrefix: isDev ? '' : '/dendy-challenge-random/',
   images:{
     domains: ['localhost'],
     unoptimized: true,
