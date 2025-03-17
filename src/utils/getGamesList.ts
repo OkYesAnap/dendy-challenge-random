@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const sheetId = '1lQKxm4V-xac7sl0mrwcgOg1BLpHGAy_f873ls0hoVeM';
-const range = 'Список игр 2025!A1:A60';
+const range = 'Список игр 2025!A1:B60';
 
 interface SheetsResponse {
     table: {

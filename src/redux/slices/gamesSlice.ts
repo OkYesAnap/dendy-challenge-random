@@ -1,9 +1,10 @@
 import { getGamesList } from '@/utils/getGamesList';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { roll } from './gamesLogics';
 
 export const getAllGamesList = createAsyncThunk('games/getGamesList', getGamesList);
 
-interface GamesState {
+export interface GamesState {
     allGamesList: string[];
     startSlots: string[];
     currentRolls: string[];
@@ -42,41 +43,15 @@ const gamesSlice = createSlice({
         },
         setStartSlots(state, action: PayloadAction<Array<string>>) {
             state.startSlots = action.payload;
-            action.payload.forEach(item => state.statistics[item] = 0);
         },
-        addBlackSlots(state, action: PayloadAction<{ blackSlots?: number, customSlots: string[] }>) {
-            const blackSlotsArray = [];
-            const { customSlots, blackSlots } = action.payload
-            if (blackSlots) {
-                for (let i = 0; i < blackSlots; i++) {
-                    blackSlotsArray.push(`Black slot ${i + 1}`)
-                }
-            }
-            state.startSlots = [...state.allGamesList, ...blackSlotsArray, ...customSlots];
+        addSlots(state, action: PayloadAction<{ slots: string[] }>) {
+            const { slots: customSlots } = action.payload
+            state.startSlots = [...state.allGamesList, ...customSlots];
             state.beginEvent = state.startSlots;
             gamesSlice.caseReducers.resetStatistics(state);
         },
         addRoll(state) {
-            const slotNumber = Math.floor((Math.random() * state.beginEvent.length));
-            const value = state.beginEvent[slotNumber];
-            state.currentSlot = value;
-            state.beginEvent.splice(slotNumber, 1);
-            state.currentRolls.push(value);
-
-            if (state.gamesInEvent <= state.currentRolls.length) {
-                state.eventsList.push(state.currentRolls);
-                if (state.currentRolls.find(item => item.includes('Black slot'))) {
-                    state.blackFieldsCounter += 1;
-                }
-                state.currentRolls = [];
-                state.beginEvent = state.startSlots;
-                state.eventsCounter += 1;
-            }
-            if (state.showVisualEvents <= state.eventsList.length) {
-                state.eventsList = []
-            }
-            state.statistics[value] += 1 || 0;
-            state.rollCounter += 1;
+            roll(state);
         },
         setBeginDay(state) {
             state.beginEvent = state.startSlots
@@ -113,7 +88,7 @@ const gamesSlice = createSlice({
 export const { setAllGamesList,
     setStartSlots,
     addRoll,
-    addBlackSlots,
+    addSlots,
     setCurrentSlot,
     setGamesInEvent,
     resetStatistics
