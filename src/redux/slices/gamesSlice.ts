@@ -45,8 +45,8 @@ const gamesSlice = createSlice({
             state.startSlots = action.payload;
         },
         addSlots(state, action: PayloadAction<{ slots: string[] }>) {
-            const { slots: customSlots } = action.payload
-            state.startSlots = [...state.allGamesList, ...customSlots];
+            const { slots } = action.payload
+            state.startSlots = [...state.allGamesList, ...slots];
             state.beginEvent = state.startSlots;
             gamesSlice.caseReducers.resetStatistics(state);
         },
@@ -61,7 +61,7 @@ const gamesSlice = createSlice({
         },
         setGamesInEvent(state, action: PayloadAction<number>) {
             let val = action.payload;
-            const max = state.allGamesList.length;
+            const max = state.startSlots.length;
             const min = 1;
             if (val > max) val = max;
             if (val < min) val = min;
