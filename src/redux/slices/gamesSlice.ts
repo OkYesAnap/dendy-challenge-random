@@ -1,8 +1,9 @@
-import { getGamesList } from '@/utils/getGamesList';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { roll } from './gamesLogics';
 
-export const getAllGamesList = createAsyncThunk('games/getGamesList', getGamesList);
+// export const getAllGamesList = createAsyncThunk('games/getGamesList', async (params: { url: string, range: string }) => {
+//     return await getGamesList(defaultParams)
+// });
 
 export interface GamesState {
     allGamesList: string[];
@@ -53,9 +54,9 @@ const gamesSlice = createSlice({
         addRoll(state) {
             roll(state);
         },
-        setBeginDay(state) {
-            state.beginEvent = state.startSlots
-        },
+        // setBeginDay(state) {
+        //     state.beginEvent = state.startSlots
+        // },
         setCurrentSlot(state, action: PayloadAction<string>) {
             state.currentSlot = action.payload;
         },
@@ -77,12 +78,12 @@ const gamesSlice = createSlice({
             state.rollCounter = 0;
         }
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<Array<string>>) => {
-                state.allGamesList = action.payload;
-            });
-    },
+    // extraReducers: (builder) => {
+    //     builder
+    //         .addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<Array<string>>) => {
+    //             state.allGamesList = action.payload;
+    //         });
+    // },
 });
 
 export const { setAllGamesList,

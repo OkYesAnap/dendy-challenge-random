@@ -1,10 +1,5 @@
 "use client"
-import EventsList from "@/components/EventsList";
-import RandomSlotControl from "@/components/RandomSlotControls";
-import FieldsList from "@/components/SlotsList";
-import store from "@/redux/store";
 import Link from "next/link";
-import { Provider } from "react-redux";
 
 
 const MainPage: React.FC = () => {

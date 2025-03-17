@@ -12,6 +12,11 @@ import { getGamesList } from "@/utils/getGamesList";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+const defaultParams = {
+    url: "https://docs.google.com/spreadsheets/d/1lQKxm4V-xac7sl0mrwcgOg1BLpHGAy_f873ls0hoVeM/edit?gid=1031682936#gid=1031682936",
+    range: "A1:A60"
+}
+
 const FieldsList: React.FC = () => {
     const dispatch = useDispatch();
     const statisticsList = useSelector(sStatistics);
@@ -26,7 +31,7 @@ const FieldsList: React.FC = () => {
 
     useEffect(() => {
         const setInit = async () => {
-            const serverProps = await getGamesList();
+            const serverProps = await getGamesList(defaultParams);
             dispatch(setAllGamesList(serverProps));
         }
         setInit();

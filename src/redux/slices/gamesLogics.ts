@@ -1,4 +1,3 @@
-import { PayloadAction } from "@reduxjs/toolkit";
 import { GamesState } from "./gamesSlice";
 
 export const roll = (state:GamesState) => {

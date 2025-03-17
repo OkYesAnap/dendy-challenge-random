@@ -1,8 +1,5 @@
 import axios from "axios";
 
-const sheetId = '1lQKxm4V-xac7sl0mrwcgOg1BLpHGAy_f873ls0hoVeM';
-const range = 'Список игр 2025!A1:B60';
-
 interface SheetsResponse {
     table: {
         rows: Array<{
@@ -13,9 +10,23 @@ interface SheetsResponse {
     }
 }
 
-export const getGamesList = async () => {
+function extractIds(url: string) {
+    const regex = /\/d\/(.*?)\/.*\?gid=(\d+)/;
+    const match = url.match(regex);
+
+    if (match) {
+        const id = match[1];
+        const gid = match[2];
+        return { id, gid };
+    }
+
+    return {};
+}
+
+export const getGamesList = async ({ url, range }: { url: string, range: string }) => {
+    const { id, gid } = extractIds(url);
     try {
-        const response = await axios.get(`https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&range=${range}`);
+        const response = await axios.get(`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&gid=${gid}&range=${range}`);
         const text = response.data;
         const json = JSON.parse(text.substr(47).slice(0, -2)) as SheetsResponse;
         const rows = json.table.rows.map((row, index) => `${index + 1}. ${row.c[0].v}`);

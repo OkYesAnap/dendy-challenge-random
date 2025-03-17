@@ -37,7 +37,11 @@ const RandomSlotControl = () => {
         dispatch(addSlots({ slots: customSlots }));
     }, [blackSlotsCount, zero, allGamesList, dispatch]);
 
-    const randomCalculations = () => {
+    const handleCustom = () => {
+        setRandom();
+    }
+
+    const randomCalculations = useCallback (() => {
         if (beginEvent.length) {
             dispatch(addRoll());
         } else {
@@ -49,11 +53,7 @@ const RandomSlotControl = () => {
         timerForCurrentRoll.current = setTimeout(() => {
             dispatch(setCurrentSlot(''));
         }, 1000);
-    }
-
-    const handleCustom = () => {
-        setRandom();
-    }
+    }, [beginEvent])
 
     const setRandom = useCallback(() => {
         if (skipRolls > 0) {
@@ -63,7 +63,7 @@ const RandomSlotControl = () => {
         } else {
             randomCalculations();
         }
-    }, [skipRolls, auto, handleCustom, randomCalculations]);
+    }, [skipRolls, randomCalculations]);
 
     useEffect(() => {
         if (auto) {
