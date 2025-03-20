@@ -17,7 +17,7 @@ const defaultParams = {
     range: "A1:A60"
 }
 
-const FieldsList: React.FC = () => {
+const SlotsList: React.FC = () => {
     const dispatch = useDispatch();
     const statisticsList = useSelector(sStatistics);
     const currentRolls = useSelector(sCurrentRolls);
@@ -38,7 +38,7 @@ const FieldsList: React.FC = () => {
     }, [dispatch]);
 
     return (
-        <div className="flex flex-wrap text-xs fixed top-1 left-1 bg-black">
+        <div className="flex flex-wrap text-xs fixed top-1 left-1 bg-black w-full">
             {allGamesList.length ? (<><div className="w-full flex flex-row">
                 <div className="flex-1 text-lg text-center">Rolls {rollCounter}</div>
                 <div className="flex-1 text-lg text-center">Events {eventsCounter}</div>
@@ -55,4 +55,4 @@ const FieldsList: React.FC = () => {
     )
 }
 
-export default FieldsList;
+export default SlotsList;

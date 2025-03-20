@@ -1,9 +1,17 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { roll } from './gamesLogics';
+import { getGamesList } from '@/utils/getGamesList';
 
-// export const getAllGamesList = createAsyncThunk('games/getGamesList', async (params: { url: string, range: string }) => {
-//     return await getGamesList(defaultParams)
-// });
+export interface GoogleSheetsParams {
+    url: string,
+    range: string
+}
+
+export const getAllGamesList = createAsyncThunk('games/getGamesList', async (params: GoogleSheetsParams) => {
+    return await getGamesList(params)
+});
+
+const addSlotsAction = createAction<{ slots: string[] }>('games/addSlots');
 
 export interface GamesState {
     allGamesList: string[];
@@ -18,6 +26,7 @@ export interface GamesState {
     eventsCounter: number;
     rollCounter: number;
     currentSlot: string;
+    loading: boolean;
 }
 
 const initialState: GamesState = {
@@ -32,7 +41,8 @@ const initialState: GamesState = {
     blackFieldsCounter: 0,
     eventsCounter: 0,
     rollCounter: 0,
-    currentSlot: ''
+    currentSlot: '',
+    loading: false
 };
 
 const gamesSlice = createSlice({
@@ -54,9 +64,10 @@ const gamesSlice = createSlice({
         addRoll(state) {
             roll(state);
         },
-        // setBeginDay(state) {
-        //     state.beginEvent = state.startSlots
-        // },
+        rollOneStep(state) {
+            const last = state.beginEvent.shift();
+            state.beginEvent.push(last || '');
+        },
         setCurrentSlot(state, action: PayloadAction<string>) {
             state.currentSlot = action.payload;
         },
@@ -68,6 +79,16 @@ const gamesSlice = createSlice({
             if (val < min) val = min;
             state.gamesInEvent = val;
         },
+        shuffle(state) {
+            const shuffledArray = [];
+            const { beginEvent } = state;
+            do {
+                const rndIndex = Math.floor(Math.random() * beginEvent.length);
+                shuffledArray.push(beginEvent[rndIndex]);
+                beginEvent.splice(rndIndex, 1);
+            } while (beginEvent.length)
+            state.beginEvent = shuffledArray;
+        },
         resetStatistics(state) {
             state.statistics = {};
             state.currentRolls = [];
@@ -78,12 +99,17 @@ const gamesSlice = createSlice({
             state.rollCounter = 0;
         }
     },
-    // extraReducers: (builder) => {
-    //     builder
-    //         .addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<Array<string>>) => {
-    //             state.allGamesList = action.payload;
-    //         });
-    // },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getAllGamesList.pending, (state) => {
+                state.loading = true
+                gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
+            }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<Array<string>>) => {
+                state.loading = false
+                state.allGamesList = action.payload;
+                gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
+            });
+    },
 });
 
 export const { setAllGamesList,
@@ -92,7 +118,9 @@ export const { setAllGamesList,
     addSlots,
     setCurrentSlot,
     setGamesInEvent,
-    resetStatistics
+    resetStatistics,
+    rollOneStep,
+    shuffle
 } = gamesSlice.actions;
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;
 export const startSlots = (state: { games: GamesState }) => state.games.startSlots;
@@ -105,5 +133,6 @@ export const eventsCounter = (state: { games: GamesState }) => state.games.event
 export const rollCounter = (state: { games: GamesState }) => state.games.rollCounter;
 export const currentSlot = (state: { games: GamesState }) => state.games.currentSlot;
 export const gamesInEvent = (state: { games: GamesState }) => state.games.gamesInEvent;
+export const loading = (state: { games: GamesState }) => state.games.loading;
 
 export default gamesSlice.reducer;

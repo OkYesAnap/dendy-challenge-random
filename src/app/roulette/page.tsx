@@ -1,22 +1,17 @@
 "use client"
-import EventsList from "@/components/EventsList";
-import RandomSlotControl from "@/components/RandomSlotControls";
-import FieldsList from "@/components/SlotsList";
+import SlotsList from "@/app/roulette/SlotsList";
 import store from "@/redux/store";
 import { Provider } from "react-redux";
 
-const Roulette: React.FC = () => {
+const RoulettePage: React.FC = () => {
     return (
         <Provider store={store}>
-            <div className="font-[family-name:var(--font-geist-sans)] pt-80 pb-30">
+            <div className="font-[family-name:var(--font-geist-sans)] pb-30">
                 <main className="w-full">
-                    <FieldsList />
-                    <EventsList />
-                    <RandomSlotControl />
+                    <SlotsList />
                 </main>
             </div>
-
         </Provider>)
 }
 
-export default Roulette;
+export default RoulettePage;

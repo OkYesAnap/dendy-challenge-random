@@ -53,7 +53,7 @@ const RandomSlotControl = () => {
         timerForCurrentRoll.current = setTimeout(() => {
             dispatch(setCurrentSlot(''));
         }, 1000);
-    }, [beginEvent])
+    }, [beginEvent, dispatch])
 
     const setRandom = useCallback(() => {
         if (skipRolls > 0) {

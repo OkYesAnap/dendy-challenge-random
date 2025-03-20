@@ -9,7 +9,7 @@ const EventsList: React.FC = () => {
     const currentRolls = useSelector(sCurrentRolls)
     return (
         <div className="grid grid-cols-6 gap-1 pl-2 pr-2 pt-3">
-            {eventsList.map((evnt, evntIndex) => (
+            {eventsList.map((evnt: string[], evntIndex) => (
                 <div className={`pt-5`}key={`${evntIndex}`}>
                     {evnt.map((item, itemIndex) => (
                         <div key={`${evntIndex}-${itemIndex}`} className="border pl-2 pr-2 truncate">
