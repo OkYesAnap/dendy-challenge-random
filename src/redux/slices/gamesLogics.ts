@@ -1,6 +1,6 @@
 import { GamesState } from "./gamesSlice";
 
-export const roll = (state:GamesState) => {
+export const randomRoll = (state:GamesState) => {
     const slotNumber = Math.floor((Math.random() * state.beginEvent.length));
     const value = state.beginEvent[slotNumber];
     state.currentSlot = value;

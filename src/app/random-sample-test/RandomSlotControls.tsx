@@ -7,7 +7,7 @@ import {
     setCurrentSlot,
     setGamesInEvent,
     addSlots,
-    addRoll,
+    addRandomRoll,
 }
     from "@/redux/slices/gamesSlice";
 import React, { SetStateAction, useCallback, useEffect, useRef, useState } from "react";
@@ -43,7 +43,7 @@ const RandomSlotControl = () => {
 
     const randomCalculations = useCallback (() => {
         if (beginEvent.length) {
-            dispatch(addRoll());
+            dispatch(addRandomRoll());
         } else {
             setAuto(false);
             dispatch(setCurrentSlot("Error all Games was rolled"));

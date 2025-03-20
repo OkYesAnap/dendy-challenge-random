@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { roll } from './gamesLogics';
+import { randomRoll } from './gamesLogics';
 import { getGamesList } from '@/utils/getGamesList';
 
 export interface GoogleSheetsParams {
@@ -61,8 +61,15 @@ const gamesSlice = createSlice({
             state.beginEvent = state.startSlots;
             gamesSlice.caseReducers.resetStatistics(state);
         },
-        addRoll(state) {
-            roll(state);
+        addRoll(state, action: PayloadAction<number>) {
+            const winSlot = action.payload;
+            const value = state.beginEvent[winSlot];
+            state.currentSlot = value;
+            state.beginEvent.splice(winSlot, 1);
+            state.currentRolls.push(value);
+        },
+        addRandomRoll(state) {
+            randomRoll(state);
         },
         rollOneStep(state) {
             const last = state.beginEvent.shift();
@@ -115,6 +122,7 @@ const gamesSlice = createSlice({
 export const { setAllGamesList,
     setStartSlots,
     addRoll,
+    addRandomRoll,
     addSlots,
     setCurrentSlot,
     setGamesInEvent,
