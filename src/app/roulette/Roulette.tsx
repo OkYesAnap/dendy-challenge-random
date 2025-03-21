@@ -12,11 +12,12 @@ import { buttonsClasses } from "./MainInfo";
 import WinGameLabel from "./WinGameLabel";
 
 const slotHeight = 16;
-
+const visibleSlots = 30;
 const intervals = { min: 50, max: 2000, step: 5 };
 
 const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
     const slotsList = useSelector(sSlotsList);
+    const [optimizedSlots, setOptimizedSlots] = useState<string[]>(['']);
     const currentRolls = useSelector(sCurrentRolls);
     const [start, setStart] = useState<boolean>(false);
     const [currentGame, setCurrentGame] = useState<string>("");
@@ -29,7 +30,6 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
 
     const listRef = useRef<HTMLDivElement>(null);
     const dispatch = useDispatch();
-    console.log(1);
     useLayoutEffect(() => {
         if (listRef.current) {
             const heightInPx = listRef.current.offsetHeight;
@@ -43,7 +43,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
             const rect = listItemsHeight[slot].getBoundingClientRect();
             setCurrentGamePos(rect.top);
         }
-    }, [listRef, setWinSlot, setHalfListHeight, dispatch, currentRolls]);
+    }, [listRef, setWinSlot, setHalfListHeight, dispatch, currentRolls, optimizedSlots]);
 
     useEffect(() => {
             const timeOut = setTimeout(() => { setCurrentGame('') }, 3000);
@@ -51,7 +51,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
     }, [currentRolls])
 
     useEffect(() => {
-
+        setOptimizedSlots(slotsList.slice(0, visibleSlots));
         if (start) {
             rollIntervalRef.current = setInterval(() => {
                 dispatch(rollOneStep());
@@ -91,15 +91,15 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
         <div className="fixed inset-0 bg-black/80">
             <div
                 ref={listRef}
-                className="fixed max-h-[85%] max-w-[85%] text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[56%] border-3 bg-black rounded overflow-hidden">
+                className="fixed max-h-[85%] w-[45%] text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[56%] border-3 bg-black rounded overflow-hidden">
                 <div style={{ top: `${halfListHeight}px` }} className={`absolute -right-5 bg-white w-10 h-10 rotate-[45deg] z-10`} />
                 <div style={{ top: `${halfListHeight - 18}px` }} className={`absolute bg-white w-full h-2 z-10`} />
                 <div style={{ top: `${halfListHeight + 50}px` }} className={`absolute bg-white w-full h-2 z-10`} />
                 <div style={{ top: `${halfListHeight}px` }} className={`absolute -left-5 bg-white w-10 h-10 rotate-[45deg] z-10`} />
                 <ul className="w-full flex flex-col">
-                    {slotsList.map((slot) => (
+                    {optimizedSlots.map((slot) => (
                         <motion.li
-                            className={`border-t border-b h-${slotHeight} border-gray-300 pl-8 pr-8 pt-4 pb-4 text-center whitespace-nowrap overflow-ellipsis`}
+                            className={`border-t w-full border-b h-${slotHeight} border-gray-300 pl-10 pr-10 pt-4 pb-4 text-center whitespace-nowrap overflow-hidden overflow-ellipsis`}
                             key={slot}
                             layout
                             transition={{
