@@ -17,7 +17,7 @@ export interface GamesState {
     allGamesList: string[];
     startSlots: string[];
     currentRolls: string[];
-    beginEvent: string[];
+    slotsList: string[];
     statistics: { [key: string]: number };
     gamesInEvent: number;
     showVisualEvents: number;
@@ -33,7 +33,7 @@ const initialState: GamesState = {
     allGamesList: [],
     startSlots: [],
     currentRolls: [],
-    beginEvent: [],
+    slotsList: [],
     statistics: {},
     gamesInEvent: 7,
     showVisualEvents: 6,
@@ -58,22 +58,22 @@ const gamesSlice = createSlice({
         addSlots(state, action: PayloadAction<{ slots: string[] }>) {
             const { slots } = action.payload
             state.startSlots = [...state.allGamesList, ...slots];
-            state.beginEvent = state.startSlots;
+            state.slotsList = state.startSlots;
             gamesSlice.caseReducers.resetStatistics(state);
         },
         addRoll(state, action: PayloadAction<number>) {
             const winSlot = action.payload;
-            const value = state.beginEvent[winSlot];
+            const value = state.slotsList[winSlot];
             state.currentSlot = value;
-            state.beginEvent.splice(winSlot, 1);
+            state.slotsList.splice(winSlot, 1);
             state.currentRolls.push(value);
         },
         addRandomRoll(state) {
             randomRoll(state);
         },
         rollOneStep(state) {
-            const last = state.beginEvent.shift();
-            state.beginEvent.push(last || '');
+            const last = state.slotsList.shift();
+            state.slotsList.push(last || '');
         },
         setCurrentSlot(state, action: PayloadAction<string>) {
             state.currentSlot = action.payload;
@@ -88,13 +88,13 @@ const gamesSlice = createSlice({
         },
         shuffle(state) {
             const shuffledArray = [];
-            const { beginEvent } = state;
+            const { slotsList } = state;
             do {
-                const rndIndex = Math.floor(Math.random() * beginEvent.length);
-                shuffledArray.push(beginEvent[rndIndex]);
-                beginEvent.splice(rndIndex, 1);
-            } while (beginEvent.length)
-            state.beginEvent = shuffledArray;
+                const rndIndex = Math.floor(Math.random() * slotsList.length);
+                shuffledArray.push(slotsList[rndIndex]);
+                slotsList.splice(rndIndex, 1);
+            } while (slotsList.length)
+            state.slotsList = shuffledArray;
         },
         resetStatistics(state) {
             state.statistics = {};
@@ -104,6 +104,9 @@ const gamesSlice = createSlice({
             state.blackFieldsCounter = 0;
             state.eventsCounter = 0;
             state.rollCounter = 0;
+        },
+        resetStartSlots(state) {
+            state.startSlots = [];
         }
     },
     extraReducers: (builder) => {
@@ -128,13 +131,14 @@ export const { setAllGamesList,
     setGamesInEvent,
     resetStatistics,
     rollOneStep,
-    shuffle
+    shuffle,
+    resetStartSlots
 } = gamesSlice.actions;
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;
 export const startSlots = (state: { games: GamesState }) => state.games.startSlots;
 export const currentRolls = (state: { games: GamesState }) => state.games.currentRolls;
 export const statistics = (state: { games: GamesState }) => state.games.statistics;
-export const beginEvent = (state: { games: GamesState }) => state.games.beginEvent;
+export const slotsList = (state: { games: GamesState }) => state.games.slotsList;
 export const eventsList = (state: { games: GamesState }) => state.games.eventsList;
 export const blackFieldsCounter = (state: { games: GamesState }) => state.games.blackFieldsCounter;
 export const eventsCounter = (state: { games: GamesState }) => state.games.eventsCounter;

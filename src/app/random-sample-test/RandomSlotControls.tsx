@@ -1,5 +1,5 @@
 import {
-    beginEvent as sBeginEvent,
+    slotsList as sSlotsList,
     currentSlot as sCurrentSlot,
     gamesInEvent as sGamesInEvent,
     allGamesList as sAllGamesList,
@@ -17,7 +17,7 @@ const RandomSlotControl = () => {
     const [blackSlotsCount, setBlackSlotsCount] = useState<number>(5);
     const [skipRolls, setSkipRolls] = useState<number>(0);
     const [autoDelay, setAutoDelay] = useState<number>(1000);
-    const beginEvent = useSelector(sBeginEvent);
+    const slotsList = useSelector(sSlotsList);
     const currentSlot = useSelector(sCurrentSlot);
     const gamesInEvent = useSelector(sGamesInEvent);
     const allGamesList = useSelector(sAllGamesList);
@@ -42,7 +42,7 @@ const RandomSlotControl = () => {
     }
 
     const randomCalculations = useCallback (() => {
-        if (beginEvent.length) {
+        if (slotsList.length) {
             dispatch(addRandomRoll());
         } else {
             setAuto(false);
@@ -53,7 +53,7 @@ const RandomSlotControl = () => {
         timerForCurrentRoll.current = setTimeout(() => {
             dispatch(setCurrentSlot(''));
         }, 1000);
-    }, [beginEvent, dispatch])
+    }, [slotsList, dispatch])
 
     const setRandom = useCallback(() => {
         if (skipRolls > 0) {

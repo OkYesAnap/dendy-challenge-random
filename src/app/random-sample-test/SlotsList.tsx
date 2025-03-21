@@ -6,7 +6,9 @@ import {
     eventsCounter as sEventsCounter,
     rollCounter as sRollCounter,
     allGamesList as sAllGamesList,
-    eventsList as sEventsList
+    eventsList as sEventsList,
+    resetStartSlots,
+    resetStatistics,
 } from "@/redux/slices/gamesSlice";
 import { getGamesList } from "@/utils/getGamesList";
 import { useEffect } from "react";
@@ -19,7 +21,7 @@ const defaultParams = {
 
 const SlotsList: React.FC = () => {
     const dispatch = useDispatch();
-    const statisticsList = useSelector(sStatistics);
+    const statistics = useSelector(sStatistics);
     const currentRolls = useSelector(sCurrentRolls);
     const blackFieldsCounter = useSelector(sBlackSlotsCount);
     const eventsCounter = useSelector(sEventsCounter);
@@ -27,7 +29,7 @@ const SlotsList: React.FC = () => {
     const allGamesList = useSelector(sAllGamesList);
     const eventsList = useSelector(sEventsList);
 
-    const selected = currentRolls.length ? currentRolls : eventsList[eventsList.length -1] || [];
+    const selected = currentRolls.length ? currentRolls : eventsList[eventsList.length - 1] || [];
 
     useEffect(() => {
         const setInit = async () => {
@@ -35,6 +37,10 @@ const SlotsList: React.FC = () => {
             dispatch(setAllGamesList(serverProps));
         }
         setInit();
+        return () => {
+            dispatch(resetStartSlots());
+            dispatch(resetStatistics()); 
+        }
     }, [dispatch]);
 
     return (
@@ -45,7 +51,7 @@ const SlotsList: React.FC = () => {
                 <div className="flex-1 text-lg text-center">Black slots in event {blackFieldsCounter}</div>
                 <div className="flex-1 text-lg text-center">% {((blackFieldsCounter / eventsCounter || 0) * 100).toFixed(2)}</div>
             </div>
-                {Object.entries(statisticsList).map(item => (
+                {Object.entries(statistics).map(item => (
                     <div key={item[0]} className={`flex justify-between items-center w-1/6 p-1 border ${selected.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}>
                         <span className={`flex-10 w-30 overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
                         <span className="flex-1 pl-2">{item[1]}</span>

@@ -1,10 +1,10 @@
 import { GamesState } from "./gamesSlice";
 
 export const randomRoll = (state:GamesState) => {
-    const slotNumber = Math.floor((Math.random() * state.beginEvent.length));
-    const value = state.beginEvent[slotNumber];
+    const slotNumber = Math.floor((Math.random() * state.slotsList.length));
+    const value = state.slotsList[slotNumber];
     state.currentSlot = value;
-    state.beginEvent.splice(slotNumber, 1);
+    state.slotsList.splice(slotNumber, 1);
     state.currentRolls.push(value);
 
     if (state.gamesInEvent <= state.currentRolls.length) {
@@ -13,7 +13,7 @@ export const randomRoll = (state:GamesState) => {
             state.blackFieldsCounter += 1;
         }
         state.currentRolls = [];
-        state.beginEvent = state.startSlots;
+        state.slotsList = state.startSlots;
         state.eventsCounter += 1;
     }
     if (state.showVisualEvents <= state.eventsList.length) {
