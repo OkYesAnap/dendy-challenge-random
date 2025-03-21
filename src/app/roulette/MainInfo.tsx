@@ -5,6 +5,7 @@ import {
     statistics as sStatistics,
     currentRolls as sCurrentRolls,
     startSlots as sStartSlots,
+    allGamesList as sAllGamesList,
     loading as sLoading,
     GoogleSheetsParams,
 } from "@/redux/slices/gamesSlice";
@@ -19,7 +20,7 @@ const defaultParams = {
     range: "A1:A1000"
 }
 
-export const buttonsClasses = "flex-1 mr-2 p-1 border text-5xl rounded-full w-20 h-20 grayscale"
+export const buttonsClasses = "flex-1 mr-2 p-1 border text-5xl rounded-full w-20 h-20"
 
 const MainInfo: React.FC = () => {
     const [openChoseModal, setOpenChoseModal] = useState<boolean>(false);
@@ -31,6 +32,7 @@ const MainInfo: React.FC = () => {
     const currentRolls = useSelector(sCurrentRolls);
     const loading = useSelector(sLoading);
     const startSlots = useSelector(sStartSlots)
+    const allGamesList = useSelector(sAllGamesList)
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -52,9 +54,9 @@ const MainInfo: React.FC = () => {
             range: rangeUrl,
             url: urlUrl
         }
-        
+
         if (paramsRef.current.url !== '') {
-            handleLoad()  
+            handleLoad()
         }
 
     }, [searchParams, handleLoad]);
@@ -70,12 +72,14 @@ const MainInfo: React.FC = () => {
                     <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
                 </div>
             ))}
-            {(emptySlots && !loading ) && (<div className="fixed max-h-[85%] text-2xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">
-            Please set the Google Sheets URL and RANGE with non-empty fields.</div>)        }
+            {(emptySlots && !loading) && (<div className="fixed max-h-[85%] text-2xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">
+                Please set the Google Sheets URL and RANGE with non-empty fields.</div>)}
             <div className="fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-4 border rounded">
                 <button className={buttonsClasses} onClick={() => setOpenChoseModal(true)}>...</button>
-                <button className={buttonsClasses} onClick={() => setOpenRoll(true)}>🎰</button>
-                <button className={buttonsClasses} onClick={() => handleLoad()}>🔄</button>
+                {!!allGamesList.length && (<>
+                    <button className={buttonsClasses} onClick={() => setOpenRoll(true)}>🎰</button>
+                    <button className={buttonsClasses} onClick={() => handleLoad()}>🔄</button>
+                </>)}
             </div>
             {openRoll && <Roulette {...{ setOpenRoll: () => setOpenRoll(false) }} />}
             <ModalPortal {...{ isOpen: openChoseModal, onClose: () => setOpenChoseModal(false) }}>
