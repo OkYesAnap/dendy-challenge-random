@@ -1,4 +1,4 @@
-import MainPage from "./main";
+import MainPage from "./MainPage";
 
 export default async function  Home() {
   return (
