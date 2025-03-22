@@ -22,7 +22,7 @@ const Info: React.FC<InfoProps> = ({ isOpen, infoData, onClose }) => {
                     width={0}
                     height={0}
                     className="w-full h-auto" />)
-                : <div className="max-w-100 border p-2 whitespace-pre-wrap">
+                : <div className="max-w-200 border p-2 whitespace-pre-wrap">
                     {item}
                 </div>}
             </div>) : null;
