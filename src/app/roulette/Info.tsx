@@ -19,10 +19,10 @@ const Info: React.FC<InfoProps> = ({ isOpen, infoData, onClose }) => {
                 <Image
                     src={item}
                     alt={infoData[1]}
-                    width={0}
-                    height={0}
-                    className="w-full h-auto" />)
-                : <div className="max-w-200 border p-2 whitespace-pre-wrap">
+                    width={100}
+                    height={100}
+                    className="w-full" />)
+                : <div className="border p-2 whitespace-pre-wrap">
                     {item}
                 </div>}
             </div>) : null;
