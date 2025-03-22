@@ -31,11 +31,20 @@ export const getGamesList = async ({ url, range }: GoogleSheetsParams) => {
         const text = response.data;
         const json = JSON.parse(text.substr(47).slice(0, -2)) as SheetsResponse;
         const { rows } = json.table
-        // const rows = json.table.rows.map((row, index) => `${index + 1}. ${row.c[0]?.v}`);
-        const parseRows = rows.reduce((accum: string[], row) => {
-            // let field: GoogleParsedItem
+        let idNum = 1;
+        const parseRows = rows.reduce((accum: string[][], row) => {
+
             if (row.c[0]?.v) {
-                accum.push(`${accum.length + 1}. ${row.c[0]?.v}`);
+                    accum.push([]);
+                    const current = accum[accum.length - 1];
+                    current.push(`${idNum++}. ${row.c[0]?.v}`);
+                if (row.c.length > 1) {
+                    row.c.forEach((item, i) => {
+                        if (row.c[i]?.v) {
+                            current.push(item.v);
+                        }
+                    })
+                }
             }
             return accum
         }, []);

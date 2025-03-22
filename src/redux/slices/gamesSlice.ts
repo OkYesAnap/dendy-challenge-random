@@ -114,9 +114,10 @@ const gamesSlice = createSlice({
             .addCase(getAllGamesList.pending, (state) => {
                 state.loading = true
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
-            }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<Array<string>>) => {
+            }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<Array<Array<string>>>) => {
                 state.loading = false
-                state.allGamesList = action.payload;
+                state.allGamesList = action.payload.map(item => item[0]);
+                console.log(action.payload);
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
             });
     },

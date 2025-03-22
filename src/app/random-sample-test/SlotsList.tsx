@@ -1,5 +1,4 @@
 import {
-    setAllGamesList,
     statistics as sStatistics,
     currentRolls as sCurrentRolls,
     blackFieldsCounter as sBlackSlotsCount,
@@ -9,9 +8,11 @@ import {
     eventsList as sEventsList,
     resetStartSlots,
     resetStatistics,
+    GoogleSheetsParams,
+    getAllGamesList,
 } from "@/redux/slices/gamesSlice";
-import { getGamesList } from "@/utils/getGamesList";
-import { useEffect } from "react";
+import { AppDispatch } from "@/redux/store";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const defaultParams = {
@@ -20,7 +21,7 @@ const defaultParams = {
 }
 
 const SlotsList: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const statistics = useSelector(sStatistics);
     const currentRolls = useSelector(sCurrentRolls);
     const blackFieldsCounter = useSelector(sBlackSlotsCount);
@@ -28,18 +29,15 @@ const SlotsList: React.FC = () => {
     const rollCounter = useSelector(sRollCounter);
     const allGamesList = useSelector(sAllGamesList);
     const eventsList = useSelector(sEventsList);
+    const paramsRef = useRef<GoogleSheetsParams>(defaultParams);
 
     const selected = currentRolls.length ? currentRolls : eventsList[eventsList.length - 1] || [];
 
     useEffect(() => {
-        const setInit = async () => {
-            const serverProps = await getGamesList(defaultParams);
-            dispatch(setAllGamesList(serverProps));
-        }
-        setInit();
+        dispatch(getAllGamesList(paramsRef.current));
         return () => {
             dispatch(resetStartSlots());
-            dispatch(resetStatistics()); 
+            dispatch(resetStatistics());
         }
     }, [dispatch]);
 
