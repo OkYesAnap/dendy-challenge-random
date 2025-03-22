@@ -15,6 +15,7 @@ const addSlotsAction = createAction<{ slots: string[] }>('games/addSlots');
 
 export interface GamesState {
     allGamesList: string[];
+    allData: string[][];
     startSlots: string[];
     currentRolls: string[];
     slotsList: string[];
@@ -31,6 +32,7 @@ export interface GamesState {
 
 const initialState: GamesState = {
     allGamesList: [],
+    allData: [],
     startSlots: [],
     currentRolls: [],
     slotsList: [],
@@ -117,13 +119,14 @@ const gamesSlice = createSlice({
             }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<Array<Array<string>>>) => {
                 state.loading = false
                 state.allGamesList = action.payload.map(item => item[0]);
-                console.log(action.payload);
+                state.allData = action.payload;
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
             });
     },
 });
 
-export const { setAllGamesList,
+export const { 
+    setAllGamesList,
     setStartSlots,
     addRoll,
     addRandomRoll,
@@ -136,6 +139,7 @@ export const { setAllGamesList,
     resetStartSlots
 } = gamesSlice.actions;
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;
+export const allData = (state: { games: GamesState }) => state.games.allData;
 export const startSlots = (state: { games: GamesState }) => state.games.startSlots;
 export const currentRolls = (state: { games: GamesState }) => state.games.currentRolls;
 export const statistics = (state: { games: GamesState }) => state.games.statistics;
