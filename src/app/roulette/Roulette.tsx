@@ -10,6 +10,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { buttonsClasses } from "./MainInfo";
 import WinGameLabel from "./WinGameLabel";
+import WinFrame from "./WinFrame";
 
 const slotHeight = 16;
 const visibleSlots = 30;
@@ -46,8 +47,8 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
     }, [listRef, setWinSlot, setHalfListHeight, dispatch, currentRolls, optimizedSlots]);
 
     useEffect(() => {
-            const timeOut = setTimeout(() => { setCurrentGame('') }, 3000);
-            return () => clearTimeout(timeOut);
+        const timeOut = setTimeout(() => { setCurrentGame('') }, 3000);
+        return () => clearTimeout(timeOut);
     }, [currentRolls])
 
     useEffect(() => {
@@ -70,6 +71,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
                 setTimeout(() => {
                     setCurrentGame(slotsList[winSlot]);
                     dispatch(addRoll(winSlot));
+                    rollTimeoutRef.current = null
                 }, 3000);
             }
         }
@@ -92,10 +94,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
             <div
                 ref={listRef}
                 className="fixed max-h-[85%] w-[30%] text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[56%] border-3 bg-black rounded overflow-hidden">
-                <div style={{ top: `${halfListHeight}px` }} className={`absolute -right-5 bg-white w-10 h-10 rotate-[45deg] z-10`} />
-                <div style={{ top: `${halfListHeight - 18}px` }} className={`absolute bg-white w-full h-2 z-10`} />
-                <div style={{ top: `${halfListHeight + 50}px` }} className={`absolute bg-white w-full h-2 z-10`} />
-                <div style={{ top: `${halfListHeight}px` }} className={`absolute -left-5 bg-white w-10 h-10 rotate-[45deg] z-10`} />
+                {(!!rollTimeoutRef.current) ? <WinFrame {...{ halfListHeight }} /> : null}
                 <ul className="w-full flex flex-col">
                     {optimizedSlots.map((slot) => (
                         <motion.li
