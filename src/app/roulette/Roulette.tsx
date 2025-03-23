@@ -94,7 +94,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
             <div
                 ref={listRef}
                 className="fixed max-h-[85%] w-[30%] text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[56%] border-3 bg-black rounded overflow-hidden">
-                {(!!rollTimeoutRef.current) ? <WinFrame {...{ halfListHeight }} /> : null}
+                <WinFrame {...{ halfListHeight, visible: !!rollTimeoutRef.current }} />
                 <ul className="w-full flex flex-col">
                     {optimizedSlots.map((slot) => (
                         <motion.li
