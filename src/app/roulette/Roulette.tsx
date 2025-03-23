@@ -60,13 +60,16 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
     }, [audioSrcName]);
 
     useEffect(() => {
-        setAudioSrcName(audioSrcNames[1]);
-        const timeOut = setTimeout(() => { 
-            setCurrentGame(''); 
-            setAudioSrcName('');
-        }, 3000);
-        return () => clearTimeout(timeOut);
-    }, [currentRolls.length])
+        let timeOut: any;
+        if (!!currentGamePos && currentGame) {
+            setAudioSrcName(audioSrcNames[1]);
+            timeOut = setTimeout(() => {
+                setCurrentGame('');
+                setAudioSrcName('');
+            }, 3000);
+        }
+        return () => { if (timeOut) clearTimeout(timeOut) };
+    }, [currentRolls, currentGame])
 
     useEffect(() => {
         setOptimizedSlots(slotsList.slice(0, visibleSlots));
@@ -109,7 +112,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
 
     return (
         <div className="fixed inset-0 bg-black/80">
-            <audio ref={audioRef} src={`/audio/${audioSrcName}`} />
+            <audio ref={audioRef} src={`${process.env.NEXT_PUBLIC_AUDIO_PATH}/audio/${audioSrcName}`} />
             <div
                 ref={listRef}
                 className="fixed max-h-[85%] w-[30%] text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[56%] border-3 bg-black rounded overflow-hidden">
