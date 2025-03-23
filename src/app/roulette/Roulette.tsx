@@ -15,7 +15,7 @@ import WinFrame from "./WinFrame";
 const slotHeight = 16;
 const visibleSlots = 30;
 const intervals = { min: 50, max: 2000, step: 5 };
-const audioSrcNames = ['RollinProgress.mp3', 'RollComplete.mp3']
+const audioSrcNames = ['RollInProgress.mp3', 'RollComplete.mp3']
 
 
 const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
@@ -60,7 +60,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
     }, [audioSrcName]);
 
     useEffect(() => {
-        let timeOut: any;
+        let timeOut: ReturnType<typeof setTimeout>;
         if (!!currentGamePos && currentGame) {
             setAudioSrcName(audioSrcNames[1]);
             timeOut = setTimeout(() => {
@@ -69,7 +69,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
             }, 3000);
         }
         return () => { if (timeOut) clearTimeout(timeOut) };
-    }, [currentRolls, currentGame])
+    }, [currentRolls, currentGame, currentGamePos])
 
     useEffect(() => {
         setOptimizedSlots(slotsList.slice(0, visibleSlots));
@@ -112,7 +112,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
 
     return (
         <div className="fixed inset-0 bg-black/80">
-            <audio ref={audioRef} src={`${process.env.NEXT_PUBLIC_AUDIO_PATH}/audio/${audioSrcName}`} />
+            {!!audioSrcName && <audio ref={audioRef} src={`${process.env.NEXT_PUBLIC_AUDIO_PATH}${audioSrcName}`} />}
             <div
                 ref={listRef}
                 className="fixed max-h-[85%] w-[30%] text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[56%] border-3 bg-black rounded overflow-hidden">
