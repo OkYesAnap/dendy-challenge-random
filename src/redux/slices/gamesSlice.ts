@@ -107,8 +107,8 @@ const gamesSlice = createSlice({
             state.eventsCounter = 0;
             state.rollCounter = 0;
         },
-        resetStartSlots(state) {
-            state.startSlots = [];
+        resetStartSlots() {
+            return initialState;
         }
     },
     extraReducers: (builder) => {
