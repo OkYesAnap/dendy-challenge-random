@@ -28,7 +28,7 @@ const rollComplete = "RollComplete.mp3";
 
 const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
     const slotsList = useSelector(sSlotsList);
-    const [optimizedSlots, setOptimizedSlots] = useState<string[]>(['']);
+    const [optimizedSlots, setOptimizedSlots] = useState<string[]>([]);
     const currentRolls = useSelector(sCurrentRolls);
     const [start, setStart] = useState<boolean>(false);
     const [newRollAvailable, setNewRollAvailable] = useState<boolean>(false);
@@ -48,7 +48,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
     const dispatch = useDispatch();
 
     useLayoutEffect(() => {
-        if (listRef.current) {
+        if (listRef.current && optimizedSlots.length) {
             const heightInPx = listRef.current.offsetHeight;
             setWinSlot(heightInPx);
             const listItemsHeight = listRef.current.querySelectorAll('li');
