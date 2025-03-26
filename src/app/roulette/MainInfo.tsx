@@ -7,6 +7,8 @@ import {
     allGamesList as sAllGamesList,
     loading as sLoading,
     GoogleSheetsParams,
+    shuffleAllGamesList,
+    sortAllGamesList,
 } from "@/redux/slices/gamesSlice";
 import { AppDispatch } from "@/redux/store";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -16,6 +18,7 @@ import Roulette from "./Roulette";
 import Info from "./Info";
 import Instructions from "./Instructions";
 import ChoseUrlParamsModal from "./ChoseUrlParamsModal";
+import { motion } from "motion/react";
 
 const defaultParams = {
     url: "",
@@ -72,19 +75,39 @@ const MainInfo: React.FC = () => {
     return (
         <div className="flex flex-wrap text-2xl top-1 bg-black w-full">
             {allData.map((item) => (
-                <div key={item[0]} className={`flex justify-between items-center w-1/3 p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}>
+                <motion.div key={item[0]} 
+                layout
+                transition={{
+                    layout: { duration: 1.5 }
+                }}
+                className={`flex justify-between items-center w-1/3 p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}>
                     <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
                     {item.length > 2 ? (<div className="cursor-pointer" onClick={() => handleOpenInfo(item)}>📧</div>
                     ) : null}
-                </div>
+                </motion.div>
             ))}
             {(emptySlots && !loading) && <Instructions />}
             <div className="fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-4 border rounded">
-                <button className={buttonsClasses} onClick={() => setOpenChoseModal(true)}>...</button>
                 {!!allGamesList.length && (<>
-                    <button className={buttonsClasses} onClick={() => setOpenRoll(true)}>🎰</button>
-                    <button className={buttonsClasses} onClick={() => handleLoad()}>🔄</button>
+                    <button className={buttonsClasses}
+                        onClick={() => dispatch(shuffleAllGamesList())}>
+                        🔀
+                    </button>
+                    <button className={buttonsClasses}
+                        onClick={() => dispatch(sortAllGamesList())}>
+                        📈
+                    </button>
+                    <button className={buttonsClasses}
+                        onClick={() => setOpenRoll(true)}>
+                        🎰
+                    </button>
+                    <button className={buttonsClasses}
+                        onClick={() => handleLoad()}>
+                        🔄
+                    </button>
+
                 </>)}
+                <button className={buttonsClasses} onClick={() => setOpenChoseModal(true)}>...</button>
             </div>
             {openRoll && <Roulette {...{ setOpenRoll: () => setOpenRoll(false) }} />}
             <ChoseUrlParamsModal {...{

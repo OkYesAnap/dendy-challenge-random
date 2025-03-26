@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { randomRoll } from './gamesLogics';
+import { randomRoll, shuffleArr as shuffleStrArray, sortArr } from './gamesLogics';
 import { getGamesList } from '@/utils/getGamesList';
 
 export interface GoogleSheetsParams {
@@ -88,15 +88,28 @@ const gamesSlice = createSlice({
             if (val < min) val = min;
             state.gamesInEvent = val;
         },
-        shuffle(state) {
-            const shuffledArray = [];
+        shuffleRouletteList(state) {
             const { slotsList } = state;
-            do {
-                const rndIndex = Math.floor(Math.random() * slotsList.length);
-                shuffledArray.push(slotsList[rndIndex]);
-                slotsList.splice(rndIndex, 1);
-            } while (slotsList.length)
-            state.slotsList = shuffledArray;
+            state.slotsList = shuffleStrArray(slotsList);
+        },
+        syncAllDataAndSlotsList(state) {
+            const { allData, slotsList } = state;
+            state.slotsList = allData.reduce((acc, allDataItem) => {
+                const find = slotsList.find(slotItem => slotItem === allDataItem[0]);
+                if (find) acc.push(find);
+                return acc
+            }, [])
+        },
+        shuffleAllGamesList(state) {
+            const { allData } = state;
+            const shuffledAllData = shuffleStrArray(allData);
+            state.allData = shuffleStrArray(shuffledAllData);
+            gamesSlice.caseReducers.syncAllDataAndSlotsList(state);
+        },
+        sortAllGamesList(state) {
+            const { allData } = state;
+            state.allData = sortArr(allData);
+            gamesSlice.caseReducers.syncAllDataAndSlotsList(state);
         },
         resetStatistics(state) {
             state.statistics = {};
@@ -125,7 +138,7 @@ const gamesSlice = createSlice({
     },
 });
 
-export const { 
+export const {
     setAllGamesList,
     setStartSlots,
     addRoll,
@@ -135,7 +148,9 @@ export const {
     setGamesInEvent,
     resetStatistics,
     rollOneStep,
-    shuffle,
+    shuffleRouletteList,
+    shuffleAllGamesList,
+    sortAllGamesList,
     resetStartSlots
 } = gamesSlice.actions;
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;

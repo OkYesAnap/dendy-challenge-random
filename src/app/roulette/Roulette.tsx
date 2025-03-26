@@ -1,4 +1,4 @@
-import { shuffle } from "@/redux/slices/gamesSlice";
+import { shuffleRouletteList } from "@/redux/slices/gamesSlice";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { buttonsClasses } from "./MainInfo";
@@ -61,7 +61,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
             }} />
             <WinGameLabel {...{ currentGame, currentGamePos }} />
             <div className="fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded overflow-hidden">
-                <button className={buttonsClasses} onClick={() => dispatch(shuffle())}>
+                <button className={buttonsClasses} onClick={() => dispatch(shuffleRouletteList())}>
                     🔀
                 </button>
 
