@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter, useSearchParams } from "next/navigation";
 import Roulette from "./Roulette";
 import Info from "./Info";
+import Instructions from "./Instructions";
 
 const defaultParams = {
     url: "",
@@ -52,16 +53,15 @@ const MainInfo: React.FC = () => {
 
     useEffect(() => {
         const rangeUrl = searchParams.get("range") || defaultParams.range;
-        const urlUrl = searchParams.get("url") || defaultParams.url;
-        paramsRef.current = {
-            range: rangeUrl,
-            url: urlUrl
+        const sheetUrl = searchParams.get("url") || defaultParams.url;
+        const { range, url } = paramsRef.current;
+        if (rangeUrl !== range || sheetUrl !== url) {
+            paramsRef.current = {
+                range: rangeUrl,
+                url: sheetUrl
+            }
+            handleLoad();
         }
-
-        if (paramsRef.current.url !== '') {
-            handleLoad()
-        }
-
     }, [searchParams, handleLoad]);
 
     const handleOpenInfo = (item: string[]) => {
@@ -82,8 +82,7 @@ const MainInfo: React.FC = () => {
                     ) : null}
                 </div>
             ))}
-            {(emptySlots && !loading) && (<div className="fixed max-h-[85%] text-2xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">
-                Please set the Google Sheets URL and RANGE with non-empty fields.</div>)}
+            {(emptySlots && !loading) && <Instructions />}
             <div className="fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-4 border rounded">
                 <button className={buttonsClasses} onClick={() => setOpenChoseModal(true)}>...</button>
                 {!!allGamesList.length && (<>
