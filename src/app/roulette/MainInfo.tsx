@@ -1,5 +1,4 @@
 'use client';
-import ModalPortal from "@/components/ModalPortal";
 import {
     getAllGamesList,
     allData as sAllData,
@@ -16,6 +15,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Roulette from "./Roulette";
 import Info from "./Info";
 import Instructions from "./Instructions";
+import ChoseUrlParamsModal from "./ChoseUrlParamsModal";
 
 const defaultParams = {
     url: "",
@@ -69,10 +69,6 @@ const MainInfo: React.FC = () => {
         setInfo(item);
     }
 
-    const handleChangeGoogleParams = (params: Partial<GoogleSheetsParams>) => {
-        paramsRef.current = { ...paramsRef.current, ...params }
-    }
-
     return (
         <div className="flex flex-wrap text-2xl top-1 bg-black w-full">
             {allData.map((item) => (
@@ -91,24 +87,12 @@ const MainInfo: React.FC = () => {
                 </>)}
             </div>
             {openRoll && <Roulette {...{ setOpenRoll: () => setOpenRoll(false) }} />}
-            <ModalPortal {...{ isOpen: openChoseModal, onClose: () => setOpenChoseModal(false) }}>
-                <div className="flex flex-col">
-                    <div className="flex flex-row border p-2 items-center">
-                        <span className="flex-1">URL:</span>
-                        <input onChange={(e) => handleChangeGoogleParams({ url: e.target.value })}
-                            className="flex-1 bg-gray-700 p-1" type="text" defaultValue={paramsRef.current.url} />
-                    </div>
-                    <div className="flex flex-row border p-2 items-center">
-                        <span className="flex-1 mr-2 pt-1">Range:</span>
-                        <input onChange={(e) => handleChangeGoogleParams({ range: e.target.value })}
-                            className="flex-1 bg-gray-700 p-1" type="text" defaultValue={paramsRef.current.range} />
-                    </div>
-                    <div className="flex flex-row border p-2 items-center">
-                        <button className="flex-1 mr-2 p-1 border" onClick={() => handleLoad()}>Load</button>
-                        <button className="flex-1 mr-2 p-1 border" onClick={() => setOpenChoseModal(false)}>Cancel</button>
-                    </div>
-                </div>
-            </ModalPortal>
+            <ChoseUrlParamsModal {...{
+                isOpen: openChoseModal,
+                onClose: () => setOpenChoseModal(false),
+                paramsRef,
+                handleLoad
+            }} />
             <Info {...{ infoData: info, isOpen: openInfo, onClose: () => setOpenInfo(false) }} />
             {loading && (<div className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">Loading List</div>)}
         </div>
