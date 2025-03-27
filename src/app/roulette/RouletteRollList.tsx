@@ -60,7 +60,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
             const rect = listItemsHeight[slot].getBoundingClientRect();
             setCurrentGamePos(rect.top);
         }
-    }, [listRef, setWinSlot, setHalfListHeight, currentRolls, optimizedSlots]);
+    }, [listRef, setWinSlot, setHalfListHeight, currentRolls, optimizedSlots, setCurrentGamePos]);
 
 
     useEffect(() => {
@@ -91,7 +91,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
             if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
             if (rollTimeoutRef.current) clearInterval(rollTimeoutRef.current)
         }
-    }, [start, rollStage, dispatch, winSlot, slotsList]);
+    }, [start, rollStage, dispatch, winSlot, slotsList, setCurrentGame]);
 
     useEffect(() => {
         if(start){setRollStage(1)};
@@ -113,7 +113,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
                 clearTimeout(endTimeoutRef.current)
             }
         };
-    }, [currentGame])
+    }, [currentGame, setAudioSrcName, setCurrentGame, setNewRollAvailable])
 
 
     return (<div

@@ -8,7 +8,7 @@ const RoulettePage: React.FC = () => {
     return (
         <Provider store={store}>
             <Suspense >
-                <div className="font-[family-name:var(--font-geist-sans)] pb-30">
+                <div className="font-[family-name:var(--font-geist-sans)] pb-35">
                     <main className="w-full">
                         <MainInfo />
                     </main>

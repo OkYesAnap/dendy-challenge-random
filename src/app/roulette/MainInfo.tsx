@@ -25,11 +25,13 @@ const defaultParams = {
     range: "A1:A1000"
 }
 
-export const buttonsClasses = "flex-1 mr-2 p-1 border text-5xl rounded-full w-20 h-20"
+export const buttonsClasses = "flex-1 p-1 border text-5xl rounded-full w-20 h-20"
 
 const MainInfo: React.FC = () => {
     const [openChoseModal, setOpenChoseModal] = useState<boolean>(false);
+    const [additionalFunctions, setAdditionalFunctions] = useState<boolean>(false);
     const [openRoll, setOpenRoll] = useState<boolean>(false);
+    const [columns, setColumns] = useState<number>(3);
     const [emptySlots, setEmptySlots] = useState<boolean>(true);
     const [openInfo, setOpenInfo] = useState<boolean>(false);
     const [info, setInfo] = useState<Array<string>>([]);
@@ -73,41 +75,55 @@ const MainInfo: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-wrap text-2xl top-1 bg-black w-full">
+        <div className={`grid grid-flow-col text-2xl top-1 bg-black`}
+            style={{
+                gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                gridTemplateRows: `repeat(${Math.ceil(allData.length / columns)}, minmax(0, 1fr))`
+            }}>
             {allData.map((item) => (
-                <motion.div key={item[0]} 
-                layout
-                transition={{
-                    layout: { duration: 1.5 }
-                }}
-                className={`flex justify-between items-center w-1/3 p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}>
+                <motion.div key={item[0]}
+                    layout
+                    transition={{
+                        layout: { duration: 1.5 }
+                    }}
+                    className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
+                >
                     <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
                     {item.length > 2 ? (<div className="cursor-pointer" onClick={() => handleOpenInfo(item)}>📧</div>
                     ) : null}
                 </motion.div>
             ))}
             {(emptySlots && !loading) && <Instructions />}
-            <div className="fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-4 border rounded">
-                {!!allGamesList.length && (<>
-                    <button className={buttonsClasses}
-                        onClick={() => dispatch(shuffleAllGamesList())}>
-                        🔀
-                    </button>
-                    <button className={buttonsClasses}
-                        onClick={() => dispatch(sortAllGamesList())}>
-                        📈
-                    </button>
-                    <button className={buttonsClasses}
-                        onClick={() => setOpenRoll(true)}>
-                        🎰
-                    </button>
-                    <button className={buttonsClasses}
-                        onClick={() => handleLoad()}>
-                        🔄
-                    </button>
-
-                </>)}
-                <button className={buttonsClasses} onClick={() => setOpenChoseModal(true)}>...</button>
+            <div className="fixed flex flex-row text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-4 border rounded">
+                <div className="border rounded-full p-1 flex flex-row">
+                    {!!allGamesList.length && (
+                        <button className={buttonsClasses}
+                            onClick={() => setOpenRoll(true)}>
+                            🎰
+                        </button>
+                    )}
+                    <button className={buttonsClasses} onClick={() => setOpenChoseModal(true)}>📥</button>
+                    <button className={buttonsClasses} onClick={() => setAdditionalFunctions(p => !p)}>...</button>
+                </div>
+                {additionalFunctions && <div className="border rounded-full p-1 flex flex-row">
+                    <button className={buttonsClasses} onClick={() => setColumns(p => p > 1 ? p - 1 : p)}>-</button>
+                    <button className={buttonsClasses}>{columns}</button>
+                    <button className={buttonsClasses} onClick={() => setColumns(p => p < 12 ? p + 1 : p)}>+</button>
+                    {!!allGamesList.length && (<>
+                        <button className={buttonsClasses}
+                            onClick={() => dispatch(shuffleAllGamesList())}>
+                            🔀
+                        </button>
+                        <button className={buttonsClasses}
+                            onClick={() => dispatch(sortAllGamesList())}>
+                            📈
+                        </button>
+                        <button className={buttonsClasses}
+                            onClick={() => handleLoad()}>
+                            🔄
+                        </button>
+                    </>)}
+                </div>}
             </div>
             {openRoll && <Roulette {...{ setOpenRoll: () => setOpenRoll(false) }} />}
             <ChoseUrlParamsModal {...{
