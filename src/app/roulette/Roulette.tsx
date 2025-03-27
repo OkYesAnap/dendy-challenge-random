@@ -60,7 +60,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
                 setCurrentGame
             }} />
             <WinGameLabel {...{ currentGame, currentGamePos }} />
-            <div className="fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded overflow-hidden">
+            <div className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded overflow-hidden">
                 <button className={buttonsClasses} onClick={() => dispatch(shuffleRouletteList())}>
                     🔀
                 </button>
