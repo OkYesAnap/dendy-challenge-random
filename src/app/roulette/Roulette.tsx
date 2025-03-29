@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { buttonsClasses } from "./MainInfo";
 import WinGameLabel from "./WinGameLabel";
 import RouletteRollList from "./RouletteRollList";
+import { audioPath } from "@/constants/audioEnv";
 
 const audioSrcNames = [
     '01-Title.mp3',
@@ -49,8 +50,8 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
 
     return (
         <div className="fixed inset-0 bg-black/80">
-            {!!audioSrcName && <audio ref={audioRouletteRef} src={`${process.env.NEXT_PUBLIC_AUDIO_PATH}${audioSrcName}`} />}
-            {<audio ref={audioStopRef} src={`${process.env.NEXT_PUBLIC_AUDIO_PATH}StopRoll.mp3`} />}
+            {!!audioSrcName && <audio ref={audioRouletteRef} src={`${audioPath}${audioSrcName}`} />}
+            {<audio ref={audioStopRef} src={`${audioPath}StopRoll.mp3`} />}
             <RouletteRollList {...{
                 setCurrentGamePos,
                 start,
