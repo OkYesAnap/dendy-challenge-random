@@ -64,17 +64,18 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
                 <button className={buttonsClasses} onClick={() => dispatch(shuffleRouletteList())}>
                     🔀
                 </button>
-
-                <button className={`${buttonsClasses} ${start || newRollAvailable ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
-                    disabled={start || newRollAvailable}
-                    onClick={handleStart}>
-                    🚀
-                </button>
-                <button className={`${buttonsClasses} ${!start ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
-                    disabled={!start}
-                    onClick={handleStopWithDelay}>
-                    🛑
-                </button>
+                {!start ?
+                    (<button className={`${buttonsClasses} ${start || newRollAvailable ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
+                        disabled={start || newRollAvailable}
+                        onClick={handleStart}>
+                        🚀
+                    </button>) : (
+                        <button className={`${buttonsClasses} ${!start ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
+                            disabled={!start}
+                            onClick={handleStopWithDelay}>
+                            🛑
+                        </button>)
+                }
                 <button className={buttonsClasses} onClick={setOpenRoll}>
                     ❌
                 </button>
