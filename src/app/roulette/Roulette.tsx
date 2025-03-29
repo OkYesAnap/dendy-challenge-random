@@ -61,24 +61,26 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
             }} />
             <WinGameLabel {...{ currentGame, currentGamePos }} />
             <div className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded overflow-hidden">
-                <button className={buttonsClasses} onClick={() => dispatch(shuffleRouletteList())}>
-                    🔀
-                </button>
-                {!start ?
-                    (<button className={`${buttonsClasses} ${start || newRollAvailable ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
-                        disabled={start || newRollAvailable}
-                        onClick={handleStart}>
-                        🚀
-                    </button>) : (
-                        <button className={`${buttonsClasses} ${!start ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
-                            disabled={!start}
-                            onClick={handleStopWithDelay}>
-                            🛑
-                        </button>)
-                }
-                <button className={buttonsClasses} onClick={setOpenRoll}>
-                    ❌
-                </button>
+                <div className="border rounded-full p-1 flex flex-row">
+                    <button className={buttonsClasses} onClick={() => dispatch(shuffleRouletteList())}>
+                        🔀
+                    </button>
+                    {!start ?
+                        (<button className={`${buttonsClasses} ${start || newRollAvailable ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
+                            disabled={start || newRollAvailable}
+                            onClick={handleStart}>
+                            🚀
+                        </button>) : (
+                            <button className={`${buttonsClasses} ${!start ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
+                                disabled={!start}
+                                onClick={handleStopWithDelay}>
+                                🛑
+                            </button>)
+                    }
+                    <button className={buttonsClasses} onClick={setOpenRoll}>
+                        ❌
+                    </button>
+                </div>
             </div>
         </div>
     );

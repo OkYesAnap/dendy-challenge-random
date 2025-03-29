@@ -25,7 +25,7 @@ const defaultParams = {
     range: "A1:A1000"
 }
 
-export const buttonsClasses = "flex-1 p-1 border text-5xl rounded-full w-20 h-20"
+export const buttonsClasses = "flex-1 p-1 border text-3xl rounded-full w-15 h-15"
 
 const MainInfo: React.FC = () => {
     const [openChoseModal, setOpenChoseModal] = useState<boolean>(false);
@@ -94,7 +94,7 @@ const MainInfo: React.FC = () => {
                 </motion.div>
             ))}
             {(emptySlots && !loading) && <Instructions />}
-            <div className="fixed flex flex-row text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-4 border rounded">
+            <div className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded overflow-hidden">
                 <div className="border rounded-full p-1 flex flex-row">
                     {!!allGamesList.length && (
                         <button className={buttonsClasses}
