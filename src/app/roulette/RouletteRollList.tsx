@@ -8,6 +8,7 @@ import {
     slotsList as sSlotsList
 } from "@/redux/slices/gamesSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { audioPath } from "@/constants/audioEnv";
 
 const slotHeight = 16;
 const rollComplete = "RollComplete.mp3";
@@ -120,7 +121,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
         ref={listRef}
         className="fixed max-h-[85%] w-[30%] text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[58%] border-3 bg-black rounded overflow-hidden">
         <WinFrame {...{ halfListHeight, visible: !!rollTimeoutRef.current }} />
-        {<audio ref={audioStopRef} src={`${process.env.NEXT_PUBLIC_AUDIO_PATH}StopRoll.mp3`} />}
+        {<audio ref={audioStopRef} src={`${audioPath}StopRoll.mp3`} />}
 
         <ul className="w-full flex flex-col">
             {optimizedSlots.map((slot) => (
