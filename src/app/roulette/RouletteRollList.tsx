@@ -119,7 +119,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
 
     return (<div
         ref={listRef}
-        className="fixed max-h-[85%] w-[30%] text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[58%] border-3 bg-black rounded overflow-hidden">
+        className="fixed max-h-[85%] md:w-3/4 lg:w-1/2 xl:w-1/3 text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[58%] border-3 bg-black rounded overflow-hidden">
         <WinFrame {...{ halfListHeight, visible: !!rollTimeoutRef.current }} />
         {<audio ref={audioStopRef} src={`${audioPath}StopRoll.mp3`} />}
 
