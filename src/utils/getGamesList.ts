@@ -8,7 +8,7 @@ interface SheetsResponse {
             }>
         }>,
         cols: Array<{
-            id:string;
+            id: string;
             label: string;
             type: string;
         }>
@@ -41,21 +41,23 @@ function extractIds(url: string) {
 }
 
 
-export const getGamesList = async ({ url, range, header }: GoogleSheetsParams):Promise<ParsedSheetData> => {
+export const getGamesList = async ({ url, range, header }: GoogleSheetsParams): Promise<ParsedSheetData> => {
     const { id, gid } = extractIds(url);
-    let headers:string[] = [];
+    let headers: string[] = [];
     try {
         const response = await axios.get(`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&gid=${gid}&range=${range}`);
         const text = response.data;
         const json = JSON.parse(text.substr(47).slice(0, -2)) as SheetsResponse;
-        const { rows } = json.table;
-        let idNum = header ? 0 : 1;
+        const { rows, cols } = json.table;
+        const isLabel = cols[0].label;
+        const firstElementNeeded = header && !isLabel
+        const addLabelsToHeaders = header && isLabel
+        let idNum = firstElementNeeded ? 0 : 1;
         const data = rows.reduce((accum: string[][], row) => {
-
             if (row.c[0]?.v) {
-                    accum.push([]);
-                    const current = accum[accum.length - 1];
-                    current.push(`${idNum++}. ${row.c[0]?.v}`, row.c[0]?.v);
+                accum.push([]);
+                const current = accum[accum.length - 1];
+                current.push(`${idNum++}. ${row.c[0]?.v}`, row.c[0]?.v);
                 if (row.c.length > 1) {
                     row.c.forEach((item, i) => {
                         if (row.c[i]?.v && i) {
@@ -66,10 +68,11 @@ export const getGamesList = async ({ url, range, header }: GoogleSheetsParams):P
             }
             return accum
         }, []);
-        if (header) headers = data.shift() || []
-        return {headers, data}
+        if (firstElementNeeded) headers = data.shift() || []
+        if (addLabelsToHeaders) headers = ['', ...cols.map(item=>item.label)]
+        return { headers, data }
     } catch (error) {
         console.error('Error fetching data:', error);
-        return {headers:[], data:[]}
+        return { headers: [], data: [] }
     }
 };
