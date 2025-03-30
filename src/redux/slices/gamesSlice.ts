@@ -1,11 +1,6 @@
 import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { randomRoll, shuffleArr as shuffleStrArray, sortArr } from './gamesLogics';
-import { getGamesList } from '@/utils/getGamesList';
-
-export interface GoogleSheetsParams {
-    url: string,
-    range: string
-}
+import { getGamesList, GoogleSheetsParams, ParsedSheetData } from '@/utils/getGamesList';
 
 export const getAllGamesList = createAsyncThunk('games/getGamesList', async (params: GoogleSheetsParams) => {
     return await getGamesList(params)
@@ -16,6 +11,7 @@ const addSlotsAction = createAction<{ slots: string[] }>('games/addSlots');
 export interface GamesState {
     allGamesList: string[];
     allData: string[][];
+    headers: string[];
     startSlots: string[];
     currentRolls: string[];
     slotsList: string[];
@@ -33,6 +29,7 @@ export interface GamesState {
 const initialState: GamesState = {
     allGamesList: [],
     allData: [],
+    headers: [],
     startSlots: [],
     currentRolls: [],
     slotsList: [],
@@ -129,10 +126,11 @@ const gamesSlice = createSlice({
             .addCase(getAllGamesList.pending, (state) => {
                 state.loading = true
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
-            }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<Array<Array<string>>>) => {
+            }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<ParsedSheetData>) => {
                 state.loading = false
-                state.allGamesList = action.payload.map(item => item[0]);
-                state.allData = action.payload;
+                state.allGamesList = action.payload.data.map(item => item[0]);
+                state.allData = action.payload.data;
+                state.headers = action.payload.headers;
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
             });
     },
@@ -155,6 +153,7 @@ export const {
 } = gamesSlice.actions;
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;
 export const allData = (state: { games: GamesState }) => state.games.allData;
+export const headers = (state: { games: GamesState }) => state.games.headers;
 export const startSlots = (state: { games: GamesState }) => state.games.startSlots;
 export const currentRolls = (state: { games: GamesState }) => state.games.currentRolls;
 export const statistics = (state: { games: GamesState }) => state.games.statistics;

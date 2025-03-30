@@ -8,16 +8,17 @@ import {
     eventsList as sEventsList,
     resetStartSlots,
     resetStatistics,
-    GoogleSheetsParams,
     getAllGamesList,
 } from "@/redux/slices/gamesSlice";
 import { AppDispatch } from "@/redux/store";
+import { GoogleSheetsParams } from "@/utils/getGamesList";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const defaultParams = {
     url: "https://docs.google.com/spreadsheets/d/1lQKxm4V-xac7sl0mrwcgOg1BLpHGAy_f873ls0hoVeM/edit?gid=1031682936#gid=1031682936",
-    range: "A1:A60"
+    range: "A1:A60",
+    header: false
 }
 
 const SlotsList: React.FC = () => {
