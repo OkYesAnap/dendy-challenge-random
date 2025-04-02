@@ -95,7 +95,10 @@ const RouletteRollList: React.FC<RollListProps> = ({
     }, [start, rollStage, dispatch, winSlot, slotsList, setCurrentGame]);
 
     useEffect(() => {
-        if(start){setRollStage(1)};
+        if(start){
+            setCurrentGame('');
+            setRollStage(1)
+        };
     }, [start])
 
 
@@ -105,7 +108,6 @@ const RouletteRollList: React.FC<RollListProps> = ({
             setNewRollAvailable(true);
             endTimeoutRef.current = setTimeout(() => {
                 setNewRollAvailable(false);
-                setCurrentGame('');
                 setAudioSrcName('');
             }, 3000);
         }
