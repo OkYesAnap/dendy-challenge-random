@@ -84,9 +84,9 @@ const MainInfo: React.FC = () => {
     }
 
     return (
-        <div>
-            {!!headers.length && <div className="w-full text-center text-4xl p-2 font-bold">{headers[1]}</div>}
-            <div className={`grid grid-flow-col text-2xl top-1 bg-black`}
+        <>
+            {!!headers.length && <div className="bg-black w-full text-center text-4xl p-2 font-bold">{headers[1]}</div>}
+            <div className={`grid grid-flow-col text-2xl top-1`}
                 style={{
                     gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
                     gridTemplateRows: `repeat(${Math.ceil(allData.length / columns)}, minmax(0, 1fr))`
@@ -146,7 +146,7 @@ const MainInfo: React.FC = () => {
                 <Info {...{ headers, infoData: info, isOpen: openInfo, onClose: () => setOpenInfo(false) }} />
                 {loading && (<div className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">Loading List</div>)}
             </div>
-        </div>
+        </>
     )
 }
 

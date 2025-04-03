@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 const Roulette: React.FC = () => {
     return (
         <Provider store={store}>
-            <div className="font-[family-name:var(--font-geist-sans)] pt-80 pb-30">
+            <div className="text-gray-100 min-h-screen h-full bg-black font-[family-name:var(--font-geist-sans)] pt-80 pb-30">
                 <main className="w-full">
                     <SlotsList />
                     <EventsList />

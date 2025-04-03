@@ -68,14 +68,14 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
                     </button>
                     {!start ?
                         (
-                            <button className={`${buttonsClasses} ${start || newRollAvailable ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
+                            <button className={`${buttonsClasses} ${start || newRollAvailable ? 'text-gray-500 grayscale' : 'hover:bg-gray-700'}`}
                                 disabled={start || newRollAvailable}
                                 onClick={handleStart}>
                                 🚀
                             </button>
                         ) :
                         (
-                            <button className={`${buttonsClasses} ${!start ? 'text-gray-600 grayscale' : 'hover:bg-gray-700'}`}
+                            <button className={`${buttonsClasses} ${!start ? 'text-gray-500 grayscale' : 'hover:bg-gray-700'}`}
                                 disabled={!start}
                                 onClick={handleStopWithDelay}>
                                 🛑

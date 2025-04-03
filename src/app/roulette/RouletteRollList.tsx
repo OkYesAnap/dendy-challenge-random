@@ -99,7 +99,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
             setCurrentGame('');
             setRollStage(1)
         };
-    }, [start])
+    }, [start, setCurrentGame])
 
 
     useEffect(() => {

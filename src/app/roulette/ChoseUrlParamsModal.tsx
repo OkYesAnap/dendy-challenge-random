@@ -21,7 +21,7 @@ const ChoseParamsModal: React.FC<ChoseParamsModalProps> = ({
     useEffect(() => { }, [paramsRef.current.header])
 
     return (<ModalPortal {...{ isOpen, onClose }}>
-        <div className="flex flex-col">
+        <div className="flex flex-col text-gray-100">
             <div className="flex flex-row border p-2 items-center">
                 <span className="w-1/6">URL:</span>
                 <input onChange={(e) => handleChangeGoogleParams({ url: e.target.value })}
