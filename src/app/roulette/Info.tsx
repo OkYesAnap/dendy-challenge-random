@@ -2,6 +2,7 @@ import ModalPortal from "@/components/ModalPortal";
 import Image from "next/image";
 
 interface InfoProps {
+    iconStartPos?: DOMRect;
     headers: string[];
     infoData: string[];
     isOpen: boolean;
@@ -13,8 +14,10 @@ const isImageUrl = (data: string) => {
     return pattern.test(data);
 };
 
-const Info: React.FC<InfoProps> = ({ headers, infoData, isOpen, onClose }) => {
-    return <ModalPortal {...{ isOpen, onClose }}>{infoData.map((item, i) => {
+
+const Info: React.FC<InfoProps> = ({ headers, infoData, isOpen, onClose, iconStartPos }) => {
+
+    return <ModalPortal {...{ isOpen, onClose, startPos: iconStartPos }}>{infoData.map((item, i) => {
         return i > 0 ? (
             <div 
             key={`${infoData[0]}-${i}`} 

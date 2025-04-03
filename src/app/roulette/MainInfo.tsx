@@ -40,6 +40,7 @@ const MainInfo: React.FC = () => {
     const [openInfo, setOpenInfo] = useState<boolean>(false);
     const [info, setInfo] = useState<Array<string>>([]);
     const paramsRef = useRef<GoogleSheetsParams>(defaultParams);
+    const [iconStartPos, setIconStartPos] = useState<DOMRect | undefined>();
     const dispatch = useDispatch<AppDispatch>();
     const allData = useSelector(sAllData);
     const headers = useSelector(sHeaders);
@@ -80,8 +81,10 @@ const MainInfo: React.FC = () => {
         }
     }, [searchParams, handleLoad]);
 
-    const handleOpenInfo = (item: string[]) => {
-        setOpenInfo(true)
+    const handleOpenInfo = (e:React.MouseEvent<HTMLDivElement>,item: string[]) => {
+        const params = e.currentTarget.getBoundingClientRect();
+        setIconStartPos(params);
+        setOpenInfo(true);
         setInfo(item);
     }
 
@@ -102,7 +105,7 @@ const MainInfo: React.FC = () => {
                         className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
                     >
                         <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
-                        {item.length > 2 ? (<div className="cursor-pointer" onClick={() => handleOpenInfo(item)}>
+                        {item.length > 2 ? (<div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>
                             <FontAwesomeIcon icon={faPlusSquare} />
                         </div>
                         ) : null}
@@ -147,7 +150,7 @@ const MainInfo: React.FC = () => {
                     paramsRef,
                     handleLoad
                 }} />
-                <Info {...{ headers, infoData: info, isOpen: openInfo, onClose: () => setOpenInfo(false) }} />
+                <Info {...{ iconStartPos, headers, infoData: info, isOpen: openInfo, onClose: () => setOpenInfo(false) }} />
                 {loading && (<div className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">Loading List</div>)}
             </div>
         </>
