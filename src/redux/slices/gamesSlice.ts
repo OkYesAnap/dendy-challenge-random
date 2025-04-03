@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { randomRoll, shuffleArr as shuffleStrArray, sortArr } from './gamesLogics';
+import { getDisabledSlots, randomRoll, shuffleArr as shuffleStrArray, sortArr } from './gamesLogics';
 import { getGamesList, GoogleSheetsParams, ParsedSheetData } from '@/utils/getGamesList';
 
 export const getAllGamesList = createAsyncThunk('games/getGamesList', async (params: GoogleSheetsParams) => {
@@ -7,6 +7,7 @@ export const getAllGamesList = createAsyncThunk('games/getGamesList', async (par
 });
 
 const addSlotsAction = createAction<{ slots: string[] }>('games/addSlots');
+const addDisabledSlotsAction = createAction<string[]>('games/addDisabledSlots');
 
 export interface GamesState {
     allGamesList: string[];
@@ -66,6 +67,10 @@ const gamesSlice = createSlice({
             state.currentSlot = value;
             state.slotsList.splice(winSlot, 1);
             state.currentRolls.push(value);
+        },
+        addDisabledSlots(state, action: PayloadAction<string[]>){
+            state.currentRolls = action.payload;
+            state.slotsList = state.slotsList.filter((item) => !action.payload.includes(item));
         },
         addRandomRoll(state) {
             randomRoll(state);
@@ -132,6 +137,8 @@ const gamesSlice = createSlice({
                 state.allData = action.payload.data;
                 state.headers = action.payload.headers;
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
+                const findDisabled =  getDisabledSlots(action.payload.data);
+                gamesSlice.caseReducers.addDisabledSlots(state, addDisabledSlotsAction(findDisabled))
             });
     },
 });

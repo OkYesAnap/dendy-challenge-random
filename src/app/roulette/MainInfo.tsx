@@ -20,6 +20,8 @@ import Instructions from "./Instructions";
 import ChoseUrlParamsModal from "./ChoseUrlParamsModal";
 import { motion } from "motion/react";
 import { GoogleSheetsParams } from "@/utils/getGamesList";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 
 const defaultParams = {
     url: "",
@@ -60,7 +62,7 @@ const MainInfo: React.FC = () => {
     }, [startSlots.length]);
 
     useEffect(() => {
-        const headerUrl = searchParams.get("header") === "true" ;
+        const headerUrl = searchParams.get("header") === "true";
         const rangeUrl = searchParams.get("range") || defaultParams.range;
         const sheetUrl = searchParams.get("url") || defaultParams.url;
         const { range, url } = paramsRef.current;
@@ -100,7 +102,9 @@ const MainInfo: React.FC = () => {
                         className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
                     >
                         <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
-                        {item.length > 2 ? (<div className="cursor-pointer" onClick={() => handleOpenInfo(item)}>🅸</div>
+                        {item.length > 2 ? (<div className="cursor-pointer" onClick={() => handleOpenInfo(item)}>
+                            <FontAwesomeIcon icon={faPlusSquare} />
+                        </div>
                         ) : null}
                     </motion.div>
                 ))}

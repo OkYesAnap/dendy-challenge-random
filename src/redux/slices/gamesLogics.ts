@@ -41,3 +41,12 @@ export const sortArr = <T extends string[][]>(arr: T): T => {
     }
     return arr;
 }
+
+export const getDisabledSlots = (data: string[][]): string[] => {
+    return data.reduce((disabled, slot) => {
+        if (slot.some(cell => (cell === '✖' || cell === '✔'))) {
+            disabled.push(slot[0]);
+        }
+        return disabled
+    }, [])
+}
