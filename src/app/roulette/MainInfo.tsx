@@ -40,7 +40,7 @@ const MainInfo: React.FC = () => {
     const [openInfo, setOpenInfo] = useState<boolean>(false);
     const [info, setInfo] = useState<Array<string>>([]);
     const paramsRef = useRef<GoogleSheetsParams>(defaultParams);
-    const [iconStartPos, setIconStartPos] = useState<DOMRect | undefined>();
+    const [elementPos, setElementPos] = useState<DOMRect | undefined>();
     const dispatch = useDispatch<AppDispatch>();
     const allData = useSelector(sAllData);
     const headers = useSelector(sHeaders);
@@ -81,11 +81,19 @@ const MainInfo: React.FC = () => {
         }
     }, [searchParams, handleLoad]);
 
-    const handleOpenInfo = (e:React.MouseEvent<HTMLDivElement>,item: string[]) => {
+    const getAndSetElementPos = (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
         const params = e.currentTarget.getBoundingClientRect();
-        setIconStartPos(params);
+        setElementPos(params);
+    }
+
+    const handleOpenInfo = (e: React.MouseEvent<HTMLDivElement>, item: string[]) => {
+        getAndSetElementPos(e);
         setOpenInfo(true);
         setInfo(item);
+    }
+    const handleOpenChose = (e: React.MouseEvent<HTMLButtonElement>) => {
+        getAndSetElementPos(e);
+        setOpenChoseModal(true);
     }
 
     return (
@@ -105,9 +113,10 @@ const MainInfo: React.FC = () => {
                         className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
                     >
                         <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
-                        {item.length > 2 ? (<div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>
-                            <FontAwesomeIcon icon={faPlusSquare} />
-                        </div>
+                        {(item.length > 2 && (item[0] !== info[0] || !openInfo)) ? (
+                            <div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>
+                                <FontAwesomeIcon icon={faPlusSquare} />
+                            </div>
                         ) : null}
                     </motion.div>
                 ))}
@@ -120,7 +129,7 @@ const MainInfo: React.FC = () => {
                                 🎰
                             </button>
                         )}
-                        <button className={buttonsClasses} onClick={() => setOpenChoseModal(true)}>📥</button>
+                        <button className={buttonsClasses} onClick={(e) => handleOpenChose(e)}>📥</button>
                         <button className={buttonsClasses} onClick={() => setAdditionalFunctions(p => !p)}>...</button>
                     </div>
                     {additionalFunctions && <div className="border rounded-full p-1 flex flex-row">
@@ -145,12 +154,20 @@ const MainInfo: React.FC = () => {
                 </div>
                 {openRoll && <Roulette {...{ setOpenRoll: () => setOpenRoll(false) }} />}
                 <ChoseUrlParamsModal {...{
+                    startPos: elementPos,
                     isOpen: openChoseModal,
                     onClose: () => setOpenChoseModal(false),
                     paramsRef,
-                    handleLoad
+                    handleLoad,
+                    startElement: <button className={buttonsClasses}>📥</button>
                 }} />
-                <Info {...{ iconStartPos, headers, infoData: info, isOpen: openInfo, onClose: () => setOpenInfo(false) }} />
+                <Info {...{ 
+                    startPos: elementPos,
+                    startElement: <FontAwesomeIcon icon={faPlusSquare} />,
+                    headers, 
+                    infoData: info, 
+                    isOpen: openInfo, 
+                    onClose: () => setOpenInfo(false) }} />
                 {loading && (<div className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">Loading List</div>)}
             </div>
         </>

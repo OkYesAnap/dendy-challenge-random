@@ -1,12 +1,14 @@
 import ModalPortal from "@/components/ModalPortal";
 import Image from "next/image";
+import { ReactNode } from "react";
 
 interface InfoProps {
-    iconStartPos?: DOMRect;
+    startPos?: DOMRect;
     headers: string[];
     infoData: string[];
     isOpen: boolean;
     onClose: () => void;
+    startElement: ReactNode;
 }
 
 const isImageUrl = (data: string) => {
@@ -15,9 +17,9 @@ const isImageUrl = (data: string) => {
 };
 
 
-const Info: React.FC<InfoProps> = ({ headers, infoData, isOpen, onClose, iconStartPos }) => {
+const Info: React.FC<InfoProps> = ({ headers, infoData, isOpen, onClose, startPos, startElement }) => {
 
-    return <ModalPortal {...{ isOpen, onClose, startPos: iconStartPos }}>{infoData.map((item, i) => {
+    return <ModalPortal {...{ isOpen, onClose, startPos, startElement }}>{infoData.map((item, i) => {
         return i > 0 ? (
             <div 
             key={`${infoData[0]}-${i}`} 

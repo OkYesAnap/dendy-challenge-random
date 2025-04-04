@@ -1,26 +1,30 @@
 import ModalPortal from "@/components/ModalPortal"
 import { GoogleSheetsParams } from "@/utils/getGamesList";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 
 interface ChoseParamsModalProps {
     isOpen: boolean;
     onClose: () => void;
     paramsRef: React.RefObject<GoogleSheetsParams>
     handleLoad: () => void;
+    startPos?: DOMRect,
+    startElement?: ReactNode;
 }
 
 const ChoseParamsModal: React.FC<ChoseParamsModalProps> = ({
     isOpen,
     onClose,
     paramsRef,
-    handleLoad }) => {
+    handleLoad,
+    startPos,
+    startElement }) => {
 
     const handleChangeGoogleParams = (params: Partial<GoogleSheetsParams>) => {
         paramsRef.current = { ...paramsRef.current, ...params }
     }
     useEffect(() => { }, [paramsRef.current.header])
 
-    return (<ModalPortal {...{ isOpen, onClose }}>
+    return (<ModalPortal {...{ isOpen, onClose, startPos, startElement }}>
         <div className="flex flex-col text-gray-100">
             <div className="flex flex-row border p-2 items-center">
                 <span className="w-1/6">URL:</span>

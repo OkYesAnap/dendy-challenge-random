@@ -1,41 +1,68 @@
 import { motion } from 'motion/react';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 interface ModalPortalProps {
   isOpen: boolean;
   onClose: () => void;
-  startPos?: DOMRect
+  startPos?: DOMRect;
+  startElement?: ReactNode;
   children: React.ReactNode;
 }
 
-const ModalPortal = ({ children, isOpen, onClose, startPos }: ModalPortalProps) => {
-  const [startAnim, setStartAnim] = useState(false);
+const ModalPortal = ({ children, isOpen, onClose, startPos, startElement }: ModalPortalProps) => {
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  const clearTmRef = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  }
+
+  const [anim, setAnim] = useState(0);
   useLayoutEffect(() => {
-    setStartAnim(false);
-    setTimeout(() => {
-      setStartAnim(true);
+    setAnim(0);
+    clearTmRef();
+    timeoutRef.current = setTimeout(() => {
+      setAnim(1);
     }, 0)
   }, [startPos]);
+
+
+  useEffect(() => {
+    if (anim === 1) {
+      clearTmRef()
+      timeoutRef.current = setTimeout(() => {
+        setAnim(2);
+      }, 300)
+    }
+  }, [anim]);
+
   if (!isOpen) return null;
+
+  const handleClose = () => {
+    if (anim) clearTmRef();
+    setAnim(0);
+    timeoutRef.current = setTimeout(() => {
+      onClose();
+    }, 400);
+  }
 
   return ReactDOM.createPortal(
     <div
-      className="fixed inset-0 bg-black/50 flex justify-center items-center" onMouseDown={onClose}>
+      className="fixed inset-0 bg-black/50 flex justify-center items-center" onMouseDown={handleClose}>
       <motion.div
         layout
         transition={{
-          layout: { duration: startAnim ? 0.5 : 0 }
+          layout: { duration: anim ? 0.7 : 0.3 }
         }}
         style={{
-          position: startAnim ? "unset" : "absolute",
-          width: startAnim ? "" : "0",
-          height: startAnim ? "" : "0",
-          top: startPos?.top || 0,
-          left: startPos?.left || 0,
+          position: anim ? "unset" : "absolute",
+          top: startPos?.top,
+          left: startPos?.left,
         }}
-        className="border rounded p-4 rounded bg-black max-w-[50%]  max-h-[90%] overflow-auto" onMouseDown={(e) => e.stopPropagation()}>
-        {children}
+        className="text-2xl bg-black max-w-[50%]  max-h-[90%] overflow-auto" onMouseDown={(e) => e.stopPropagation()}>
+        {anim === 2 ? children : startElement}
       </motion.div>
     </div>,
     document.body
