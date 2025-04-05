@@ -119,9 +119,13 @@ const RouletteRollList: React.FC<RollListProps> = ({
     }, [currentGame, setAudioSrcName, setCurrentGame, setNewRollAvailable])
 
 
-    return (<div
+    return (<motion.div
+        layout
+        transition={{
+            layout: { duration: 1 }
+        }}
         ref={listRef}
-        className="fixed max-h-[85%] md:w-3/4 lg:w-1/2 xl:w-1/3 text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[58%] border-3 bg-black rounded overflow-hidden">
+        className={`${currentGame ? "text-gray-600" : ''} fixed max-h-[85%] md:w-3/4 lg:w-1/2 xl:w-1/3 text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[58%] border-3 bg-black rounded overflow-hidden`}>
         <WinFrame {...{ halfListHeight, visible: !!rollTimeoutRef.current }} />
         {<audio ref={audioStopRef} src={`${audioPath}StopRoll.mp3`} />}
 
@@ -139,7 +143,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
                 </motion.li>
             ))}
         </ul>
-    </div>)
+    </motion.div>)
 }
 
 export default RouletteRollList;
