@@ -19,6 +19,7 @@ const audioSrcNames = [
 const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
 
     const [start, setStart] = useState<boolean>(false);
+    const [clearList, setClearList] = useState<boolean>(false);
     const [newRollAvailable, setNewRollAvailable] = useState<boolean>(false);
     const [currentGame, setCurrentGame] = useState<string>('');
     const [currentGamePos, setCurrentGamePos] = useState<number>(0);
@@ -47,6 +48,13 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
             audioStopRef.current.play();
         }
     }
+    const handleCloseRoulette = () => {
+        setClearList(true);
+        setCurrentGame('');
+        setTimeout(() => {
+            setOpenRoll();            
+        }, 500);
+    }
 
     return (
         <div className="fixed inset-0 bg-black/80">
@@ -55,6 +63,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
             <RouletteRollList {...{
                 setCurrentGamePos,
                 start,
+                clearList,
                 currentGame,
                 setNewRollAvailable,
                 setAudioSrcName,
@@ -82,7 +91,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({ setOpenRoll }) => {
                             </button>
                         )
                     }
-                    <button className={buttonsClasses} onClick={setOpenRoll}>
+                    <button className={buttonsClasses} onClick={handleCloseRoulette}>
                         ❌
                     </button>
                 </div>

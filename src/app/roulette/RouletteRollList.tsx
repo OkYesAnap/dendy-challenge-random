@@ -21,12 +21,14 @@ interface RollListProps {
     setCurrentGame: React.Dispatch<SetStateAction<string>>;
     setAudioSrcName: React.Dispatch<SetStateAction<string>>;
     start: boolean;
+    clearList: boolean;
     currentGame: string;
 }
 
 const RouletteRollList: React.FC<RollListProps> = ({
     setCurrentGamePos,
     start,
+    clearList,
     currentGame,
     setNewRollAvailable,
     setAudioSrcName,
@@ -38,7 +40,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
     const [winSlot, setWinSlot] = useState<number>(0);
     const [rollStage, setRollStage] = useState<number>(0);
     const [halfListHeight, setHalfListHeight] = useState<number>(0);
-    
+
     const endTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
     const rollTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
     const rollIntervalRef = useRef<ReturnType<typeof setInterval>>(null);
@@ -92,10 +94,10 @@ const RouletteRollList: React.FC<RollListProps> = ({
             if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
             if (rollTimeoutRef.current) clearInterval(rollTimeoutRef.current)
         }
-    }, [start, rollStage, dispatch, winSlot, slotsList, setCurrentGame]);
+    }, [start, rollStage, dispatch, winSlot, slotsList, setCurrentGame, clearList]);
 
     useEffect(() => {
-        if(start){
+        if (start) {
             setCurrentGame('');
             setRollStage(1)
         };
@@ -122,9 +124,10 @@ const RouletteRollList: React.FC<RollListProps> = ({
     return (<motion.div
         layout
         transition={{
-            layout: { duration: 1 }
+            layout: { duration: 0.5 }
         }}
         ref={listRef}
+        style={{ height: `${clearList ? '2rem' : ''}` }}
         className={`${currentGame ? "text-gray-600" : ''} fixed max-h-[85%] md:w-3/4 lg:w-1/2 xl:w-1/3 text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[58%] border-3 bg-black rounded overflow-hidden`}>
         <WinFrame {...{ halfListHeight, visible: !!rollTimeoutRef.current }} />
         {<audio ref={audioStopRef} src={`${audioPath}StopRoll.mp3`} />}
