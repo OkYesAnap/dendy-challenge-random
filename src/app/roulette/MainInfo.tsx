@@ -121,7 +121,11 @@ const MainInfo: React.FC = () => {
                     </motion.div>
                 ))}
                 {(emptySlots && !loading) && <Instructions />}
-                <div className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded overflow-hidden">
+                <motion.div                         layout
+                        transition={{
+                            layout: { duration: .1 }
+                        }}
+                className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded overflow-hidden">
                     <div className="border rounded-full p-1 flex flex-row">
                         {!!allGamesList.length && (
                             <button className={buttonsClasses}
@@ -151,7 +155,7 @@ const MainInfo: React.FC = () => {
                             </button>
                         </>)}
                     </div>}
-                </div>
+                </motion.div>
                 {openRoll && <Roulette {...{ setOpenRoll: () => setOpenRoll(false) }} />}
                 <ChoseUrlParamsModal {...{
                     startPos: elementPos,
