@@ -133,10 +133,10 @@ const MainInfo: React.FC = () => {
                                 🎰
                             </button>
                         )}
-                        <button className={buttonsClasses} onClick={(e) => handleOpenChose(e)}>📥</button>
                         <button className={buttonsClasses} onClick={() => setAdditionalFunctions(p => !p)}>...</button>
                     </div>
                     {additionalFunctions && <div className="border rounded-full p-1 flex flex-row">
+                        <button className={buttonsClasses} onClick={(e) => handleOpenChose(e)}>📥</button>
                         <button className={buttonsClasses} onClick={() => setColumns(p => p > 1 ? p - 1 : p)}>-</button>
                         <button className={buttonsClasses}>{columns}</button>
                         <button className={buttonsClasses} onClick={() => setColumns(p => p < 12 ? p + 1 : p)}>+</button>
