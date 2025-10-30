@@ -25,6 +25,7 @@ export interface GamesState {
     rollCounter: number;
     currentSlot: string;
     loading: boolean;
+    volume: number;
 }
 
 const initialState: GamesState = {
@@ -42,7 +43,8 @@ const initialState: GamesState = {
     eventsCounter: 0,
     rollCounter: 0,
     currentSlot: '',
-    loading: false
+    loading: false,
+    volume: 25
 };
 
 const gamesSlice = createSlice({
@@ -122,6 +124,9 @@ const gamesSlice = createSlice({
             state.eventsCounter = 0;
             state.rollCounter = 0;
         },
+        setVolume(state, action: PayloadAction<number>) {
+            state.volume = action.payload;
+        },
         resetStartSlots() {
             return initialState;
         }
@@ -156,8 +161,10 @@ export const {
     shuffleRouletteList,
     shuffleAllGamesList,
     sortAllGamesList,
-    resetStartSlots
+    resetStartSlots,
+    setVolume
 } = gamesSlice.actions;
+
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;
 export const allData = (state: { games: GamesState }) => state.games.allData;
 export const headers = (state: { games: GamesState }) => state.games.headers;
@@ -172,5 +179,6 @@ export const rollCounter = (state: { games: GamesState }) => state.games.rollCou
 export const currentSlot = (state: { games: GamesState }) => state.games.currentSlot;
 export const gamesInEvent = (state: { games: GamesState }) => state.games.gamesInEvent;
 export const loading = (state: { games: GamesState }) => state.games.loading;
+export const volume = (state: { games: GamesState }) => state.games.volume;
 
 export default gamesSlice.reducer;

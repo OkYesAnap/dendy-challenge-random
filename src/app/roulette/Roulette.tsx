@@ -1,7 +1,10 @@
-import {shuffleRouletteList} from '@/redux/slices/gamesSlice';
+import {
+    shuffleRouletteList,
+    setVolume,
+    volume as sVolume,
+} from '@/redux/slices/gamesSlice';
 import React, {useEffect, useRef, useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {buttonsClasses} from './MainInfo';
+import {useDispatch, useSelector} from 'react-redux';
 import WinGameLabel from './WinGameLabel';
 import RouletteRollList from './RouletteRollList';
 import {audioPath} from '@/constants/audioEnv';
@@ -19,6 +22,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
     const audioRouletteRef = useRef<HTMLAudioElement>(null);
     const audioStopRef = useRef<HTMLAudioElement>(null);
     const dispatch = useDispatch();
+    const volume = useSelector(sVolume);
 
     const {startSpinning, stopSpinning, closeRoulette} = useRouletteButtons({
         setAudioSrcName,
@@ -34,8 +38,18 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
             audioRouletteRef.current.pause();
             audioRouletteRef.current.currentTime = 0;
             audioRouletteRef.current.play();
+            const vol = volume / 100
+            audioRouletteRef.current!.volume = vol;
+            audioStopRef.current!.volume = vol;
         }
     }, [audioSrcName]);
+
+    const handleChangeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch(setVolume(Number(e.target.value)));
+        const vol = Number(e.target.value) / 100
+        if (audioRouletteRef.current) audioRouletteRef.current!.volume = vol;
+        if (audioStopRef.current) audioStopRef.current!.volume = vol;
+    }
 
     return (
         <div className="fixed inset-0 bg-black/80">
@@ -51,21 +65,32 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
                 setCurrentGame,
             }} />
             <WinGameLabel {...{currentGame, currentGamePos}} />
-            <div className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0
-            bg-black p-3 border rounded overflow-hidden">
-                <div className="border rounded-full p-1 flex flex-row">
-                    <SquareButton disabled={newRollAvailable}
-                                  onClickButton={() => dispatch(shuffleRouletteList())}
-                                  icon={"🔀"}/>
-                    {!spinning ?
-                        (
-                            <SquareButton disabled={newRollAvailable} onClickButton={startSpinning} icon={"🚀"}/>
-                        ) :
-                        (
-                            <SquareButton onClickButton={stopSpinning} icon={"🛑"}/>
-                        )
-                    }
-                    <SquareButton disabled={newRollAvailable} onClickButton={closeRoulette} icon={"❌"}/>
+            <div className="flex flex-col justify-center fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0
+            bg-black p-3 pt-1 border rounded overflow-hidden">
+                <span className="m-auto mb-1">Volume: {volume}%</span>
+                <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={Number(volume)}
+                    onChange={handleChangeVolume}
+                    className="h-2 bg-gray-300 accent-blue-600 rounded-lg appearance-none cursor-pointer mb-1"
+                />
+                <div className={"flex-row"}>
+                    <div className="border rounded-full p-1 flex flex-row">
+                        <SquareButton disabled={newRollAvailable}
+                                      onClickButton={() => dispatch(shuffleRouletteList())}
+                                      icon={"🔀"}/>
+                        {!spinning ?
+                            (
+                                <SquareButton disabled={newRollAvailable} onClickButton={startSpinning} icon={"🚀"}/>
+                            ) :
+                            (
+                                <SquareButton onClickButton={stopSpinning} icon={"🛑"}/>
+                            )
+                        }
+                        <SquareButton disabled={newRollAvailable} onClickButton={closeRoulette} icon={"❌"}/>
+                    </div>
                 </div>
             </div>
         </div>
