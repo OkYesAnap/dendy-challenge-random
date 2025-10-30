@@ -9,6 +9,7 @@ import {
 } from "@/redux/slices/gamesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { audioPath } from "@/constants/audioEnv";
+import {ReactSetState} from "@/app/roulette/types";
 
 const slotHeight = 16;
 const rollComplete = "RollComplete.mp3";
@@ -16,10 +17,10 @@ const visibleSlots = 30;
 const intervals = { min: 30, max: 2000, step: 3 };
 
 interface RollListProps {
-    setCurrentGamePos: React.Dispatch<SetStateAction<number>>;
-    setNewRollAvailable: React.Dispatch<SetStateAction<boolean>>;
-    setCurrentGame: React.Dispatch<SetStateAction<string>>;
-    setAudioSrcName: React.Dispatch<SetStateAction<string>>;
+    setCurrentGamePos: ReactSetState<number>;
+    setNewRollAvailable: ReactSetState<boolean>;
+    setCurrentGame: ReactSetState<string>;
+    setAudioSrcName: ReactSetState<string>;
     start: boolean;
     clearList: boolean;
     currentGame: string;
@@ -69,6 +70,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
     useEffect(() => {
         setOptimizedSlots(slotsList.slice(0, visibleSlots));
         if (start) {
+            setNewRollAvailable(true);
             rollIntervalRef.current = setInterval(() => {
                 dispatch(rollOneStep());
             }, intervals.min);
