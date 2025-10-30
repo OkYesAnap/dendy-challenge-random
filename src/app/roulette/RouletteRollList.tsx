@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { SetStateAction, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import WinFrame from "./WinFrame";
 import {
     addRoll,
