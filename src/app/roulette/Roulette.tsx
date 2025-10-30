@@ -39,16 +39,19 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
             audioRouletteRef.current.pause();
             audioRouletteRef.current.currentTime = 0;
             audioRouletteRef.current.play();
+        }
+    }, [audioSrcName]);
+
+    useEffect(() => {
+        if (audioRouletteRef.current && audioSrcName) {
             audioRouletteRef.current!.volume = vol / 100;
             audioStopRef.current!.volume = vol / 100;
+            dispatch(setVolume(vol));
         }
-    }, [audioSrcName, vol]);
+    }, [vol, dispatch, audioSrcName]);
 
     const handleChangeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
         setVol(Number(e.target.value));
-        dispatch(setVolume(vol));
-        if (audioRouletteRef.current) audioRouletteRef.current!.volume = vol / 100;
-        if (audioStopRef.current) audioStopRef.current!.volume = vol / 100;
     }
 
     return (

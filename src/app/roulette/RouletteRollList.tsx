@@ -96,7 +96,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
             if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
             if (rollTimeoutRef.current) clearInterval(rollTimeoutRef.current)
         }
-    }, [start, rollStage, dispatch, winSlot, slotsList, setCurrentGame, clearList]);
+    }, [start, rollStage, dispatch, winSlot, slotsList, setCurrentGame, clearList, setNewRollAvailable]);
 
     useEffect(() => {
         if (start) {
