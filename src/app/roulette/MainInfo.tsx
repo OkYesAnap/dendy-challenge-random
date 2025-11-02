@@ -143,7 +143,7 @@ const MainInfo: React.FC = () => {
                     </div>
                     {additionalFunctions && <div className="border rounded-full p-1 flex flex-row">
                         <SquareButton
-                            onClickButton={(e?: React.MouseEvent<HTMLButtonElement>) => handleOpenChose(e)}
+                            onClickButton={(e) => handleOpenChose(e)}
                             icon={"📥"}
                             hint={"Load list"}
                         />
