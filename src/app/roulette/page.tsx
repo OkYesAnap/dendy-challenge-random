@@ -9,7 +9,7 @@ const RoulettePage: React.FC = () => {
         <Provider store={store}>
             <Suspense>
                 <div
-                    className="bg-black w-full h-full min-h-screen text-gray-100 font-[family-name:var(--font-geist-sans)] pb-35">
+                    className="bg-black w-full h-screen overflow-y-auto text-gray-100 font-[family-name:var(--font-geist-sans)] pb-35">
                     <MainInfo/>
                 </div>
             </Suspense>
