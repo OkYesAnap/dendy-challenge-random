@@ -10,18 +10,19 @@ import {
     shuffleAllGamesList,
     sortAllGamesList,
 } from "@/redux/slices/gamesSlice";
-import { AppDispatch } from "@/redux/store";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter, useSearchParams } from "next/navigation";
+import {AppDispatch} from "@/redux/store";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {useRouter, useSearchParams} from "next/navigation";
 import Roulette from "./Roulette";
 import Info from "./Info";
 import Instructions from "./Instructions";
 import ChoseUrlParamsModal from "./ChoseUrlParamsModal";
-import { motion } from "motion/react";
-import { GoogleSheetsParams } from "@/utils/getGamesList";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
+import {motion} from "motion/react";
+import {GoogleSheetsParams} from "@/utils/getGamesList";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPlusSquare} from "@fortawesome/free-regular-svg-icons";
+import SquareButton from "@/app/roulette/SquareButton";
 
 const defaultParams = {
     url: "",
@@ -52,7 +53,7 @@ const MainInfo: React.FC = () => {
     const searchParams = useSearchParams();
 
     const handleLoad = useCallback(() => {
-        const { range, url, header } = paramsRef.current;
+        const {range, url, header} = paramsRef.current;
         router.push(`?range=${range}&header=${header}&url=${url}`);
         dispatch(getAllGamesList(paramsRef.current));
         setOpenChoseModal(false);
@@ -66,7 +67,7 @@ const MainInfo: React.FC = () => {
         const headerUrl = searchParams.get("header") === "true";
         const rangeUrl = searchParams.get("range") || defaultParams.range;
         const sheetUrl = searchParams.get("url") || defaultParams.url;
-        const { range, url } = paramsRef.current;
+        const {range, url} = paramsRef.current;
 
         if (
             rangeUrl !== range ||
@@ -91,8 +92,8 @@ const MainInfo: React.FC = () => {
         setOpenInfo(true);
         setInfo(item);
     }
-    const handleOpenChose = (e: React.MouseEvent<HTMLButtonElement>) => {
-        getAndSetElementPos(e);
+    const handleOpenChose = (e?: React.MouseEvent<HTMLButtonElement>) => {
+        if (e) getAndSetElementPos(e);
         setOpenChoseModal(true);
     }
 
@@ -100,79 +101,103 @@ const MainInfo: React.FC = () => {
         <>
             {!!headers.length && <div className="bg-black w-full text-center text-4xl p-2 font-bold">{headers[1]}</div>}
             <div className={`grid grid-flow-col text-2xl top-1`}
-                style={{
-                    gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                    gridTemplateRows: `repeat(${Math.ceil(allData.length / columns)}, minmax(0, 1fr))`
-                }}>
+                 style={{
+                     gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                     gridTemplateRows: `repeat(${Math.ceil(allData.length / columns)}, minmax(0, 1fr))`
+                 }}>
                 {allData.map((item) => (
                     <motion.div key={item[0]}
-                        layout
-                        transition={{
-                            layout: { duration: 1.5 }
-                        }}
-                        className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
+                                layout
+                                transition={{
+                                    layout: {duration: 1.5}
+                                }}
+                                className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
                     >
-                        <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
+                        <span
+                            className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
                         {(item.length > 2 && (item[0] !== info[0] || !openInfo)) ? (
                             <div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>
-                                <FontAwesomeIcon icon={faPlusSquare} />
+                                <FontAwesomeIcon icon={faPlusSquare}/>
                             </div>
                         ) : null}
                     </motion.div>
                 ))}
-                {(emptySlots && !loading) && <Instructions />}
-                <motion.div                         layout
-                        transition={{
-                            layout: { duration: .1 }
-                        }}
-                className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded overflow-hidden">
+                {(emptySlots && !loading) && <Instructions/>}
+                <motion.div layout
+                            transition={{
+                                layout: {duration: .1}
+                            }}
+                            className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded">
                     <div className="border rounded-full p-1 flex flex-row">
                         {!!allGamesList.length && (
-                            <button className={buttonsClasses}
-                                onClick={() => setOpenRoll(true)}>
-                                🎰
-                            </button>
+                            <SquareButton
+                                onClickButton={() => setOpenRoll(true)}
+                                icon={"🎰"}
+                                hint={"Roulette"}
+                            />
                         )}
-                        <button className={buttonsClasses} onClick={() => setAdditionalFunctions(p => !p)}>...</button>
+                        <SquareButton
+                            onClickButton={() => setAdditionalFunctions(p => !p)}
+                            icon={"..."}
+                            hint={"Settings"}/>
                     </div>
                     {additionalFunctions && <div className="border rounded-full p-1 flex flex-row">
-                        <button className={buttonsClasses} onClick={(e) => handleOpenChose(e)}>📥</button>
-                        <button className={buttonsClasses} onClick={() => setColumns(p => p > 1 ? p - 1 : p)}>-</button>
-                        <button className={buttonsClasses}>{columns}</button>
-                        <button className={buttonsClasses} onClick={() => setColumns(p => p < 12 ? p + 1 : p)}>+</button>
+                        <SquareButton
+                            onClickButton={(e?: React.MouseEvent<HTMLButtonElement>) => handleOpenChose(e)}
+                            icon={"📥"}
+                            hint={"Load list"}
+                        />
+
                         {!!allGamesList.length && (<>
-                            <button className={buttonsClasses}
-                                onClick={() => dispatch(shuffleAllGamesList())}>
-                                🔀
-                            </button>
-                            <button className={buttonsClasses}
-                                onClick={() => dispatch(sortAllGamesList())}>
-                                📈
-                            </button>
-                            <button className={buttonsClasses}
-                                onClick={() => handleLoad()}>
-                                🔄
-                            </button>
+                            <SquareButton
+                                onClickButton={() => setColumns(p => p > 1 ? p - 1 : p)}
+                                icon={"-"}
+                                hint={"Less columns"}
+                            />
+                            <SquareButton
+                                icon={String(columns)}
+                                hint={"Columns"}
+                            />
+                            <SquareButton
+                                onClickButton={() => setColumns(p => p < 12 ? p + 1 : p)}
+                                icon={"+"}
+                                hint={"More columns"}
+                            />
+                            <SquareButton
+                                onClickButton={() => dispatch(shuffleAllGamesList())}
+                                icon={"🔀"}
+                                hint={"Shuffle"}/>
+                            <SquareButton
+                                onClickButton={() => dispatch(sortAllGamesList())}
+                                icon={"📈"}
+                                hint={"Order"}/>
+                            <SquareButton
+                                onClickButton={() => handleLoad()}
+                                icon={"🔄"}
+                                hint={"Update"}/>
                         </>)}
                     </div>}
                 </motion.div>
-                {openRoll && <Roulette {...{ setOpenRoll: () => setOpenRoll(false) }} />}
+                {openRoll && <Roulette {...{setOpenRoll: () => setOpenRoll(false)}} />}
                 <ChoseUrlParamsModal {...{
                     startPos: elementPos,
                     isOpen: openChoseModal,
                     onClose: () => setOpenChoseModal(false),
                     paramsRef,
                     handleLoad,
-                    startElement: <button className={buttonsClasses}>📥</button>
+                    startElement: <SquareButton icon={"📥"}/>
                 }} />
-                <Info {...{ 
+                <Info {...{
                     startPos: elementPos,
-                    startElement: <FontAwesomeIcon icon={faPlusSquare} />,
-                    headers, 
-                    infoData: info, 
-                    isOpen: openInfo, 
-                    onClose: () => setOpenInfo(false) }} />
-                {loading && (<div className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">Loading List</div>)}
+                    startElement: <FontAwesomeIcon icon={faPlusSquare}/>,
+                    headers,
+                    infoData: info,
+                    isOpen: openInfo,
+                    onClose: () => setOpenInfo(false)
+                }} />
+                {loading && (<div
+                    className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">
+                    Loading List</div>)}
             </div>
         </>
     )

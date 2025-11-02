@@ -44,7 +44,7 @@ const initialState: GamesState = {
     rollCounter: 0,
     currentSlot: '',
     loading: false,
-    volume: 25
+    volume: 50
 };
 
 const gamesSlice = createSlice({
