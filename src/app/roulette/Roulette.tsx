@@ -83,16 +83,28 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
                     <div className="border rounded-full p-1 flex flex-row">
                         <SquareButton disabled={newRollAvailable}
                                       onClickButton={() => dispatch(shuffleRouletteList())}
-                                      icon={"🔀"}/>
+                                      icon={"🔀"}
+                                      hint={"Shuffle"}/>
                         {!spinning ?
                             (
-                                <SquareButton disabled={newRollAvailable} onClickButton={startSpinning} icon={"🚀"}/>
+                                <SquareButton
+                                    disabled={newRollAvailable}
+                                    onClickButton={startSpinning}
+                                    icon={"🚀"}
+                                    hint={"Start"}/>
                             ) :
                             (
-                                <SquareButton onClickButton={stopSpinning} icon={"🛑"}/>
+                                <SquareButton
+                                    onClickButton={stopSpinning}
+                                    icon={"🛑"}
+                                    hint={"Stop"}/>
                             )
                         }
-                        <SquareButton disabled={newRollAvailable} onClickButton={closeRoulette} icon={"❌"}/>
+                        <SquareButton
+                            disabled={newRollAvailable}
+                            onClickButton={closeRoulette} icon={"❌"}
+                            hint={"Close roulette"}
+                        />
                     </div>
                 </div>
             </div>
