@@ -56,7 +56,7 @@ export const getGamesList = async ({url, range, header}: GoogleSheetsParams): Pr
                 accum.push([]);
                 const current = accum[accum.length - 1];
                 current.push(`${idNum++}. ${row.c[0]?.v}`);
-                row.c.forEach((item, i) => {
+                row.c.forEach((item) => {
                     current.push(item?.f || item?.v || "");
                 })
             }
