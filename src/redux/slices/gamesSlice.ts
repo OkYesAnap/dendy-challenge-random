@@ -1,6 +1,7 @@
 import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getDisabledSlots, randomRoll, shuffleArr as shuffleStrArray, sortArr } from './gamesLogics';
 import { getGamesList, GoogleSheetsParams, ParsedSheetData } from '@/utils/getGamesList';
+import {Cols} from "@/app/roulette/types";
 
 export const getAllGamesList = createAsyncThunk('games/getGamesList', async (params: GoogleSheetsParams) => {
     return await getGamesList(params)
@@ -12,7 +13,7 @@ const addDisabledSlotsAction = createAction<string[]>('games/addDisabledSlots');
 export interface GamesState {
     allGamesList: string[];
     allData: string[][];
-    headers: string[];
+    headers: Cols[];
     startSlots: string[];
     currentRolls: string[];
     slotsList: string[];

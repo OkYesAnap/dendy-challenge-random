@@ -1,7 +1,7 @@
 import {
     shuffleRouletteList,
     setVolume,
-    volume as sVolume,
+    volume as sVolume, slotsList as sSlotsList,
 } from '@/redux/slices/gamesSlice';
 import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -24,6 +24,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
     const dispatch = useDispatch();
     const volume = useSelector(sVolume);
     const [vol, setVol] = useState<number>(volume);
+    const slotsList = useSelector(sSlotsList);
 
     const {startSpinning, stopSpinning, closeRoulette} = useRouletteButtons({
         setAudioSrcName,
@@ -53,7 +54,6 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
     const handleChangeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
         setVol(Number(e.target.value));
     }
-
     return (
         <div className="fixed inset-0 bg-black/80">
             {!!audioSrcName && <audio ref={audioRouletteRef} src={`${audioPath}${audioSrcName}`}/>}
@@ -67,7 +67,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
                 setAudioSrcName,
                 setCurrentGame,
             }} />
-            <WinGameLabel {...{currentGame, currentGamePos}} />
+            <WinGameLabel {...{currentGame, setCurrentGame, currentGamePos}} />
             <div className="flex flex-col justify-center fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0
             bg-black p-3 pt-1 border rounded overflow-hidden">
                 <span className="m-auto mb-1">Volume: {volume}%</span>
@@ -81,14 +81,14 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
                 />
                 <div className={"flex-row"}>
                     <div className="border rounded-full p-1 flex flex-row">
-                        <SquareButton disabled={newRollAvailable}
+                        <SquareButton disabled={newRollAvailable || slotsList.length <= 1}
                                       onClickButton={() => dispatch(shuffleRouletteList())}
                                       icon={"🔀"}
                                       hint={"Shuffle"}/>
                         {!spinning ?
                             (
                                 <SquareButton
-                                    disabled={newRollAvailable}
+                                    disabled={newRollAvailable || !slotsList.length}
                                     onClickButton={startSpinning}
                                     icon={"🚀"}
                                     hint={"Start"}/>

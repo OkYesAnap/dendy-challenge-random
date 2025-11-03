@@ -90,6 +90,7 @@ const MainInfo: React.FC = () => {
     const handleOpenInfo = (e: React.MouseEvent<HTMLDivElement>, item: string[]) => {
         getAndSetElementPos(e);
         setOpenInfo(true);
+        console.log(item);
         setInfo(item);
     }
     const handleOpenChose = (e?: React.MouseEvent<HTMLButtonElement>) => {
@@ -99,7 +100,7 @@ const MainInfo: React.FC = () => {
 
     return (
         <>
-            {!!headers.length && <div className="bg-black w-full text-center text-4xl p-2 font-bold">{headers[1]}</div>}
+            {!!headers.length && <div className="bg-black w-full text-center text-4xl p-2 font-bold">{headers[0]?.label}</div>}
             <div className={`grid grid-flow-col text-2xl top-1`}
                  style={{
                      gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,

@@ -11,7 +11,7 @@ interface ChoseParamsModalProps {
     startElement?: ReactNode;
 }
 
-const ChoseParamsModal: React.FC<ChoseParamsModalProps> = ({
+const ChoseUrlParamsModal: React.FC<ChoseParamsModalProps> = ({
     isOpen,
     onClose,
     paramsRef,
@@ -51,4 +51,4 @@ const ChoseParamsModal: React.FC<ChoseParamsModalProps> = ({
         </div>
     </ModalPortal>)
 }
-export default ChoseParamsModal;
+export default ChoseUrlParamsModal;

@@ -1,17 +1,15 @@
 import axios from "axios";
+import {Cols} from "@/app/roulette/types";
 
 interface SheetsResponse {
     table: {
         rows: Array<{
             c: Array<{
                 v: string;
+                f?: string;
             }>
         }>,
-        cols: Array<{
-            id: string;
-            label: string;
-            type: string;
-        }>
+        cols: Cols[]
     }
 }
 
@@ -23,7 +21,7 @@ export interface GoogleSheetsParams {
 }
 
 export interface ParsedSheetData {
-    headers: string[],
+    headers: Cols[],
     data: string[][]
 }
 
@@ -34,21 +32,21 @@ function extractIds(url: string) {
     if (match) {
         const id = match[1];
         const gid = match[2];
-        return { id, gid };
+        return {id, gid};
     }
 
     return {};
 }
 
 
-export const getGamesList = async ({ url, range, header }: GoogleSheetsParams): Promise<ParsedSheetData> => {
-    const { id, gid } = extractIds(url);
-    let headers: string[] = [];
+export const getGamesList = async ({url, range, header}: GoogleSheetsParams): Promise<ParsedSheetData> => {
+    const {id, gid} = extractIds(url);
+    let headers: Cols[] = [];
     try {
         const response = await axios.get(`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&gid=${gid}&range=${range}`);
         const text = response.data;
         const json = JSON.parse(text.substr(47).slice(0, -2)) as SheetsResponse;
-        const { rows, cols } = json.table;
+        const {rows, cols} = json.table;
         const isLabel = cols[0].label;
         const firstElementNeeded = header && !isLabel
         const addLabelsToHeaders = header && isLabel
@@ -57,22 +55,18 @@ export const getGamesList = async ({ url, range, header }: GoogleSheetsParams): 
             if (row.c[0]?.v) {
                 accum.push([]);
                 const current = accum[accum.length - 1];
-                current.push(`${idNum++}. ${row.c[0]?.v}`, row.c[0]?.v);
-                if (row.c.length > 1) {
-                    row.c.forEach((item, i) => {
-                        if (row.c[i]?.v && i) {
-                            current.push(item.v);
-                        }
-                    })
-                }
+                current.push(`${idNum++}. ${row.c[0]?.v}`);
+                row.c.forEach((item, i) => {
+                    current.push(item?.f || item?.v || "");
+                })
             }
             return accum
         }, []);
-        if (firstElementNeeded) headers = data.shift() || []
-        if (addLabelsToHeaders) headers = ['', ...cols.map(item=>item.label)]
-        return { headers, data }
+        if (addLabelsToHeaders) headers = [...cols]
+        console.log(headers);
+        return {headers, data}
     } catch (error) {
         console.error('Error fetching data:', error);
-        return { headers: [], data: [] }
+        return {headers: [], data: []}
     }
 };
