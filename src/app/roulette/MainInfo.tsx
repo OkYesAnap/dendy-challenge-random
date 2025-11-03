@@ -1,6 +1,5 @@
 'use client';
 import {
-    getAllGamesList,
     allData as sAllData,
     currentRolls as sCurrentRolls,
     startSlots as sStartSlots,
@@ -11,24 +10,19 @@ import {
     sortAllGamesList,
 } from "@/redux/slices/gamesSlice";
 import {AppDispatch} from "@/redux/store";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useSearchParams} from "next/navigation";
 import Roulette from "./Roulette";
 import Info from "./Info";
-import Instructions from "./Instructions";
 import ChoseUrlParamsModal from "./ChoseUrlParamsModal";
 import {motion} from "motion/react";
 import {GoogleSheetsParams} from "@/utils/getGamesList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusSquare} from "@fortawesome/free-regular-svg-icons";
 import SquareButton from "@/app/roulette/SquareButton";
-
-const defaultParams = {
-    url: "",
-    range: "A1:A1000",
-    header: false
-}
+import {useHandleLoad} from "@/app/roulette/hooks/useHandleLoad";
+import {defaultParams} from "@/app/roulette/utils/constants/urlParams";
 
 export const buttonsClasses = "flex-1 p-1 border text-3xl rounded-full w-15 h-15"
 
@@ -49,19 +43,19 @@ const MainInfo: React.FC = () => {
     const loading = useSelector(sLoading);
     const startSlots = useSelector(sStartSlots)
     const allGamesList = useSelector(sAllGamesList)
-    const router = useRouter();
     const searchParams = useSearchParams();
 
-    const handleLoad = useCallback(() => {
-        const {range, url, header} = paramsRef.current;
-        router.push(`?range=${range}&header=${header}&url=${url}`);
-        dispatch(getAllGamesList(paramsRef.current));
-        setOpenChoseModal(false);
-    }, [dispatch, router])
+    const handleLoad = useHandleLoad({paramsRef, setOpenChoseModal});
+
+    const handleOpenChose = (e?: React.MouseEvent<HTMLButtonElement>) => {
+        if (e) getAndSetElementPos(e);
+        setOpenChoseModal(true);
+    }
 
     useEffect(() => {
+        setOpenChoseModal(!allGamesList.length && !loading);
         setEmptySlots(!startSlots.length);
-    }, [startSlots.length]);
+    }, [startSlots.length, allGamesList.length,emptySlots, loading]);
 
     useEffect(() => {
         const headerUrl = searchParams.get("header") === "true";
@@ -90,13 +84,9 @@ const MainInfo: React.FC = () => {
     const handleOpenInfo = (e: React.MouseEvent<HTMLDivElement>, item: string[]) => {
         getAndSetElementPos(e);
         setOpenInfo(true);
-        console.log(item);
         setInfo(item);
     }
-    const handleOpenChose = (e?: React.MouseEvent<HTMLButtonElement>) => {
-        if (e) getAndSetElementPos(e);
-        setOpenChoseModal(true);
-    }
+
 
     return (
         <>
@@ -123,7 +113,6 @@ const MainInfo: React.FC = () => {
                         ) : null}
                     </motion.div>
                 ))}
-                {(emptySlots && !loading) && <Instructions/>}
                 <motion.div layout
                             transition={{
                                 layout: {duration: .1}

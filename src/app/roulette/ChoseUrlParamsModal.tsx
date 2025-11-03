@@ -1,53 +1,27 @@
 import ModalPortal from "@/components/ModalPortal"
-import { GoogleSheetsParams } from "@/utils/getGamesList";
-import { ReactNode, useEffect } from "react";
+import Template from "@/app/roulette/Template";
+import Instructions from "@/app/roulette/Instructions";
+import {ChoseParamsModalProps} from "@/app/roulette/types";
+import {useState} from "react";
 
-interface ChoseParamsModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    paramsRef: React.RefObject<GoogleSheetsParams>
-    handleLoad: () => void;
-    startPos?: DOMRect,
-    startElement?: ReactNode;
-}
+const ChoseUrlParamsModal: React.FC<ChoseParamsModalProps> = (
+    {
+        isOpen,
+        onClose,
+        paramsRef,
+        handleLoad,
+        startPos,
+        startElement
+    }) => {
 
-const ChoseUrlParamsModal: React.FC<ChoseParamsModalProps> = ({
-    isOpen,
-    onClose,
-    paramsRef,
-    handleLoad,
-    startPos,
-    startElement }) => {
+    const [isCustomLoad, setIsCustomLoad] = useState<boolean>(false);
 
-    const handleChangeGoogleParams = (params: Partial<GoogleSheetsParams>) => {
-        paramsRef.current = { ...paramsRef.current, ...params }
-    }
-    useEffect(() => { }, [paramsRef.current.header])
-
-    return (<ModalPortal {...{ isOpen, onClose, startPos, startElement }}>
+    return (<ModalPortal {...{isOpen, onClose, startPos, startElement}}>
         <div className="flex flex-col text-gray-100">
-            <div className="flex flex-row border p-2 items-center">
-                <span className="w-1/6">URL:</span>
-                <input onChange={(e) => handleChangeGoogleParams({ url: e.target.value })}
-                    className="flex-1 bg-gray-700 p-1" type="text" defaultValue={paramsRef.current.url} />
+            <div className="p-3 text-3xl w-auto border-2 hover:bg-gray-700 cursor-pointer"
+                 onClick={() => setIsCustomLoad(prev => !prev)}>{isCustomLoad ? 'Load Templates' : 'Custom Load'}
             </div>
-            <div className="flex flex-row border p-2 items-center">
-                <span className="w-1/6">Range:</span>
-                <input onChange={(e) => handleChangeGoogleParams({ range: e.target.value })}
-                    className="flex-1 bg-gray-700 p-1" type="text" defaultValue={paramsRef.current.range} />
-            </div>
-            <div className="flex flex-row border p-2 items-center">
-                <input className="ml-1 rounded border transform scale-150" type="checkbox" onChange={(e) => {
-                    handleChangeGoogleParams({ header: e.target.checked })
-                }}
-                    defaultChecked={paramsRef.current.header}
-                />
-                <span className="flex-1 mr-2 pl-2">HEADER - first line will be skipped as Header</span>
-            </div>
-            <div className="flex flex-row border p-2 items-center">
-                <button className="flex-1 mr-2 p-1 border" onClick={() => handleLoad()}>Load</button>
-                <button className="flex-1 mr-2 p-1 border" onClick={onClose}>Cancel</button>
-            </div>
+            {isCustomLoad ? <Instructions {...{paramsRef, handleLoad, onClose}}/> : <Template/>}
         </div>
     </ModalPortal>)
 }
