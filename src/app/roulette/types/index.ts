@@ -4,9 +4,9 @@ import {ReactNode} from "react";
 export type ReactSetState<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export interface Cols {
-    id: string;
+    id?: string;
     label: string;
-    type: string;
+    type?: string;
 }
 
 
