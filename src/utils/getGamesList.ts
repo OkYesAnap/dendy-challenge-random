@@ -63,7 +63,6 @@ export const getGamesList = async ({url, range, header}: GoogleSheetsParams): Pr
             return accum
         }, []);
         if (addLabelsToHeaders) headers = [...cols]
-        console.log(headers);
         return {headers, data}
     } catch (error) {
         console.error('Error fetching data:', error);

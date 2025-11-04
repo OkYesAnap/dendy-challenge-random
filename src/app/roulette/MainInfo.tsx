@@ -22,7 +22,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusSquare} from "@fortawesome/free-regular-svg-icons";
 import SquareButton from "@/app/roulette/SquareButton";
 import {useHandleLoad} from "@/app/roulette/hooks/useHandleLoad";
-import {defaultParams} from "@/app/roulette/utils/constants/urlParams";
+import {defaultParams} from "@/app/roulette/constants/urlParams";
 
 export const buttonsClasses = "flex-1 p-1 border text-3xl rounded-full w-15 h-15"
 
@@ -104,8 +104,9 @@ const MainInfo: React.FC = () => {
                                 }}
                                 className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
                     >
-                        <span
-                            className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
+                        <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>
+                            {item[0]}
+                        </span>
                         {(item.length > 2 && (item[0] !== info[0] || !openInfo)) ? (
                             <div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>
                                 <FontAwesomeIcon icon={faPlusSquare}/>
