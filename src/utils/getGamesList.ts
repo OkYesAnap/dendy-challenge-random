@@ -75,12 +75,13 @@ const getGameListWithApi = async ({url, range}: GoogleSheetsParams): Promise<Par
     const encodeSheetName = encodeURIComponent(findSheet.properties.title)
     const sheetAndRange = `${encodeSheetName}!${collectRanges}`
     const currentSheet = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${id}?includeGridData=true&ranges=${sheetAndRange}&key=${apiKey}`);
+    const firstRange = currentSheet.data.sheets[0];
+
     const sheet = currentSheet.data.sheets[0].data;
     const sheetData = sheet[0].rowData;
 
-
-    if (sheet.tables) {
-        headers = getHeadersNames(sheet)
+    if (firstRange.tables) {
+        headers = getHeadersNames(firstRange)
         sheetData.shift();
     }
     const data = sheetData.map(getAllData);
