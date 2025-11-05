@@ -48,6 +48,7 @@ const getHeadersNames = (sheet: {
 const getAllData = (rows: {
     values: Array<CellData>
 }, i: number): string[] => {
+    if(Object.keys(rows).length === 0) return [`${i + 1}.`]
     return [`${i + 1}. ${rows.values[0].formattedValue}`, ...rows.values.map(item => item.hyperlink || item.formattedValue)]
 }
 

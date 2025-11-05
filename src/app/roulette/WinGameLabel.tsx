@@ -13,7 +13,7 @@ const WinGameLabel: React.FC<{
             className={`${currentGame ? "opacity-100" : "opacity-0"} flex flex-row fixed max-h-[85%] max-w-[85%] text-4xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[56%] border-3 bg-black whitespace-nowrap`}
             layout
             transition={{
-                default: {ease: "ease"},
+                default: {ease: "linear"},
                 layout: {duration: 0.5}
             }}>
             <div className="border-2 p-6">
