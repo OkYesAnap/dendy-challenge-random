@@ -1,13 +1,15 @@
 import {ReactSetState} from "@/app/roulette/types";
 import React from "react";
 import {audioSrcNames} from "@/constants/audioEnv";
+import {CellData} from "@/utils/getGamesList";
+import {defaultCellData} from "@/redux/slices/gamesSlice";
 
 export const useRouletteButtons = ({setAudioSrcName, setSpinning, audioStopRef, setClearList, setCurrentGame, setOpenRoll}: {
     setAudioSrcName: ReactSetState<string>,
     setSpinning: ReactSetState<boolean>,
     audioStopRef: React.RefObject<HTMLAudioElement | null>,
     setClearList: ReactSetState<boolean>,
-    setCurrentGame: ReactSetState<string>,
+    setCurrentGame: ReactSetState<CellData>,
     setOpenRoll: () => void,
 }) => {
     const startSpinning = () => {
@@ -26,7 +28,7 @@ export const useRouletteButtons = ({setAudioSrcName, setSpinning, audioStopRef, 
 
     const closeRoulette = () => {
         setClearList(true);
-        setCurrentGame('');
+        setCurrentGame(defaultCellData);
         setTimeout(() => {
             setOpenRoll();
         }, 500);

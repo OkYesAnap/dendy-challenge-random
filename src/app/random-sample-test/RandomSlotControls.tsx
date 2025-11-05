@@ -7,11 +7,12 @@ import {
     setCurrentSlot,
     setGamesInEvent,
     addSlots,
-    addRandomRoll,
+    addRandomRoll, defaultCellData,
 }
     from "@/redux/slices/gamesSlice";
 import React, { SetStateAction, useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {CellData} from "@/utils/getGamesList";
 
 const RandomSlotControl = () => {
     const [blackSlotsCount, setBlackSlotsCount] = useState<number>(5);
@@ -27,13 +28,13 @@ const RandomSlotControl = () => {
     const timerForRandom = useRef<ReturnType<typeof setInterval>>(null);
     const timerForCurrentRoll = useRef<ReturnType<typeof setTimeout>>(null);
     useEffect(() => {
-        const customSlots: string[] = [];
+        const customSlots: CellData[] = [];
         if (blackSlotsCount) {
             for (let i = 0; i < blackSlotsCount; i++) {
-                customSlots.push(`Black slot ${i + 1}`)
+                customSlots.push( {formattedValue: `Black slot ${i + 1}`});
             }
         }
-        if (zero) customSlots.push('Zero');
+        if (zero) customSlots.push({formattedValue: 'Zero'});
         dispatch(addSlots({ slots: customSlots }));
     }, [blackSlotsCount, zero, allGamesList, dispatch]);
 
@@ -46,12 +47,12 @@ const RandomSlotControl = () => {
             dispatch(addRandomRoll());
         } else {
             setAuto(false);
-            dispatch(setCurrentSlot("Error all Games was rolled"));
+            dispatch(setCurrentSlot({formattedValue: "Error all Games was rolled"}));
         }
 
         if (timerForCurrentRoll.current) clearTimeout(timerForCurrentRoll.current);
         timerForCurrentRoll.current = setTimeout(() => {
-            dispatch(setCurrentSlot(''));
+            dispatch(setCurrentSlot(defaultCellData));
         }, 1000);
     }, [slotsList, dispatch])
 
@@ -105,7 +106,7 @@ const RandomSlotControl = () => {
     return (
         <div>
             {currentSlot && (<div className="fixed text-xl left-1/2 transform -translate-x-1/2 bottom-30 bg-black p-4 border rounded">
-                {currentSlot}
+                {currentSlot.formattedValue}
             </div>)}
             <div className="fixed bottom-0 left-1/2 transform items-center -translate-x-1/2 flex justify-between bg-black p-3 border">
                 <div className={`flex-1 flex-col items-center text-center border pl-1 pr-1 ${auto ? 'text-gray-500' : ''}`}>

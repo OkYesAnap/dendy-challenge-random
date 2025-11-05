@@ -11,7 +11,7 @@ import {
     getAllGamesList,
 } from "@/redux/slices/gamesSlice";
 import { AppDispatch } from "@/redux/store";
-import { GoogleSheetsParams } from "@/utils/getGamesList";
+import {CellData, GoogleSheetsParams} from "@/utils/getGamesList";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -32,7 +32,7 @@ const SlotsList: React.FC = () => {
     const eventsList = useSelector(sEventsList);
     const paramsRef = useRef<GoogleSheetsParams>(defaultParams);
 
-    const selected = currentRolls.length ? currentRolls : eventsList[eventsList.length - 1] || [];
+    const selected: CellData[] = currentRolls.length ? currentRolls : eventsList[eventsList.length - 1] || [];
 
     useEffect(() => {
         dispatch(getAllGamesList(paramsRef.current));
@@ -51,7 +51,7 @@ const SlotsList: React.FC = () => {
                 <div className="flex-1 text-lg text-center">% {((blackFieldsCounter / eventsCounter || 0) * 100).toFixed(2)}</div>
             </div>
                 {Object.entries(statistics).map(item => (
-                    <div key={item[0]} className={`flex justify-between items-center w-1/6 p-1 border ${selected.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}>
+                    <div key={item[0]} className={`flex justify-between items-center w-1/6 p-1 border ${selected.find(roll => roll.formattedValue === item[0]) ? 'text-gray-500' : ''}`}>
                         <span className={`flex-10 w-30 overflow-hidden whitespace-nowrap overflow-ellipsis`}>{item[0]}</span>
                         <span className="flex-1 pl-2">{item[1]}</span>
                     </div>

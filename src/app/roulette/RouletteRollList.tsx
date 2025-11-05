@@ -5,11 +5,12 @@ import {
     addRoll,
     rollOneStep,
     currentRolls as sCurrentRolls,
-    slotsList as sSlotsList
+    slotsList as sSlotsList, defaultCellData
 } from "@/redux/slices/gamesSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { audioPath } from "@/constants/audioEnv";
 import {ReactSetState} from "@/app/roulette/types";
+import {CellData} from "@/utils/getGamesList";
 
 const slotHeight = 16;
 const rollComplete = "RollComplete.mp3";
@@ -19,11 +20,11 @@ const intervals = { min: 30, max: 2000, step: 3 };
 interface RollListProps {
     setCurrentGamePos: ReactSetState<number>;
     setNewRollAvailable: ReactSetState<boolean>;
-    setCurrentGame: ReactSetState<string>;
+    setCurrentGame: ReactSetState<CellData>;
     setAudioSrcName: ReactSetState<string>;
     start: boolean;
     clearList: boolean;
-    currentGame: string;
+    currentGame: CellData;
 }
 
 const RouletteRollList: React.FC<RollListProps> = ({
@@ -37,7 +38,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
 }) => {
 
     const dispatch = useDispatch();
-    const [optimizedSlots, setOptimizedSlots] = useState<string[]>([]);
+    const [optimizedSlots, setOptimizedSlots] = useState<CellData[]>([]);
     const [winSlot, setWinSlot] = useState<number>(0);
     const [rollStage, setRollStage] = useState<number>(0);
     const [halfListHeight, setHalfListHeight] = useState<number>(0);
@@ -100,14 +101,14 @@ const RouletteRollList: React.FC<RollListProps> = ({
 
     useEffect(() => {
         if (start) {
-            setCurrentGame('');
+            setCurrentGame(defaultCellData);
             setRollStage(1)
         };
     }, [start, setCurrentGame])
 
 
     useEffect(() => {
-        if (currentGame) {
+        if (currentGame.formattedValue) {
             setAudioSrcName(rollComplete);
             setNewRollAvailable(true);
             endTimeoutRef.current = setTimeout(() => {
@@ -130,7 +131,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
         }}
         ref={listRef}
         style={{ height: `${clearList ? '2rem' : ''}` }}
-        className={`${currentGame ? "text-gray-600" : ''} fixed max-h-[85%] md:w-3/4 lg:w-1/2 xl:w-1/3 text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[58%] border-3 bg-black rounded overflow-hidden`}>
+        className={`${currentGame.formattedValue ? "text-gray-600" : ''} fixed max-h-[85%] md:w-3/4 lg:w-1/2 xl:w-1/3 text-xl left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-[58%] border-3 bg-black rounded overflow-hidden`}>
         <WinFrame {...{ halfListHeight, visible: !!rollTimeoutRef.current }} />
         {<audio ref={audioStopRef} src={`${audioPath}StopRoll.mp3`} />}
 
@@ -138,13 +139,13 @@ const RouletteRollList: React.FC<RollListProps> = ({
             {optimizedSlots.map((slot) => (
                 <motion.li
                     className={`border-t w-full border-b h-${slotHeight} border-gray-300 pl-10 pr-10 pt-4 pb-4 text-center whitespace-nowrap overflow-hidden overflow-ellipsis`}
-                    key={slot}
+                    key={slot.formattedValue}
                     layout
                     transition={{
                         layout: { duration: start || (!start && rollStage) ? rollStage / 1000 : 1.5 }
                     }}
                 >
-                    {slot}
+                    {slot.formattedValue}
                 </motion.li>
             ))}
         </ul>

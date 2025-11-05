@@ -7,7 +7,7 @@ import {
     loading as sLoading,
     headers as sHeaders,
     shuffleAllGamesList,
-    sortAllGamesList,
+    sortAllGamesList, defaultCellData,
 } from "@/redux/slices/gamesSlice";
 import {AppDispatch} from "@/redux/store";
 import React, {useEffect, useRef, useState} from "react";
@@ -17,7 +17,7 @@ import Roulette from "./Roulette";
 import Info from "./Info";
 import ChoseUrlParamsModal from "./ChoseUrlParamsModal";
 import {motion} from "motion/react";
-import {GoogleSheetsParams} from "@/utils/getGamesList";
+import {CellData, GoogleSheetsParams} from "@/utils/getGamesList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusSquare} from "@fortawesome/free-regular-svg-icons";
 import SquareButton from "@/app/roulette/SquareButton";
@@ -33,7 +33,7 @@ const MainInfo: React.FC = () => {
     const [columns, setColumns] = useState<number>(3);
     const [emptySlots, setEmptySlots] = useState<boolean>(true);
     const [openInfo, setOpenInfo] = useState<boolean>(false);
-    const [info, setInfo] = useState<Array<string>>([]);
+    const [info, setInfo] = useState<CellData[]>([defaultCellData]);
     const paramsRef = useRef<GoogleSheetsParams>(defaultParams);
     const [elementPos, setElementPos] = useState<DOMRect | undefined>();
     const dispatch = useDispatch<AppDispatch>();
@@ -81,12 +81,12 @@ const MainInfo: React.FC = () => {
         setElementPos(params);
     }
 
-    const handleOpenInfo = (e: React.MouseEvent<HTMLDivElement>, item: string[]) => {
+    const handleOpenInfo = (e: React.MouseEvent<HTMLDivElement>, item: CellData[]) => {
         getAndSetElementPos(e);
         setOpenInfo(true);
         setInfo(item);
     }
-
+    console.log(allData);
 
     return (
         <>
@@ -97,7 +97,7 @@ const MainInfo: React.FC = () => {
                      gridTemplateRows: `repeat(${Math.ceil(allData.length / columns)}, minmax(0, 1fr))`
                  }}>
                 {allData.map((item) => (
-                    <motion.div key={item[0]}
+                    <motion.div key={item[0].formattedValue}
                                 layout
                                 transition={{
                                     layout: {duration: 1.5}
@@ -105,9 +105,9 @@ const MainInfo: React.FC = () => {
                                 className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
                     >
                         <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>
-                            {item[0]}
+                            {item[0].formattedValue}
                         </span>
-                        {(item.length > 2 && (item[0] !== info[0] || !openInfo)) ? (
+                        {(item.length > 2 && (item[0].formattedValue !== info[0].formattedValue || !openInfo)) ? (
                             <div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>
                                 <FontAwesomeIcon icon={faPlusSquare}/>
                             </div>

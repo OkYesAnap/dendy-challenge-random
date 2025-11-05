@@ -1,4 +1,5 @@
 import { GamesState } from "./gamesSlice";
+import {CellData} from "@/utils/getGamesList";
 
 export const randomRoll = (state: GamesState) => {
     const slotNumber = Math.floor((Math.random() * state.slotsList.length));
@@ -9,7 +10,7 @@ export const randomRoll = (state: GamesState) => {
 
     if (state.gamesInEvent <= state.currentRolls.length) {
         state.eventsList.push(state.currentRolls);
-        if (state.currentRolls.find(item => item.includes('Black slot'))) {
+        if (state.currentRolls.find(item => item.formattedValue.includes('Black slot'))) {
             state.blackFieldsCounter += 1;
         }
         state.currentRolls = [];
@@ -19,11 +20,11 @@ export const randomRoll = (state: GamesState) => {
     if (state.showVisualEvents <= state.eventsList.length) {
         state.eventsList = []
     }
-    state.statistics[value] += 1 || 0;
+    state.statistics[value.formattedValue] += 1 || 0;
     state.rollCounter += 1;
 }
 
-export const shuffleArr = <T extends string[] | string[][]>(arr: T): T => {
+export const shuffleArr = <T extends CellData[] | CellData[][]>(arr: T): T => {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -31,24 +32,24 @@ export const shuffleArr = <T extends string[] | string[][]>(arr: T): T => {
     return arr;
 }
 
-export const sortArr = <T extends string[][]>(arr: T): T => {
+export const sortArr = <T extends CellData[][]>(arr: T): T => {
     if (Array.isArray(arr) && arr.length > 0) {
         return arr.sort((a, b) => {
-            const numA = parseInt(a[0], 10);
-            const numB = parseInt(b[0], 10);
+            const numA = parseInt(a[0].formattedValue, 10);
+            const numB = parseInt(b[0].formattedValue, 10);
             return numA - numB;
         });
     }
     return arr;
 }
 
-export const getDisabledSlots = (data: string[][]): string[] => {
+export const getDisabledSlots = (data: CellData[][]): CellData[] => {
     return data.reduce((disabled, slot) => {
         if (slot.some(cell => (
-            cell === '✖' || 
-            cell === '✔' ||
-            cell === '✖️' || 
-            cell === '✔️'
+            cell.formattedValue === '✖' ||
+            cell.formattedValue === '✔' ||
+            cell.formattedValue === '✖️' ||
+            cell.formattedValue === '✔️'
         ))) {
             disabled.push(slot[0]);
         }

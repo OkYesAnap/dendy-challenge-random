@@ -1,7 +1,7 @@
 import {
     shuffleRouletteList,
     setVolume,
-    volume as sVolume, slotsList as sSlotsList,
+    volume as sVolume, slotsList as sSlotsList, defaultCellData,
 } from '@/redux/slices/gamesSlice';
 import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -10,13 +10,14 @@ import RouletteRollList from './RouletteRollList';
 import {audioPath} from '@/constants/audioEnv';
 import {useRouletteButtons} from "@/app/roulette/hooks/useRouletteButtons";
 import SquareButton from "@/app/roulette/SquareButton";
+import {CellData} from "@/utils/getGamesList";
 
 const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
 
     const [spinning, setSpinning] = useState<boolean>(false);
     const [clearList, setClearList] = useState<boolean>(false);
     const [newRollAvailable, setNewRollAvailable] = useState<boolean>(false);
-    const [currentGame, setCurrentGame] = useState<string>('');
+    const [currentGame, setCurrentGame] = useState<CellData>(defaultCellData);
     const [currentGamePos, setCurrentGamePos] = useState<number>(0);
     const [audioSrcName, setAudioSrcName] = useState<string>('');
     const audioRouletteRef = useRef<HTMLAudioElement>(null);
@@ -67,7 +68,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
                 setAudioSrcName,
                 setCurrentGame,
             }} />
-            <WinGameLabel {...{currentGame, setCurrentGame, currentGamePos}} />
+            <WinGameLabel {...{currentGame, setCurrentGame, currentGamePos, newRollAvailable}} />
             <div className="flex flex-col justify-center fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0
             bg-black p-3 pt-1 border rounded overflow-hidden">
                 <span className="m-auto mb-1">Volume: {volume}%</span>

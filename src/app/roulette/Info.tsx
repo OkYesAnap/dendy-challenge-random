@@ -2,11 +2,12 @@ import ModalPortal from "@/components/ModalPortal";
 import Image from "next/image";
 import {ReactNode} from "react";
 import {Cols} from "@/app/roulette/types";
+import {CellData} from "@/utils/getGamesList";
 
 interface InfoProps {
     startPos?: DOMRect;
     headers: Cols[];
-    infoData: string[];
+    infoData: CellData[];
     isOpen: boolean;
     onClose: () => void;
     startElement: ReactNode;
@@ -26,15 +27,15 @@ const Info: React.FC<InfoProps> = ({headers, infoData, isOpen, onClose, startPos
                     key={`${infoData[0]}-${i}`}
                     className="flex items-center justify-center border">
                     {headers[i] && <div className="text-2xl font-bold pl-2 pr-2">{headers[i - 1].label}:</div>}
-                    <div> {isImageUrl(item) ? (
+                    <div> {isImageUrl(item.formattedValue) ? (
                             <Image
-                                src={item}
-                                alt={infoData[1]}
+                                src={item.formattedValue}
+                                alt={infoData[1].formattedValue}
                                 width={100}
                                 height={100}
                                 className="w-full"/>)
                         : <div className="text-xl p-2">
-                            {item}
+                            {item.formattedValue}
                         </div>}
                     </div>
                 </div>) : null;

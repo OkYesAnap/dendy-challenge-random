@@ -1,30 +1,32 @@
-import { createAction, createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getDisabledSlots, randomRoll, shuffleArr as shuffleStrArray, sortArr } from './gamesLogics';
-import { getGamesList, GoogleSheetsParams, ParsedSheetData } from '@/utils/getGamesList';
+import {createAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {getDisabledSlots, randomRoll, shuffleArr as shuffleStrArray, sortArr} from './gamesLogics';
+import {CellData, getGamesList, GoogleSheetsParams, ParsedSheetData} from '@/utils/getGamesList';
 import {Cols} from "@/app/roulette/types";
 
 export const getAllGamesList = createAsyncThunk('games/getGamesList', async (params: GoogleSheetsParams) => {
     return await getGamesList(params)
 });
 
-const addSlotsAction = createAction<{ slots: string[] }>('games/addSlots');
-const addDisabledSlotsAction = createAction<string[]>('games/addDisabledSlots');
+const addSlotsAction = createAction<{ slots: CellData[] }>('games/addSlots');
+const addDisabledSlotsAction = createAction<CellData[]>('games/addDisabledSlots');
+
+export const defaultCellData: CellData = {formattedValue: ''}
 
 export interface GamesState {
-    allGamesList: string[];
-    allData: string[][];
+    allGamesList: CellData[];
+    allData: CellData[][];
     headers: Cols[];
-    startSlots: string[];
-    currentRolls: string[];
-    slotsList: string[];
+    startSlots: CellData[];
+    currentRolls: CellData[];
+    slotsList: CellData[];
     statistics: { [key: string]: number };
     gamesInEvent: number;
     showVisualEvents: number;
-    eventsList: Array<Array<string>>;
+    eventsList:  CellData[][];
     blackFieldsCounter: number;
     eventsCounter: number;
     rollCounter: number;
-    currentSlot: string;
+    currentSlot: CellData;
     loading: boolean;
     volume: number;
 }
@@ -43,7 +45,7 @@ const initialState: GamesState = {
     blackFieldsCounter: 0,
     eventsCounter: 0,
     rollCounter: 0,
-    currentSlot: '',
+    currentSlot: defaultCellData,
     loading: false,
     volume: 50
 };
@@ -52,14 +54,14 @@ const gamesSlice = createSlice({
     name: 'games',
     initialState,
     reducers: {
-        setAllGamesList(state, action: PayloadAction<Array<string>>) {
+        setAllGamesList(state, action: PayloadAction<CellData[]>) {
             state.allGamesList = action.payload;
         },
-        setStartSlots(state, action: PayloadAction<Array<string>>) {
+        setStartSlots(state, action: PayloadAction<CellData[]>) {
             state.startSlots = action.payload;
         },
-        addSlots(state, action: PayloadAction<{ slots: string[] }>) {
-            const { slots } = action.payload
+        addSlots(state, action: PayloadAction<{ slots: CellData[] }>) {
+            const {slots} = action.payload
             state.startSlots = [...state.allGamesList, ...slots];
             state.slotsList = state.startSlots;
             gamesSlice.caseReducers.resetStatistics(state);
@@ -71,7 +73,7 @@ const gamesSlice = createSlice({
             state.slotsList.splice(winSlot, 1);
             state.currentRolls.push(value);
         },
-        addDisabledSlots(state, action: PayloadAction<string[]>){
+        addDisabledSlots(state, action: PayloadAction<CellData[]>) {
             state.currentRolls = action.payload;
             state.slotsList = state.slotsList.filter((item) => !action.payload.includes(item));
         },
@@ -80,9 +82,9 @@ const gamesSlice = createSlice({
         },
         rollOneStep(state) {
             const last = state.slotsList.shift();
-            state.slotsList.push(last || '');
+            state.slotsList.push(last || defaultCellData);
         },
-        setCurrentSlot(state, action: PayloadAction<string>) {
+        setCurrentSlot(state, action: PayloadAction<CellData>) {
             state.currentSlot = action.payload;
         },
         setGamesInEvent(state, action: PayloadAction<number>) {
@@ -94,25 +96,25 @@ const gamesSlice = createSlice({
             state.gamesInEvent = val;
         },
         shuffleRouletteList(state) {
-            const { slotsList } = state;
+            const {slotsList} = state;
             state.slotsList = shuffleStrArray(slotsList);
         },
         syncAllDataAndSlotsList(state) {
-            const { allData, slotsList } = state;
+            const {allData, slotsList} = state;
             state.slotsList = allData.reduce((acc, allDataItem) => {
-                const find = slotsList.find(slotItem => slotItem === allDataItem[0]);
+                const find = slotsList.find(slotItem => slotItem.formattedValue === allDataItem[0].formattedValue);
                 if (find) acc.push(find);
                 return acc
             }, [])
         },
         shuffleAllGamesList(state) {
-            const { allData } = state;
+            const {allData} = state;
             const shuffledAllData = shuffleStrArray(allData);
             state.allData = shuffleStrArray(shuffledAllData);
             gamesSlice.caseReducers.syncAllDataAndSlotsList(state);
         },
         sortAllGamesList(state) {
-            const { allData } = state;
+            const {allData} = state;
             state.allData = sortArr(allData);
             gamesSlice.caseReducers.syncAllDataAndSlotsList(state);
         },
@@ -120,7 +122,7 @@ const gamesSlice = createSlice({
             state.statistics = {};
             state.currentRolls = [];
             state.eventsList = [];
-            state.startSlots.forEach(item => state.statistics[item] = 0);
+            state.startSlots.forEach(item => state.statistics[item.formattedValue] = 0);
             state.blackFieldsCounter = 0;
             state.eventsCounter = 0;
             state.rollCounter = 0;
@@ -136,16 +138,16 @@ const gamesSlice = createSlice({
         builder
             .addCase(getAllGamesList.pending, (state) => {
                 state.loading = true
-                gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
+                gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}))
             }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<ParsedSheetData>) => {
-                state.loading = false
-                state.allGamesList = action.payload.data.map(item => item[0]);
-                state.allData = action.payload.data;
-                state.headers = action.payload.headers;
-                gamesSlice.caseReducers.addSlots(state, addSlotsAction({ slots: [] }))
-                const findDisabled =  getDisabledSlots(action.payload.data);
-                gamesSlice.caseReducers.addDisabledSlots(state, addDisabledSlotsAction(findDisabled))
-            });
+            state.loading = false
+            state.allGamesList = action.payload.data.map(item => item[0]);
+            state.allData = action.payload.data;
+            state.headers = action.payload.headers;
+            gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}))
+            const findDisabled = getDisabledSlots(action.payload.data);
+            gamesSlice.caseReducers.addDisabledSlots(state, addDisabledSlotsAction(findDisabled))
+        })
     },
 });
 
