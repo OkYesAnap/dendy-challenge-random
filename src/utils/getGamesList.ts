@@ -1,5 +1,7 @@
 import axios from "axios";
 import {Cols} from "@/app/roulette/types";
+import {GetThunkAPI} from "@reduxjs/toolkit";
+import {AsyncThunkConfig} from "@/redux/slices/gamesSlice";
 
 export interface GoogleSheetsParams {
     url: string,
@@ -59,8 +61,7 @@ const getAllData = (rows: {
         )]
 }
 
-const getGameListWithApi = async ({url, range, header}: GoogleSheetsParams): Promise<ParsedSheetData> => {
-    console.log(header);
+const getGameListWithApi = async ({url, range}: GoogleSheetsParams): Promise<ParsedSheetData> => {
     let headers: Cols[] = [];
     const {id, gid} = extractIds(url);
 
@@ -83,12 +84,19 @@ const getGameListWithApi = async ({url, range, header}: GoogleSheetsParams): Pro
     return {headers, data};
 }
 
-export const getGamesList = async ({url, range, header}: GoogleSheetsParams): Promise<ParsedSheetData> => {
+export const getGamesList = async ({
+                                       url,
+                                       range,
+                                       header
+                                   }: GoogleSheetsParams, thunkAPI: GetThunkAPI<AsyncThunkConfig>): Promise<ParsedSheetData | undefined> => {
     try {
-        return getGameListWithApi({url, range, header});
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        return {headers: [], data: []}
+        return await getGameListWithApi({url, range, header});
+    } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'response' in error) {
+            const serverError = error as { response: { data: unknown } };
+            //@ts-expect-error Thunk types is not working
+            return thunkAPI.rejectWithValue(serverError.response.data);
+        }
     }
 
     // interface SheetsResponse {

@@ -1,11 +1,26 @@
-import {createAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createAction, createAsyncThunk, createSlice, GetThunkAPI, PayloadAction} from '@reduxjs/toolkit';
 import {getDisabledSlots, randomRoll, shuffleArr as shuffleStrArray, sortArr} from './gamesLogics';
 import {CellData, getGamesList, GoogleSheetsParams, ParsedSheetData} from '@/utils/getGamesList';
 import {Cols} from "@/app/roulette/types";
+import type {ThunkDispatch} from "redux-thunk";
+import type {UnknownAction} from "redux";
 
-export const getAllGamesList = createAsyncThunk('games/getGamesList', async (params: GoogleSheetsParams) => {
-    return await getGamesList(params)
-});
+export type AsyncThunkConfig = {
+    state?: unknown
+    dispatch?: ThunkDispatch<unknown, unknown, UnknownAction>
+    extra?: unknown
+    rejectValue?: unknown
+    serializedErrorType?: unknown
+    pendingMeta?: unknown
+    fulfilledMeta?: unknown
+    rejectedMeta?: unknown
+}
+
+export const getAllGamesList = createAsyncThunk(
+    'games/getGamesList',
+    async (params: GoogleSheetsParams, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
+        return await getGamesList(params, thunkAPI)
+    });
 
 const addSlotsAction = createAction<{ slots: CellData[] }>('games/addSlots');
 const addDisabledSlotsAction = createAction<CellData[]>('games/addDisabledSlots');
@@ -22,7 +37,7 @@ export interface GamesState {
     statistics: { [key: string]: number };
     gamesInEvent: number;
     showVisualEvents: number;
-    eventsList:  CellData[][];
+    eventsList: CellData[][];
     blackFieldsCounter: number;
     eventsCounter: number;
     rollCounter: number;
@@ -139,14 +154,20 @@ const gamesSlice = createSlice({
             .addCase(getAllGamesList.pending, (state) => {
                 state.loading = true
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}))
-            }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<ParsedSheetData>) => {
-            state.loading = false
-            state.allGamesList = action.payload.data.map(item => item[0]);
-            state.allData = action.payload.data;
-            state.headers = action.payload.headers;
-            gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}))
-            const findDisabled = getDisabledSlots(action.payload.data);
-            gamesSlice.caseReducers.addDisabledSlots(state, addDisabledSlotsAction(findDisabled))
+            }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<ParsedSheetData | undefined>) => {
+            state.loading = false;
+            if (action.payload) {
+                state.allGamesList = action.payload.data.map(item => item[0]);
+                state.allData = action.payload.data;
+                state.headers = action.payload.headers;
+                gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}))
+                const findDisabled = getDisabledSlots(action.payload.data);
+                gamesSlice.caseReducers.addDisabledSlots(state, addDisabledSlotsAction(findDisabled))
+            }
+        }).addCase(getAllGamesList.rejected, (state, action) => {
+            state.loading = false;
+            //@ts-expect-error Thunk types is not working
+            if(action.payload?.error) console.error(action.payload.error);
         })
     },
 });

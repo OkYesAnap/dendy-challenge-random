@@ -86,7 +86,6 @@ const MainInfo: React.FC = () => {
         setOpenInfo(true);
         setInfo(item);
     }
-    console.log(allData);
 
     return (
         <>
