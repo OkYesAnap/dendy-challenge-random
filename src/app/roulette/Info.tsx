@@ -22,11 +22,12 @@ const isImageUrl = (data: string) => {
 const Info: React.FC<InfoProps> = ({headers, infoData, isOpen, onClose, startPos, startElement}) => {
     return <ModalPortal {...{isOpen, onClose, startPos, startElement}}>
         {infoData.map((item, i) => {
-            return i > 0 && item ? (
+            const direction = item.formattedValue?.length > 50 ? "flex-col" : "flex-row";
+            return i > 0 && item.formattedValue ? (
                 <div
                     key={`${infoData[0]}-${i}`}
-                    className="flex items-center justify-center border">
-                    {headers[i] && <div className="text-2xl font-bold pl-2 pr-2">{headers[i - 1].label}:</div>}
+                    className={`flex items-center justify-center py-2 px-4 border ${direction}`}>
+                    {headers[i] && !item.hyperlink && <div className="text-2xl font-bold">{headers[i - 1].label}:&nbsp;</div>}
                     <div> {isImageUrl(item.formattedValue) ? (
                             <Image
                                 src={item.formattedValue}
@@ -34,8 +35,16 @@ const Info: React.FC<InfoProps> = ({headers, infoData, isOpen, onClose, startPos
                                 width={100}
                                 height={100}
                                 className="w-full"/>)
-                        : <div className="text-xl p-2">
-                            {item.formattedValue}
+                        : <div className="text-2xl">
+                            {item.hyperlink ? (<a
+                                    href={item.hyperlink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 hover:underline"
+                                >
+                                    {item.hyperlink}
+                                </a>)
+                                : item.formattedValue}
                         </div>}
                     </div>
                 </div>) : null;
