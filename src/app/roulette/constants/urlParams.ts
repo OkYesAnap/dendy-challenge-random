@@ -18,17 +18,17 @@ export const templates: Array<UrlParams> = [{
     header: false
 },{
     hint: "8-bit Challenge: Global Research - Famicom/FDS",
-    range: "A1:Z1500",
+    range: "A1:Z1253",
     url: "https://docs.google.com/spreadsheets/d/1d8xJrgTGSQilXd8UEbQUtAf5OTLiZASRumVNbZcbLZQ/edit?gid=890290760",
     header: true
 },{
     hint: "8-bit Challenge: Global Research NES (NTSC)",
-    range: "A1:Z1500",
+    range: "A1:Z675",
     url: "https://docs.google.com/spreadsheets/d/1d8xJrgTGSQilXd8UEbQUtAf5OTLiZASRumVNbZcbLZQ/edit?gid=481799788",
     header: true
 },{
     hint: "8-bit Challenge: Global Research NES (PAL)",
-    range: "A1:Z1500",
+    range: "A1:Z344",
     url: "https://docs.google.com/spreadsheets/d/1d8xJrgTGSQilXd8UEbQUtAf5OTLiZASRumVNbZcbLZQ/edit?gid=1298713468",
     header: true
 }];
