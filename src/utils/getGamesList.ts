@@ -47,9 +47,27 @@ const getHeadersNames = (sheet: {
     return headersData;
 }
 
-const getAllData = (rows: {
+interface ApiRows {
     values: CellData[]
-}, i: number): CellData[] => {
+}
+
+interface ApiRanges {
+    rowData: Array<ApiRows>
+}
+
+interface CurrentSheet {
+    data: {
+        sheets: {
+            data: {
+                rowData: {
+                    values: [];
+                }[];
+            }[];
+        }[];
+    }
+}
+
+const getAllData = (rows: ApiRows, i: number): CellData[] => {
     if (Object.keys(rows).length === 0) return [{
         formattedValue: `${i + 1}.`
     }]
@@ -59,6 +77,16 @@ const getAllData = (rows: {
                 formattedValue: item.formattedValue, hyperlink: item.hyperlink
             })
         )]
+}
+
+const combineRanges = (currentSheet: CurrentSheet) => {
+    return currentSheet.data.sheets[0].data.reduce((accumRanges: ApiRows[], range: ApiRanges, i: number) => {
+        if (i === 0) return [...range.rowData];
+        range.rowData.forEach((row, i) => {
+            accumRanges[i] = {...accumRanges[i], values: [...accumRanges[i].values, ...row.values]};
+        })
+        return accumRanges;
+    }, [])
 }
 
 const getGameListWithApi = async ({url, range}: GoogleSheetsParams): Promise<ParsedSheetData> => {
@@ -75,16 +103,16 @@ const getGameListWithApi = async ({url, range}: GoogleSheetsParams): Promise<Par
     const encodeSheetName = encodeURIComponent(findSheet.properties.title)
     const sheetAndRange = `${encodeSheetName}!${collectRanges}`
     const currentSheet = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${id}?includeGridData=true&ranges=${sheetAndRange}&key=${apiKey}`);
-    const firstRange = currentSheet.data.sheets[0];
+    const firstSheet = currentSheet.data.sheets[0];
 
     const sheet = currentSheet.data.sheets[0].data;
     const sheetData = sheet[0].rowData;
 
-    if (firstRange.tables) {
-        headers = getHeadersNames(firstRange)
+    if (firstSheet.tables) {
+        headers = getHeadersNames(firstSheet)
         sheetData.shift();
     }
-    const data = sheetData.map(getAllData);
+    const data = combineRanges(currentSheet).map(getAllData);
 
     return {headers, data};
 }
