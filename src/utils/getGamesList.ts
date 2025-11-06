@@ -2,6 +2,7 @@ import axios from "axios";
 import {Cols} from "@/app/roulette/types";
 import {GetThunkAPI} from "@reduxjs/toolkit";
 import {AsyncThunkConfig} from "@/redux/slices/gamesSlice";
+const apiKey = "AIzaSyAJRnfNSh5XllaAReLgmrmy-yhCW8APsJI";
 
 export interface GoogleSheetsParams {
     url: string,
@@ -32,21 +33,6 @@ function extractIds(url: string) {
     return {};
 }
 
-const apiKey = "AIzaSyAJRnfNSh5XllaAReLgmrmy-yhCW8APsJI";
-
-const getHeadersNames = (sheet: {
-    tables: Array<{
-        columnProperties: Array<{ columnName: string }>
-    }>
-}): Cols[] => {
-    const headersData: Cols[] = sheet.tables[0].columnProperties.map((col: {
-        columnName: string
-    }) => ({
-        label: col.columnName
-    }));
-    return headersData;
-}
-
 interface ApiRows {
     values: CellData[]
 }
@@ -55,17 +41,30 @@ interface ApiRanges {
     rowData: Array<ApiRows>
 }
 
+interface CurrentRange {
+    data: {
+        rowData: {
+            values: [];
+        }[];
+    }[];
+}
+
 interface CurrentSheet {
     data: {
-        sheets: {
-            data: {
-                rowData: {
-                    values: [];
-                }[];
-            }[];
-        }[];
+        sheets: CurrentRange[];
     }
 }
+
+const getHeadersNames = (sheet:CurrentRange): Cols[] => sheet.data.reduce((
+    headersAcc:Cols[], range: {rowData: Array<{values: CellData[]}>}) => {
+        range.rowData[0].values.forEach(val => {
+            headersAcc = [...headersAcc, {
+                label: val.formattedValue
+            }]
+        });
+        return headersAcc;
+    }, [])
+
 
 const getAllData = (rows: ApiRows, i: number): CellData[] => {
     if (Object.keys(rows).length === 0) return [{
@@ -82,9 +81,10 @@ const getAllData = (rows: ApiRows, i: number): CellData[] => {
 const combineRanges = (currentSheet: CurrentSheet) => {
     return currentSheet.data.sheets[0].data.reduce((accumRanges: ApiRows[], range: ApiRanges, i: number) => {
         if (i === 0) return [...range.rowData];
-        range.rowData.forEach((row, i) => {
-            accumRanges[i] = {...accumRanges[i], values: [...accumRanges[i].values, ...row.values]};
-        })
+
+        for (let x = 0; x < range.rowData.length; x++) {
+            accumRanges[x] = {...accumRanges[x], values: [...accumRanges[x].values, ...range.rowData[x].values]};
+        }
         return accumRanges;
     }, [])
 }
@@ -105,14 +105,14 @@ const getGameListWithApi = async ({url, range}: GoogleSheetsParams): Promise<Par
     const currentSheet = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${id}?includeGridData=true&ranges=${sheetAndRange}&key=${apiKey}`);
     const firstSheet = currentSheet.data.sheets[0];
 
-    const sheet = currentSheet.data.sheets[0].data;
-    const sheetData = sheet[0].rowData;
+    const haveTable = firstSheet.tables
 
-    if (firstSheet.tables) {
+    const sheetData = combineRanges(currentSheet);
+    if (haveTable) {
         headers = getHeadersNames(firstSheet)
         sheetData.shift();
     }
-    const data = combineRanges(currentSheet).map(getAllData);
+    const data = sheetData.map(getAllData);
 
     return {headers, data};
 }

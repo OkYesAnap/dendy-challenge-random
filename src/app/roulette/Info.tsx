@@ -27,7 +27,7 @@ const Info: React.FC<InfoProps> = ({headers, infoData, isOpen, onClose, startPos
                 <div
                     key={`${infoData[0]}-${i}`}
                     className={`flex items-center justify-center py-2 px-4 border ${direction}`}>
-                    {headers[i] && !item.hyperlink && <div className="text-2xl font-bold">{headers[i - 1].label}:&nbsp;</div>}
+                    {headers[i - 1] && !item.hyperlink && <div className="text-2xl font-bold">{headers[i - 1].label}:&nbsp;</div>}
                     <div> {isImageUrl(item.formattedValue) ? (
                             <Image
                                 src={item.formattedValue}
