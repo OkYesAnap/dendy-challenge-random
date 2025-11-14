@@ -94,7 +94,7 @@ const MainInfo: React.FC = () => {
     return (
         <>
             {isName && <div className="border text-center text-3xl p-3">{names?.fileName} - {names?.sheetName}</div>}
-            <div className="bg-black w-full h-screen overflow-y-auto text-gray-100 font-[family-name:var(--font-geist-sans)] pb-35">
+            <div className="bg-black w-full h-screen overflow-y-auto text-gray-100 font-[family-name:var(--font-geist-sans)] pb-50">
             <div className="grid grid-flow-col text-2xl top-1"
                  style={{
                      gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
