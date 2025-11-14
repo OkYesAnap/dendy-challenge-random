@@ -1,5 +1,6 @@
 import {GoogleSheetsParams} from "@/utils/getGamesList";
 import {ChoseParamsModalProps} from "@/app/roulette/types";
+import {useState} from "react";
 
 const Instructions = (
     {
@@ -7,7 +8,11 @@ const Instructions = (
         handleLoad,
         onClose
     }: Partial<ChoseParamsModalProps>) => {
+
+    const [range, setRange] = useState<string>(paramsRef!.current.range)
+
     const handleChangeGoogleParams = (params: Partial<GoogleSheetsParams>) => {
+        setRange(params.range || '');
         paramsRef!.current = {...paramsRef!.current, ...params}
     }
 
@@ -41,21 +46,18 @@ const Instructions = (
                     <td className="w-3/12 border p-2 text-center align-middle">
                         <input
                             onChange={(e) => handleChangeGoogleParams({range: e.target.value})}
+                            value={range}
                             className="w-full bg-gray-700 p-1 text-center"
                             type="text"
-                            defaultValue={paramsRef!.current.range}
                         />
                     </td>
-                    <td className="w-8/12 text-left pl-3">
-                        <input
-                            className="scale-150 mr-3"
-                            type="checkbox"
-                            onChange={(e) => {
-                                handleChangeGoogleParams({header: e.target.checked});
-                            }}
-                            defaultChecked={paramsRef!.current.header}
-                        />
-                        <span>HEADER - first line will be skipped as Header</span>
+                    <td className="w-8/12 text-center pl-3">
+                        <span>Use Default -
+                            <span onClick={() => handleChangeGoogleParams({range: "A1:Z"})}
+                                  className={" p-2 hover:bg-gray-700 cursor-pointer"}>
+                                A1:Z
+                            </span>
+                        </span>
                     </td>
                 </tr>
                 </tbody>

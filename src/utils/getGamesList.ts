@@ -2,6 +2,7 @@ import axios from "axios";
 import {Cols} from "@/app/roulette/types";
 import {GetThunkAPI} from "@reduxjs/toolkit";
 import {AsyncThunkConfig} from "@/redux/slices/gamesSlice";
+
 const apiKey = "AIzaSyAJRnfNSh5XllaAReLgmrmy-yhCW8APsJI";
 
 export interface GoogleSheetsParams {
@@ -55,27 +56,30 @@ interface CurrentSheet {
     }
 }
 
-const getHeadersNames = (sheet:CurrentRange): Cols[] => sheet.data.reduce((
-    headersAcc:Cols[], range: {rowData: Array<{values: CellData[]}>}) => {
-        range.rowData[0].values.forEach(val => {
-            headersAcc = [...headersAcc, {
-                label: val.formattedValue
-            }]
-        });
-        return headersAcc;
-    }, [])
+const getHeadersNames = (sheet: CurrentRange): Cols[] => sheet.data.reduce((
+    headersAcc: Cols[], range: { rowData: Array<{ values: CellData[] }> }) => {
+    range.rowData[0].values.forEach(val => {
+        headersAcc = [...headersAcc, {
+            label: val.formattedValue
+        }]
+    });
+    return headersAcc;
+}, [])
 
 
-const getAllData = (rows: ApiRows, i: number): CellData[] => {
-    if (Object.keys(rows).length === 0) return [{
-        formattedValue: `${i + 1}.`
-    }]
-    return [
-        {formattedValue: `${i + 1}. ${rows.values[0].formattedValue}`},
-        ...rows.values.map(item => ({
-                formattedValue: item.formattedValue, hyperlink: item.hyperlink
-            })
-        )]
+const getAllData = (sheetData: ApiRows[]): CellData[][] => {
+
+    return sheetData.reduce((reduceData: CellData[][], rows: ApiRows): CellData[][] => {
+            if (rows.values[0].formattedValue) {
+                const index = reduceData.length
+                reduceData.push([]);
+                reduceData[index].push(
+                    {formattedValue: `${index + 1}. ${rows.values[0].formattedValue}`},
+                    ...rows.values)
+            }
+            return reduceData;
+        }, []
+    )
 }
 
 const combineRanges = (currentSheet: CurrentSheet) => {
@@ -112,7 +116,7 @@ const getGameListWithApi = async ({url, range}: GoogleSheetsParams): Promise<Par
         headers = getHeadersNames(firstSheet)
         sheetData.shift();
     }
-    const data = sheetData.map(getAllData);
+    const data = getAllData(sheetData);
 
     return {headers, data};
 }
