@@ -94,7 +94,8 @@ const MainInfo: React.FC = () => {
     return (
         <>
             {isName && <div className="text-center text-3xl p-3">{names?.fileName} - {names?.sheetName}</div>}
-            <div className={`grid grid-flow-col text-2xl top-1`}
+            <div className="bg-black w-full h-screen overflow-y-auto text-gray-100 font-[family-name:var(--font-geist-sans)] pb-35">
+            <div className="grid grid-flow-col text-2xl top-1"
                  style={{
                      gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
                      gridTemplateRows: `repeat(${Math.ceil(allData.length / columns)}, minmax(0, 1fr))`
@@ -192,6 +193,7 @@ const MainInfo: React.FC = () => {
                 {loading && (<div
                     className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">
                     Loading List</div>)}
+            </div>
             </div>
         </>
     )
