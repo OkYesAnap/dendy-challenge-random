@@ -93,7 +93,7 @@ const MainInfo: React.FC = () => {
 
     return (
         <>
-            <div className="text-center text-2xl">{ isName ? `${names?.fileName} - ${names?.sheetName}` : ''}</div>
+            {isName && <div className="text-center text-3xl p-3">{names?.fileName} - {names?.sheetName}</div>}
             <div className={`grid grid-flow-col text-2xl top-1`}
                  style={{
                      gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
