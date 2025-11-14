@@ -6,6 +6,7 @@ import {
     allGamesList as sAllGamesList,
     loading as sLoading,
     headers as sHeaders,
+    names as sNames,
     shuffleAllGamesList,
     sortAllGamesList, defaultCellData,
 } from "@/redux/slices/gamesSlice";
@@ -43,9 +44,12 @@ const MainInfo: React.FC = () => {
     const loading = useSelector(sLoading);
     const startSlots = useSelector(sStartSlots)
     const allGamesList = useSelector(sAllGamesList)
+    const names = useSelector(sNames)
     const searchParams = useSearchParams();
 
     const handleLoad = useHandleLoad({paramsRef, setOpenChoseModal});
+
+    const isName = names?.fileName || names?.sheetName;
 
     const handleOpenChose = (e?: React.MouseEvent<HTMLButtonElement>) => {
         if (e) getAndSetElementPos(e);
@@ -89,6 +93,7 @@ const MainInfo: React.FC = () => {
 
     return (
         <>
+            <div className="text-center text-2xl">{ isName ? `${names?.fileName} - ${names?.sheetName}` : ''}</div>
             <div className={`grid grid-flow-col text-2xl top-1`}
                  style={{
                      gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,

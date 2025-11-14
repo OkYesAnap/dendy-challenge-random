@@ -16,9 +16,15 @@ export interface CellData {
     hyperlink?: string
 }
 
+export interface Names {
+    fileName: string,
+    sheetName: string,
+}
+
 export interface ParsedSheetData {
     headers: Cols[],
-    data: CellData[][]
+    data: CellData[][],
+    names?: Names,
 }
 
 function extractIds(url: string) {
@@ -117,8 +123,9 @@ const getGameListWithApi = async ({url, range}: GoogleSheetsParams): Promise<Par
         sheetData.shift();
     }
     const data = getAllData(sheetData);
+    const names = {fileName: currentSheet.data.properties.title, sheetName: findSheet.properties.title};
 
-    return {headers, data};
+    return {headers, data, names};
 }
 
 export const getGamesList = async ({
@@ -135,45 +142,4 @@ export const getGamesList = async ({
             return thunkAPI.rejectWithValue(serverError.response.data);
         }
     }
-
-    // interface SheetsResponse {
-    //     table: {
-    //         rows: Array<{
-    //             c: Array<{
-    //                 v: string;
-    //                 f?: string;
-    //             }>
-    //         }>,
-    //         cols: Cols[]
-    //     }
-    // }
-    // const {id, gid} = extractIds(url);
-    // let headers: Cols[] = [];
-    // await getGameListWithApi({url, range, header});
-    // try {
-    //     const response = await axios.get(`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&gid=${gid}&range=${range}`);
-    //     const text = response.data;
-    //     const json = JSON.parse(text.substr(47).slice(0, -2)) as SheetsResponse;
-    //     const {rows, cols} = json.table;
-    //     const isLabel = cols[0].label;
-    //     const firstElementNeeded = header && !isLabel
-    //     const addLabelsToHeaders = header && isLabel
-    //     let idNum = firstElementNeeded ? 0 : 1;
-    //     const data = rows.reduce((accum: string[][], row) => {
-    //         if (row.c[0]?.v) {
-    //             accum.push([]);
-    //             const current = accum[accum.length - 1];
-    //             current.push(`${idNum++}. ${row.c[0]?.v}`);
-    //             row.c.forEach((item) => {
-    //                 current.push(item?.f || item?.v || "");
-    //             })
-    //         }
-    //         return accum
-    //     }, []);
-    //     if (addLabelsToHeaders) headers = [...cols]
-    //     return {headers, data}
-    // } catch (error) {
-    //     console.error('Error fetching data:', error);
-    //     return {headers: [], data: []}
-    // }
 };

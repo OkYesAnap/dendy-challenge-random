@@ -1,6 +1,6 @@
 import {createAction, createAsyncThunk, createSlice, GetThunkAPI, PayloadAction} from '@reduxjs/toolkit';
 import {getDisabledSlots, randomRoll, shuffleArr as shuffleStrArray, sortArr} from './gamesLogics';
-import {CellData, getGamesList, GoogleSheetsParams, ParsedSheetData} from '@/utils/getGamesList';
+import {CellData, getGamesList, GoogleSheetsParams, Names, ParsedSheetData} from '@/utils/getGamesList';
 import {Cols} from "@/app/roulette/types";
 import type {ThunkDispatch} from "redux-thunk";
 import type {UnknownAction} from "redux";
@@ -44,6 +44,7 @@ export interface GamesState {
     currentSlot: CellData;
     loading: boolean;
     volume: number;
+    names?: Names;
 }
 
 const initialState: GamesState = {
@@ -62,7 +63,7 @@ const initialState: GamesState = {
     rollCounter: 0,
     currentSlot: defaultCellData,
     loading: false,
-    volume: 50
+    volume: 50,
 };
 
 const gamesSlice = createSlice({
@@ -160,6 +161,7 @@ const gamesSlice = createSlice({
                 state.allGamesList = action.payload.data.map(item => item[0]);
                 state.allData = action.payload.data;
                 state.headers = action.payload.headers;
+                state.names = action.payload.names;
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}))
                 const findDisabled = getDisabledSlots(action.payload.data);
                 gamesSlice.caseReducers.addDisabledSlots(state, addDisabledSlotsAction(findDisabled))
@@ -204,5 +206,6 @@ export const currentSlot = (state: { games: GamesState }) => state.games.current
 export const gamesInEvent = (state: { games: GamesState }) => state.games.gamesInEvent;
 export const loading = (state: { games: GamesState }) => state.games.loading;
 export const volume = (state: { games: GamesState }) => state.games.volume;
+export const names = (state: { games: GamesState }) => state.games.names;
 
 export default gamesSlice.reducer;
