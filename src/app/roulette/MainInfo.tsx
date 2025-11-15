@@ -7,6 +7,7 @@ import {
     loading as sLoading,
     headers as sHeaders,
     names as sNames,
+    errorMessage as sErrorMessage,
     shuffleAllGamesList,
     sortAllGamesList, defaultCellData,
 } from "@/redux/slices/gamesSlice";
@@ -45,6 +46,7 @@ const MainInfo: React.FC = () => {
     const startSlots = useSelector(sStartSlots)
     const allGamesList = useSelector(sAllGamesList)
     const names = useSelector(sNames)
+    const errorMessage = useSelector(sErrorMessage)
     const searchParams = useSearchParams();
 
     const handleLoad = useHandleLoad({paramsRef, setOpenChoseModal});
@@ -59,7 +61,7 @@ const MainInfo: React.FC = () => {
     useEffect(() => {
         setOpenChoseModal(!allGamesList.length && !loading);
         setEmptySlots(!startSlots.length);
-    }, [startSlots.length, allGamesList.length,emptySlots, loading]);
+    }, [startSlots.length, allGamesList.length, emptySlots, loading]);
 
     useEffect(() => {
         const headerUrl = searchParams.get("header") === "true";
@@ -90,110 +92,113 @@ const MainInfo: React.FC = () => {
         setOpenInfo(true);
         setInfo(item);
     }
-
     return (
         <>
-            {isName && <div className="border text-center text-3xl p-3">{names?.fileName} - {names?.sheetName}</div>}
-            <div className="bg-black w-full h-screen overflow-y-auto text-gray-100 font-[family-name:var(--font-geist-sans)] pb-50">
-            <div className="grid grid-flow-col text-2xl top-1"
-                 style={{
-                     gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                     gridTemplateRows: `repeat(${Math.ceil(allData.length / columns)}, minmax(0, 1fr))`
-                 }}>
-                {allData.map((item) => (
-                    <motion.div key={item[0].formattedValue}
-                                layout
-                                transition={{
-                                    layout: {duration: 1.5}
-                                }}
-                                className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
-                    >
+            {isName && <div className="border text-center text-3xl p-3">{errorMessage ? errorMessage : `${names?.fileName} - ${names?.sheetName}`}</div>}
+            <div
+                className="bg-black w-full h-screen overflow-y-auto text-gray-100 font-[family-name:var(--font-geist-sans)] pb-50">
+                <div className="grid grid-flow-col text-2xl top-1"
+                     style={{
+                         gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                         gridTemplateRows: `repeat(${Math.ceil(allData.length / columns)}, minmax(0, 1fr))`
+                     }}>
+                    {allData.map((item) => (
+                        <motion.div key={item[0].formattedValue}
+                                    layout
+                                    transition={{
+                                        layout: {duration: 1.5}
+                                    }}
+                                    className={`flex justify-between p-1 border ${currentRolls.find(roll => roll === item[0]) ? 'text-gray-500' : ''}`}
+                        >
                         <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>
                             {item[0].formattedValue}
                         </span>
-                        {(item.length > 2 && (item[0].formattedValue !== info[0].formattedValue || !openInfo)) ? (
-                            <div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>
-                                <FontAwesomeIcon icon={faPlusSquare}/>
-                            </div>
-                        ) : null}
-                    </motion.div>
-                ))}
-                <motion.div layout
-                            transition={{
-                                layout: {duration: .1}
-                            }}
-                            className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded">
-                    <div className="border rounded-full p-1 flex flex-row">
-                        {!!allGamesList.length && (
+                            {(item.length > 2 && (item[0].formattedValue !== info[0].formattedValue || !openInfo)) ? (
+                                <div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>
+                                    <FontAwesomeIcon icon={faPlusSquare}/>
+                                </div>
+                            ) : null}
+                        </motion.div>
+                    ))}
+                    <motion.div layout
+                                transition={{
+                                    layout: {duration: .1}
+                                }}
+                                className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded">
+                        <div className="border rounded-full p-1 flex flex-row">
+                            {!!allGamesList.length && (
+                                <SquareButton
+                                    onClickButton={() => setOpenRoll(true)}
+                                    icon={"🎰"}
+                                    hint={"Roulette"}
+                                />
+                            )}
                             <SquareButton
-                                onClickButton={() => setOpenRoll(true)}
-                                icon={"🎰"}
-                                hint={"Roulette"}
+                                onClickButton={() => setAdditionalFunctions(p => !p)}
+                                icon={"..."}
+                                hint={"Settings"}/>
+                        </div>
+                        {additionalFunctions && <div className="border rounded-full p-1 flex flex-row">
+                            <SquareButton
+                                onClickButton={(e) => handleOpenChose(e)}
+                                icon={"📥"}
+                                hint={"Load list"}
                             />
-                        )}
-                        <SquareButton
-                            onClickButton={() => setAdditionalFunctions(p => !p)}
-                            icon={"..."}
-                            hint={"Settings"}/>
-                    </div>
-                    {additionalFunctions && <div className="border rounded-full p-1 flex flex-row">
-                        <SquareButton
-                            onClickButton={(e) => handleOpenChose(e)}
-                            icon={"📥"}
-                            hint={"Load list"}
-                        />
 
-                        {!!allGamesList.length && (<>
-                            <SquareButton
-                                onClickButton={() => setColumns(p => p > 1 ? p - 1 : p)}
-                                icon={"-"}
-                                hint={"Less columns"}
-                            />
-                            <SquareButton
-                                icon={String(columns)}
-                                hint={"Columns"}
-                            />
-                            <SquareButton
-                                onClickButton={() => setColumns(p => p < 12 ? p + 1 : p)}
-                                icon={"+"}
-                                hint={"More columns"}
-                            />
-                            <SquareButton
-                                onClickButton={() => dispatch(shuffleAllGamesList())}
-                                icon={"🔀"}
-                                hint={"Shuffle"}/>
-                            <SquareButton
-                                onClickButton={() => dispatch(sortAllGamesList())}
-                                icon={"📈"}
-                                hint={"Order"}/>
-                            <SquareButton
-                                onClickButton={() => handleLoad()}
-                                icon={"🔄"}
-                                hint={"Update"}/>
-                        </>)}
-                    </div>}
-                </motion.div>
-                {openRoll && <Roulette {...{setOpenRoll: () => setOpenRoll(false)}} />}
-                <ChoseUrlParamsModal {...{
-                    startPos: elementPos,
-                    isOpen: openChoseModal,
-                    onClose: () => setOpenChoseModal(false),
-                    paramsRef,
-                    handleLoad,
-                    startElement: <SquareButton icon={"📥"}/>
-                }} />
-                <Info {...{
-                    startPos: elementPos,
-                    startElement: <FontAwesomeIcon icon={faPlusSquare}/>,
-                    headers,
-                    infoData: info,
-                    isOpen: openInfo,
-                    onClose: () => setOpenInfo(false)
-                }} />
-                {loading && (<div
-                    className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">
-                    Loading List</div>)}
-            </div>
+                            {!!allGamesList.length && (<>
+                                <SquareButton
+                                    onClickButton={() => setColumns(p => p > 1 ? p - 1 : p)}
+                                    icon={"-"}
+                                    hint={"Less columns"}
+                                />
+                                <SquareButton
+                                    icon={String(columns)}
+                                    hint={"Columns"}
+                                />
+                                <SquareButton
+                                    onClickButton={() => setColumns(p => p < 12 ? p + 1 : p)}
+                                    icon={"+"}
+                                    hint={"More columns"}
+                                />
+                                <SquareButton
+                                    onClickButton={() => dispatch(shuffleAllGamesList())}
+                                    icon={"🔀"}
+                                    hint={"Shuffle"}/>
+                                <SquareButton
+                                    onClickButton={() => dispatch(sortAllGamesList())}
+                                    icon={"📈"}
+                                    hint={"Order"}/>
+                                <SquareButton
+                                    onClickButton={() => handleLoad()}
+                                    icon={"🔄"}
+                                    hint={"Update"}/>
+                            </>)}
+                        </div>}
+                    </motion.div>
+                    {openRoll && <Roulette {...{setOpenRoll: () => setOpenRoll(false)}} />}
+                    <ChoseUrlParamsModal {...{
+                        startPos: elementPos,
+                        isOpen: openChoseModal,
+                        onClose: () => setOpenChoseModal(false),
+                        paramsRef,
+                        handleLoad,
+                        startElement: <SquareButton icon={"📥"}/>
+                    }} />
+                    <Info {...{
+                        startPos: elementPos,
+                        startElement: <FontAwesomeIcon icon={faPlusSquare}/>,
+                        headers,
+                        infoData: info,
+                        isOpen: openInfo,
+                        onClose: () => setOpenInfo(false)
+                    }} />
+                    {loading && (
+                        <div
+                            className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">
+                            Loading List
+                        </div>)
+                    }
+                </div>
             </div>
         </>
     )

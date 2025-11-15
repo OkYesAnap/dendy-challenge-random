@@ -45,6 +45,7 @@ export interface GamesState {
     loading: boolean;
     volume: number;
     names?: Names;
+    errorMessage?: string;
 }
 
 const initialState: GamesState = {
@@ -157,6 +158,7 @@ const gamesSlice = createSlice({
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}))
             }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<ParsedSheetData | undefined>) => {
             state.loading = false;
+            state.errorMessage = undefined;
             if (action.payload) {
                 state.allGamesList = action.payload.data.map(item => item[0]);
                 state.allData = action.payload.data;
@@ -168,6 +170,8 @@ const gamesSlice = createSlice({
             }
         }).addCase(getAllGamesList.rejected, (state, action) => {
             state.loading = false;
+            //@ts-expect-error Thunk types is not working
+            state.errorMessage = action?.payload?.error.message;
             //@ts-expect-error Thunk types is not working
             if(action.payload?.error) console.error(action.payload.error);
         })
@@ -207,5 +211,6 @@ export const gamesInEvent = (state: { games: GamesState }) => state.games.gamesI
 export const loading = (state: { games: GamesState }) => state.games.loading;
 export const volume = (state: { games: GamesState }) => state.games.volume;
 export const names = (state: { games: GamesState }) => state.games.names;
+export const errorMessage = (state: { games: GamesState }) => state.games.errorMessage;
 
 export default gamesSlice.reducer;
