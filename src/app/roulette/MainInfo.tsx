@@ -5,7 +5,6 @@ import {
     startSlots as sStartSlots,
     allGamesList as sAllGamesList,
     loading as sLoading,
-    headers as sHeaders,
     names as sNames,
     errorMessage as sErrorMessage,
     shuffleAllGamesList,
@@ -25,22 +24,23 @@ import {faPlusSquare} from "@fortawesome/free-regular-svg-icons";
 import SquareButton from "@/app/roulette/SquareButton";
 import {useHandleLoad} from "@/app/roulette/hooks/useHandleLoad";
 import {defaultParams} from "@/app/roulette/constants/urlParams";
+import {defaultOpenModals, Modals} from "@/app/roulette/types";
+import {useOpenModalsHandler} from "@/app/roulette/hooks/useOpenModalsHandler";
+import {getElementPos} from "@/app/roulette/utils/getElementPos";
+import ModalManager from "@/app/roulette/ModalManager";
 
 export const buttonsClasses = "flex-1 p-1 border text-3xl rounded-full w-15 h-15"
 
 const MainInfo: React.FC = () => {
-    const [openChoseModal, setOpenChoseModal] = useState<boolean>(false);
+    const [openModals, setOpenModal] = useState<Modals>(defaultOpenModals);
     const [additionalFunctions, setAdditionalFunctions] = useState<boolean>(false);
-    const [openRoll, setOpenRoll] = useState<boolean>(false);
     const [columns, setColumns] = useState<number>(3);
     const [emptySlots, setEmptySlots] = useState<boolean>(true);
-    const [openInfo, setOpenInfo] = useState<boolean>(false);
-    const [info, setInfo] = useState<CellData[]>([defaultCellData]);
+    const [infoData, setInfoData] = useState<CellData[]>([defaultCellData]);
     const paramsRef = useRef<GoogleSheetsParams>(defaultParams);
     const [elementPos, setElementPos] = useState<DOMRect | undefined>();
     const dispatch = useDispatch<AppDispatch>();
     const allData = useSelector(sAllData);
-    const headers = useSelector(sHeaders);
     const currentRolls = useSelector(sCurrentRolls);
     const loading = useSelector(sLoading);
     const startSlots = useSelector(sStartSlots)
@@ -49,17 +49,23 @@ const MainInfo: React.FC = () => {
     const errorMessage = useSelector(sErrorMessage)
     const searchParams = useSearchParams();
 
-    const handleLoad = useHandleLoad({paramsRef, setOpenChoseModal});
+    const handleLoad = useHandleLoad({paramsRef, setOpenModal});
 
     const isName = names?.fileName || names?.sheetName;
 
+    const updateOpenModal = useOpenModalsHandler(setOpenModal);
+
+    const getAndSetElementPos = (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
+        setElementPos(getElementPos(e));
+    }
+
     const handleOpenChose = (e?: React.MouseEvent<HTMLButtonElement>) => {
         if (e) getAndSetElementPos(e);
-        setOpenChoseModal(true);
+        updateOpenModal({openChoseModal: true});
     }
 
     useEffect(() => {
-        setOpenChoseModal(!allGamesList.length && !loading);
+        setOpenModal(prev => ({...prev, openChoseModal: !allGamesList.length && !loading}));
         setEmptySlots(!startSlots.length);
     }, [startSlots.length, allGamesList.length, emptySlots, loading]);
 
@@ -82,19 +88,16 @@ const MainInfo: React.FC = () => {
         }
     }, [searchParams, handleLoad]);
 
-    const getAndSetElementPos = (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
-        const params = e.currentTarget.getBoundingClientRect();
-        setElementPos(params);
-    }
-
     const handleOpenInfo = (e: React.MouseEvent<HTMLDivElement>, item: CellData[]) => {
         getAndSetElementPos(e);
-        setOpenInfo(true);
-        setInfo(item);
+        updateOpenModal({openInfoModal: true});
+        setInfoData(item);
     }
     return (
         <>
-            {isName && <div className="border text-center text-3xl p-3">{errorMessage ? errorMessage : `${names?.fileName} - ${names?.sheetName}`}</div>}
+            {isName && <div
+                className="border text-center text-3xl p-3">{errorMessage ? errorMessage : `${names?.fileName} - ${names?.sheetName}`}
+            </div>}
             <div
                 className="bg-black w-full h-screen overflow-y-auto text-gray-100 font-[family-name:var(--font-geist-sans)] pb-50">
                 <div className="grid grid-flow-col text-2xl top-1"
@@ -113,7 +116,7 @@ const MainInfo: React.FC = () => {
                         <span className={`flex-grow overflow-hidden whitespace-nowrap overflow-ellipsis`}>
                             {item[0].formattedValue}
                         </span>
-                            {(item.length > 2 && (item[0].formattedValue !== info[0].formattedValue || !openInfo)) ? (
+                            {(item.length > 2 && (item[0].formattedValue !== infoData[0].formattedValue || !openModals.openInfoModal)) ? (
                                 <div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>
                                     <FontAwesomeIcon icon={faPlusSquare}/>
                                 </div>
@@ -128,7 +131,7 @@ const MainInfo: React.FC = () => {
                         <div className="border rounded-full p-1 flex flex-row">
                             {!!allGamesList.length && (
                                 <SquareButton
-                                    onClickButton={() => setOpenRoll(true)}
+                                    onClickButton={() => updateOpenModal({openRouletteModal: true})}
                                     icon={"🎰"}
                                     hint={"Roulette"}
                                 />
@@ -175,31 +178,9 @@ const MainInfo: React.FC = () => {
                             </>)}
                         </div>}
                     </motion.div>
-                    {openRoll && <Roulette {...{setOpenRoll: () => setOpenRoll(false)}} />}
-                    <ChoseUrlParamsModal {...{
-                        startPos: elementPos,
-                        isOpen: openChoseModal,
-                        onClose: () => setOpenChoseModal(false),
-                        paramsRef,
-                        handleLoad,
-                        startElement: <SquareButton icon={"📥"}/>
-                    }} />
-                    <Info {...{
-                        startPos: elementPos,
-                        startElement: <FontAwesomeIcon icon={faPlusSquare}/>,
-                        headers,
-                        infoData: info,
-                        isOpen: openInfo,
-                        onClose: () => setOpenInfo(false)
-                    }} />
-                    {loading && (
-                        <div
-                            className="fixed max-h-[85%] text-4xl left-1/2 transform p-10 -translate-x-1/2 top-1/2 -translate-y-[50%] border-3 bg-black rounded">
-                            Loading List
-                        </div>)
-                    }
                 </div>
             </div>
+            <ModalManager {...{openModals, updateOpenModal, paramsRef, infoData, handleLoad, elementPos}}/>
         </>
     )
 }

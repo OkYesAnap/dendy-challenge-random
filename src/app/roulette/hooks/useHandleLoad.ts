@@ -4,11 +4,11 @@ import {useDispatch} from "react-redux";
 import {AppDispatch} from "@/redux/store";
 import {useCallback} from "react";
 import {GoogleSheetsParams} from "@/utils/getGamesList";
-import {ReactSetState} from "@/app/roulette/types";
+import {Modals, ReactSetState} from "@/app/roulette/types";
 
-export const useHandleLoad = ({paramsRef, setOpenChoseModal}: {
+export const useHandleLoad = ({paramsRef, setOpenModal}: {
     paramsRef: React.RefObject<GoogleSheetsParams>,
-    setOpenChoseModal: ReactSetState<boolean>
+    setOpenModal: ReactSetState<Modals>
 }) => {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
@@ -17,6 +17,6 @@ export const useHandleLoad = ({paramsRef, setOpenChoseModal}: {
         const {range, url, header} = paramsRef.current;
         router.push(`?range=${range}&header=${header}&url=${url}`);
         dispatch(getAllGamesList(paramsRef.current));
-        setOpenChoseModal(false);
-    }, [dispatch, router,  paramsRef, setOpenChoseModal])
+        setOpenModal(prev => ({...prev, openChoseModal: false}));
+    }, [dispatch, router, paramsRef, setOpenModal])
 }

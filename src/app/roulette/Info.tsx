@@ -1,12 +1,12 @@
 import ModalPortal from "@/components/ModalPortal";
 import Image from "next/image";
 import {ReactNode} from "react";
-import {Cols} from "@/app/roulette/types";
 import {CellData} from "@/utils/getGamesList";
+import {headers as sHeaders} from "@/redux/slices/gamesSlice";
+import {useSelector} from "react-redux";
 
 interface InfoProps {
     startPos?: DOMRect;
-    headers: Cols[];
     infoData: CellData[];
     isOpen: boolean;
     onClose: () => void;
@@ -19,7 +19,8 @@ const isImageUrl = (data: string) => {
 };
 
 
-const Info: React.FC<InfoProps> = ({headers, infoData, isOpen, onClose, startPos, startElement}) => {
+const Info: React.FC<InfoProps> = ({infoData, isOpen, onClose, startPos, startElement}) => {
+    const headers = useSelector(sHeaders);
     return <ModalPortal {...{isOpen, onClose, startPos, startElement}}>
         {infoData.map((item, i) => {
             const direction = item.formattedValue?.length > 50 ? "flex-col" : "flex-row";
@@ -27,7 +28,8 @@ const Info: React.FC<InfoProps> = ({headers, infoData, isOpen, onClose, startPos
                 <div
                     key={`${infoData[0]}-${i}`}
                     className={`flex items-center justify-center py-2 px-4 border ${direction}`}>
-                    {headers[i - 1] && !item.hyperlink && <div className="text-2xl font-bold">{headers[i - 1].label}:&nbsp;</div>}
+                    {headers[i - 1] && !item.hyperlink &&
+                        <div className="text-2xl font-bold">{headers[i - 1].label}:&nbsp;</div>}
                     <div> {isImageUrl(item.formattedValue) ? (
                             <Image
                                 src={item.formattedValue}

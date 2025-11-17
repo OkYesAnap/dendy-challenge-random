@@ -18,3 +18,15 @@ export interface ChoseParamsModalProps {
     startPos?: DOMRect,
     startElement?: ReactNode;
 }
+
+export interface Modals {
+    openChoseModal: boolean;
+    openInfoModal: boolean;
+    openRouletteModal: boolean;
+}
+
+export const defaultOpenModals = {
+    openChoseModal: false,
+    openInfoModal: false,
+    openRouletteModal: false,
+}
