@@ -19,13 +19,13 @@ export type AsyncThunkConfig = {
 export const getAllGamesList = createAsyncThunk(
     'games/getGamesList',
     async (params: GoogleSheetsParams, thunkAPI: GetThunkAPI<AsyncThunkConfig>) => {
-        return await getGamesList(params, thunkAPI)
+        return await getGamesList(params, thunkAPI);
     });
 
 const addSlotsAction = createAction<{ slots: CellData[] }>('games/addSlots');
 const addDisabledSlotsAction = createAction<CellData[]>('games/addDisabledSlots');
 
-export const defaultCellData: CellData = {formattedValue: ''}
+export const defaultCellData: CellData = {formattedValue: ''};
 
 export interface GamesState {
     allGamesList: CellData[];
@@ -78,7 +78,7 @@ const gamesSlice = createSlice({
             state.startSlots = action.payload;
         },
         addSlots(state, action: PayloadAction<{ slots: CellData[] }>) {
-            const {slots} = action.payload
+            const {slots} = action.payload;
             state.startSlots = [...state.allGamesList, ...slots];
             state.slotsList = state.startSlots;
             gamesSlice.caseReducers.resetStatistics(state);
@@ -121,8 +121,8 @@ const gamesSlice = createSlice({
             state.slotsList = allData.reduce((acc, allDataItem) => {
                 const find = slotsList.find(slotItem => slotItem.formattedValue === allDataItem[0].formattedValue);
                 if (find) acc.push(find);
-                return acc
-            }, [])
+                return acc;
+            }, []);
         },
         shuffleAllGamesList(state) {
             const {allData} = state;
@@ -154,8 +154,8 @@ const gamesSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getAllGamesList.pending, (state) => {
-                state.loading = true
-                gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}))
+                state.loading = true;
+                gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}));
             }).addCase(getAllGamesList.fulfilled, (state, action: PayloadAction<ParsedSheetData | undefined>) => {
             state.loading = false;
             state.errorMessage = undefined;
@@ -164,9 +164,9 @@ const gamesSlice = createSlice({
                 state.allData = action.payload.data;
                 state.headers = action.payload.headers;
                 state.names = action.payload.names;
-                gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}))
+                gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}));
                 const findDisabled = getDisabledSlots(action.payload.data);
-                gamesSlice.caseReducers.addDisabledSlots(state, addDisabledSlotsAction(findDisabled))
+                gamesSlice.caseReducers.addDisabledSlots(state, addDisabledSlotsAction(findDisabled));
             }
         }).addCase(getAllGamesList.rejected, (state, action) => {
             state.loading = false;
@@ -174,7 +174,7 @@ const gamesSlice = createSlice({
             state.errorMessage = action?.payload?.error.message;
             //@ts-expect-error Thunk types is not working
             if(action.payload?.error) console.error(action.payload.error);
-        })
+        });
     },
 });
 

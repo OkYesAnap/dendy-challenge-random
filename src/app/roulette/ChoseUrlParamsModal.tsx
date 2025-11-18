@@ -1,4 +1,4 @@
-import ModalPortal from "@/components/ModalPortal"
+import ModalPortal from "@/components/ModalPortal";
 import Template from "@/app/roulette/Template";
 import Instructions from "@/app/roulette/Instructions";
 import {ChoseParamsModalProps} from "@/app/roulette/types";
@@ -23,6 +23,6 @@ const ChoseUrlParamsModal: React.FC<ChoseParamsModalProps> = (
             </div>
             {isCustomLoad ? <Instructions {...{paramsRef, handleLoad, onClose}}/> : <Template/>}
         </div>
-    </ModalPortal>)
-}
+    </ModalPortal>);
+};
 export default ChoseUrlParamsModal;

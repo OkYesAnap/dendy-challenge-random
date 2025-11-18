@@ -9,7 +9,7 @@ export const defaultParams: UrlParams = {
     url: "",
     range: "A1:Z",
     header: false
-}
+};
 
 export const templates: Array<UrlParams> = [{
     hint: "Dendy Challenge 2025",

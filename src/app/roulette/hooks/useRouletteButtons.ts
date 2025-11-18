@@ -33,5 +33,5 @@ export const useRouletteButtons = ({setAudioSrcName, setSpinning, audioStopRef, 
             setOpenRoll();
         }, 500);
     };
-return {startSpinning, stopSpinning, closeRoulette}
-}
+return {startSpinning, stopSpinning, closeRoulette};
+};

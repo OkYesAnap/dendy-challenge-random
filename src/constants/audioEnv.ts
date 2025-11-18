@@ -1,5 +1,5 @@
 const isDev = process.env.NODE_ENV === 'development';
-export const audioPath = isDev ? '/audio/' : '/dendy-challenge-random/audio/'
+export const audioPath = isDev ? '/audio/' : '/dendy-challenge-random/audio/';
 export const audioSrcNames = [
     '01-Title.mp3',
     '02-Intermission.mp3',

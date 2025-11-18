@@ -14,9 +14,6 @@ import {AppDispatch} from "@/redux/store";
 import React, {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useSearchParams} from "next/navigation";
-import Roulette from "./Roulette";
-import Info from "./Info";
-import ChoseUrlParamsModal from "./ChoseUrlParamsModal";
 import {motion} from "motion/react";
 import {CellData, GoogleSheetsParams} from "@/utils/getGamesList";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -29,7 +26,7 @@ import {useOpenModalsHandler} from "@/app/roulette/hooks/useOpenModalsHandler";
 import {getElementPos} from "@/app/roulette/utils/getElementPos";
 import ModalManager from "@/app/roulette/ModalManager";
 
-export const buttonsClasses = "flex-1 p-1 border text-3xl rounded-full w-15 h-15"
+export const buttonsClasses = "flex-1 p-1 border text-3xl rounded-full w-15 h-15";
 
 const MainInfo: React.FC = () => {
     const [openModals, setOpenModal] = useState<Modals>(defaultOpenModals);
@@ -43,10 +40,10 @@ const MainInfo: React.FC = () => {
     const allData = useSelector(sAllData);
     const currentRolls = useSelector(sCurrentRolls);
     const loading = useSelector(sLoading);
-    const startSlots = useSelector(sStartSlots)
-    const allGamesList = useSelector(sAllGamesList)
-    const names = useSelector(sNames)
-    const errorMessage = useSelector(sErrorMessage)
+    const startSlots = useSelector(sStartSlots);
+    const allGamesList = useSelector(sAllGamesList);
+    const names = useSelector(sNames);
+    const errorMessage = useSelector(sErrorMessage);
     const searchParams = useSearchParams();
 
     const handleLoad = useHandleLoad({paramsRef, setOpenModal});
@@ -57,12 +54,12 @@ const MainInfo: React.FC = () => {
 
     const getAndSetElementPos = (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
         setElementPos(getElementPos(e));
-    }
+    };
 
     const handleOpenChose = (e?: React.MouseEvent<HTMLButtonElement>) => {
         if (e) getAndSetElementPos(e);
         updateOpenModal({openChoseModal: true});
-    }
+    };
 
     useEffect(() => {
         setOpenModal(prev => ({...prev, openChoseModal: !allGamesList.length && !loading}));
@@ -83,7 +80,7 @@ const MainInfo: React.FC = () => {
                 header: headerUrl,
                 range: rangeUrl,
                 url: sheetUrl
-            }
+            };
             handleLoad();
         }
     }, [searchParams, handleLoad]);
@@ -92,7 +89,7 @@ const MainInfo: React.FC = () => {
         getAndSetElementPos(e);
         updateOpenModal({openInfoModal: true});
         setInfoData(item);
-    }
+    };
     return (
         <>
             {isName && <div
@@ -182,7 +179,7 @@ const MainInfo: React.FC = () => {
             </div>
             <ModalManager {...{openModals, updateOpenModal, paramsRef, infoData, handleLoad, elementPos}}/>
         </>
-    )
-}
+    );
+};
 
 export default MainInfo;

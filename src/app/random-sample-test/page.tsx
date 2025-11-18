@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import EventsList from "@/app/random-sample-test/EventsList";
 import RandomSlotControl from "@/app/random-sample-test/RandomSlotControls";
 import SlotsList from "@/app/random-sample-test/SlotsList";
@@ -16,7 +16,7 @@ const Roulette: React.FC = () => {
                 </main>
             </div>
 
-        </Provider>)
-}
+        </Provider>);
+};
 
 export default Roulette;

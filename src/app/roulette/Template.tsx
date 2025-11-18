@@ -14,7 +14,7 @@ const Template: React.FC = () => {
         const {range, url, header} = template;
         router.push(`?range=${range}&header=${header}&url=${url}`);
         setUrl(url);
-    }
+    };
 
     return (
         <div className="text-2xl flex flex-col text-center p-5 border-3 bg-black rounded w-full">
@@ -29,6 +29,6 @@ const Template: React.FC = () => {
                 )
             )}
         </div>
-    )
-}
+    );
+};
 export default Template;

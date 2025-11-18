@@ -4,7 +4,6 @@ import SquareButton from "@/app/roulette/SquareButton";
 import Info from "@/app/roulette/Info";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlusSquare} from "@fortawesome/free-regular-svg-icons";
-import React, {useState} from "react";
 import {Modals} from "@/app/roulette/types";
 import {CellData, GoogleSheetsParams} from "@/utils/getGamesList";
 import {useSelector} from "react-redux";
@@ -45,6 +44,6 @@ const ModalManager = ({openModals, updateOpenModal, paramsRef, infoData, handleL
                     Loading List
                 </div>)
             }
-        </>)
-}
+        </>);
+};
 export default ModalManager;

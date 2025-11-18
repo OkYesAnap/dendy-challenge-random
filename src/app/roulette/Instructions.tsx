@@ -9,12 +9,12 @@ const Instructions = (
         onClose
     }: Partial<ChoseParamsModalProps>) => {
 
-    const [range, setRange] = useState<string>(paramsRef!.current.range)
+    const [range, setRange] = useState<string>(paramsRef!.current.range);
 
     const handleChangeGoogleParams = (params: Partial<GoogleSheetsParams>) => {
         setRange(params.range || '');
-        paramsRef!.current = {...paramsRef!.current, ...params}
-    }
+        paramsRef!.current = {...paramsRef!.current, ...params};
+    };
 
     return (<div className="text-2xl flex flex-col text-center p-5 border-3 bg-black rounded w-full">
             <div>
@@ -67,7 +67,7 @@ const Instructions = (
                 <button className="flex-1 mr-2 p-1 border" onClick={onClose}>Cancel</button>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Instructions;

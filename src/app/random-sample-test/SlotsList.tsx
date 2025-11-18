@@ -19,7 +19,7 @@ const defaultParams = {
     url: "https://docs.google.com/spreadsheets/d/1lQKxm4V-xac7sl0mrwcgOg1BLpHGAy_f873ls0hoVeM/edit?gid=1031682936#gid=1031682936",
     range: "A1:A60",
     header: false
-}
+};
 
 const SlotsList: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +39,7 @@ const SlotsList: React.FC = () => {
         return () => {
             dispatch(resetStartSlots());
             dispatch(resetStatistics());
-        }
+        };
     }, [dispatch]);
 
     return (
@@ -57,7 +57,7 @@ const SlotsList: React.FC = () => {
                     </div>
                 ))}</>) : <div className="fixed text-lg text-center w-full">Loading List</div>}
         </div>
-    )
-}
+    );
+};
 
 export default SlotsList;

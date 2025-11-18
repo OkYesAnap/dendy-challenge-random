@@ -67,26 +67,26 @@ const getHeadersNames = (sheet: CurrentRange): Cols[] => sheet.data.reduce((
     range.rowData[0].values.forEach(val => {
         headersAcc = [...headersAcc, {
             label: val.formattedValue
-        }]
+        }];
     });
     return headersAcc;
-}, [])
+}, []);
 
 
 const getAllData = (sheetData: ApiRows[]): CellData[][] => {
 
     return sheetData.reduce((reduceData: CellData[][], rows: ApiRows): CellData[][] => {
             if (rows.values[0].formattedValue) {
-                const index = reduceData.length
+                const index = reduceData.length;
                 reduceData.push([]);
                 reduceData[index].push(
                     {formattedValue: `${index + 1}. ${rows.values[0].formattedValue}`},
-                    ...rows.values)
+                    ...rows.values);
             }
             return reduceData;
         }, []
-    )
-}
+    );
+};
 
 const combineRanges = (currentSheet: CurrentSheet) => {
     return currentSheet.data.sheets[0].data.reduce((accumRanges: ApiRows[], range: ApiRanges, i: number) => {
@@ -96,8 +96,8 @@ const combineRanges = (currentSheet: CurrentSheet) => {
             accumRanges[x] = {...accumRanges[x], values: [...accumRanges[x].values, ...range.rowData[x].values]};
         }
         return accumRanges;
-    }, [])
-}
+    }, []);
+};
 
 const getGameListWithApi = async ({url, range}: GoogleSheetsParams): Promise<ParsedSheetData> => {
     let headers: Cols[] = [];
@@ -108,25 +108,25 @@ const getGameListWithApi = async ({url, range}: GoogleSheetsParams): Promise<Par
     const findSheet = await response.data.sheets.find((props: {
         properties: { sheetId: string }
     }) => Number(props.properties.sheetId) === Number(gid));
-    const splitRanges = range.split(',')
-    const collectRanges = splitRanges.join(`&ranges=${findSheet.properties.title}!`)
-    const encodeSheetName = encodeURIComponent(findSheet.properties.title)
-    const sheetAndRange = `${encodeSheetName}!${collectRanges}`
+    const splitRanges = range.split(',');
+    const collectRanges = splitRanges.join(`&ranges=${findSheet.properties.title}!`);
+    const encodeSheetName = encodeURIComponent(findSheet.properties.title);
+    const sheetAndRange = `${encodeSheetName}!${collectRanges}`;
     const currentSheet = await axios.get(`https://sheets.googleapis.com/v4/spreadsheets/${id}?includeGridData=true&ranges=${sheetAndRange}&key=${apiKey}`);
     const firstSheet = currentSheet.data.sheets[0];
 
-    const haveTable = firstSheet.tables
+    const haveTable = firstSheet.tables;
 
     const sheetData = combineRanges(currentSheet);
     if (haveTable) {
-        headers = getHeadersNames(firstSheet)
+        headers = getHeadersNames(firstSheet);
         sheetData.shift();
     }
     const data = getAllData(sheetData);
     const names = {fileName: currentSheet.data.properties.title, sheetName: findSheet.properties.title};
 
     return {headers, data, names};
-}
+};
 
 export const getGamesList = async ({
                                        url,

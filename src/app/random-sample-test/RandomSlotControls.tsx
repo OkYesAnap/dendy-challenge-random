@@ -40,7 +40,7 @@ const RandomSlotControl = () => {
 
     const handleCustom = () => {
         setRandom();
-    }
+    };
 
     const randomCalculations = useCallback (() => {
         if (slotsList.length) {
@@ -54,7 +54,7 @@ const RandomSlotControl = () => {
         timerForCurrentRoll.current = setTimeout(() => {
             dispatch(setCurrentSlot(defaultCellData));
         }, 1000);
-    }, [slotsList, dispatch])
+    }, [slotsList, dispatch]);
 
     const setRandom = useCallback(() => {
         if (skipRolls > 0) {
@@ -74,8 +74,8 @@ const RandomSlotControl = () => {
         }
         return () => {
             if (timerForRandom.current) clearInterval(timerForRandom.current);
-        }
-    }, [auto, setRandom, autoDelay])
+        };
+    }, [auto, setRandom, autoDelay]);
 
     const incrementBlackSlots = () => {
         setBlackSlotsCount(prevValue => prevValue + 1);
@@ -91,7 +91,7 @@ const RandomSlotControl = () => {
         setter: React.Dispatch<SetStateAction<number>>) => {
         const value = e.target.value;
         const min = 0;
-        const max = 999999
+        const max = 999999;
         const numberValue = Number(value);
         if (!isNaN(numberValue) && numberValue >= min && numberValue <= max) {
             setter(numberValue);
@@ -101,7 +101,7 @@ const RandomSlotControl = () => {
         else if (value === '') {
             setter(0);
         }
-    }
+    };
 
     return (
         <div>
@@ -183,7 +183,7 @@ const RandomSlotControl = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default RandomSlotControl;

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Link from "next/link";
 
 
@@ -9,6 +9,6 @@ const MainPage: React.FC = () => {
                 <Link className="p-4 border rounded text-center" href={`/random-sample-test`}>Random Test</Link>
             </div>
     );
-}
+};
 
 export default MainPage;

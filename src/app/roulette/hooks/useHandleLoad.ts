@@ -18,5 +18,5 @@ export const useHandleLoad = ({paramsRef, setOpenModal}: {
         router.push(`?range=${range}&header=${header}&url=${url}`);
         dispatch(getAllGamesList(paramsRef.current));
         setOpenModal(prev => ({...prev, openChoseModal: false}));
-    }, [dispatch, router, paramsRef, setOpenModal])
-}
+    }, [dispatch, router, paramsRef, setOpenModal]);
+};

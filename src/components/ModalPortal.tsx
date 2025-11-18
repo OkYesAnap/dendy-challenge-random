@@ -17,7 +17,7 @@ const ModalPortal = ({ children, isOpen, onClose, startPos, startElement }: Moda
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-  }
+  };
 
   const [anim, setAnim] = useState(0);
   useLayoutEffect(() => {
@@ -25,16 +25,16 @@ const ModalPortal = ({ children, isOpen, onClose, startPos, startElement }: Moda
     clearTmRef();
     timeoutRef.current = setTimeout(() => {
       setAnim(1);
-    }, 0)
+    }, 0);
   }, [startPos]);
 
 
   useEffect(() => {
     if (anim === 1) {
-      clearTmRef()
+      clearTmRef();
       timeoutRef.current = setTimeout(() => {
         setAnim(2);
-      }, 300)
+      }, 300);
     }
   }, [anim]);
 
@@ -46,7 +46,7 @@ const ModalPortal = ({ children, isOpen, onClose, startPos, startElement }: Moda
     timeoutRef.current = setTimeout(() => {
       onClose();
     }, 400);
-  }
+  };
 
   return ReactDOM.createPortal(
     <div

@@ -29,4 +29,4 @@ export const defaultOpenModals = {
     openChoseModal: false,
     openInfoModal: false,
     openRouletteModal: false,
-}
+};

@@ -77,11 +77,11 @@ const RouletteRollList: React.FC<RollListProps> = ({
             }, intervals.min);
         }
         if (!start && rollStage) {
-            if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
-            if (rollTimeoutRef.current) clearInterval(rollTimeoutRef.current)
+            if (rollIntervalRef.current) clearInterval(rollIntervalRef.current);
+            if (rollTimeoutRef.current) clearInterval(rollTimeoutRef.current);
             rollTimeoutRef.current = setTimeout(() => {
                 dispatch(rollOneStep());
-                setRollStage((prev) => prev = (prev + prev / 10));
+                setRollStage((prev) => (prev + prev / 10));
             }, rollStage);
 
             if (rollStage >= intervals.max - Math.random() * 1250) {
@@ -89,22 +89,22 @@ const RouletteRollList: React.FC<RollListProps> = ({
                 setTimeout(() => {
                     setCurrentGame(slotsList[winSlot]);
                     dispatch(addRoll(winSlot));
-                    rollTimeoutRef.current = null
+                    rollTimeoutRef.current = null;
                 }, 3000);
             }
         }
         return () => {
-            if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
-            if (rollTimeoutRef.current) clearInterval(rollTimeoutRef.current)
-        }
+            if (rollIntervalRef.current) clearInterval(rollIntervalRef.current);
+            if (rollTimeoutRef.current) clearInterval(rollTimeoutRef.current);
+        };
     }, [start, rollStage, dispatch, winSlot, slotsList, setCurrentGame, clearList, setNewRollAvailable]);
 
     useEffect(() => {
         if (start) {
             setCurrentGame(defaultCellData);
-            setRollStage(1)
-        };
-    }, [start, setCurrentGame])
+            setRollStage(1);
+        }
+    }, [start, setCurrentGame]);
 
 
     useEffect(() => {
@@ -118,10 +118,10 @@ const RouletteRollList: React.FC<RollListProps> = ({
         }
         return () => {
             if (endTimeoutRef.current) {
-                clearTimeout(endTimeoutRef.current)
+                clearTimeout(endTimeoutRef.current);
             }
         };
-    }, [currentGame, setAudioSrcName, setCurrentGame, setNewRollAvailable])
+    }, [currentGame, setAudioSrcName, setCurrentGame, setNewRollAvailable]);
 
 
     return (<motion.div
@@ -149,7 +149,7 @@ const RouletteRollList: React.FC<RollListProps> = ({
                 </motion.li>
             ))}
         </ul>
-    </motion.div>)
-}
+    </motion.div>);
+};
 
 export default RouletteRollList;

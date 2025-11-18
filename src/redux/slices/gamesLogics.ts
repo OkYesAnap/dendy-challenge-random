@@ -18,11 +18,11 @@ export const randomRoll = (state: GamesState) => {
         state.eventsCounter += 1;
     }
     if (state.showVisualEvents <= state.eventsList.length) {
-        state.eventsList = []
+        state.eventsList = [];
     }
     state.statistics[value.formattedValue] += 1 || 0;
     state.rollCounter += 1;
-}
+};
 
 export const shuffleArr = <T extends CellData[] | CellData[][]>(arr: T): T => {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -30,7 +30,7 @@ export const shuffleArr = <T extends CellData[] | CellData[][]>(arr: T): T => {
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
-}
+};
 
 export const sortArr = <T extends CellData[][]>(arr: T): T => {
     if (Array.isArray(arr) && arr.length > 0) {
@@ -41,7 +41,7 @@ export const sortArr = <T extends CellData[][]>(arr: T): T => {
         });
     }
     return arr;
-}
+};
 
 export const getDisabledSlots = (data: CellData[][]): CellData[] => {
     return data.reduce((disabled, slot) => {
@@ -53,6 +53,6 @@ export const getDisabledSlots = (data: CellData[][]): CellData[] => {
         ))) {
             disabled.push(slot[0]);
         }
-        return disabled
-    }, [])
-}
+        return disabled;
+    }, []);
+};

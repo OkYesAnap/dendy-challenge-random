@@ -50,7 +50,7 @@ const Info: React.FC<InfoProps> = ({infoData, isOpen, onClose, startPos, startEl
                         </div>}
                     </div>
                 </div>) : null;
-        })}</ModalPortal>
-}
+        })}</ModalPortal>;
+};
 
 export default Info;

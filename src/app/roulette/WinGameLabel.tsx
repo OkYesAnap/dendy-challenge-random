@@ -1,4 +1,4 @@
-import {motion} from "motion/react"
+import {motion} from "motion/react";
 import {ReactSetState} from "@/app/roulette/types";
 import SquareButton from "@/app/roulette/SquareButton";
 import {CellData} from "@/utils/getGamesList";
@@ -30,7 +30,7 @@ const WinGameLabel: React.FC<{
                 />
             </div>
             }
-        </motion.div>)
-}
+        </motion.div>);
+};
 
 export default WinGameLabel;

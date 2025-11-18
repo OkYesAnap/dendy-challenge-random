@@ -34,7 +34,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
         setClearList,
         setCurrentGame,
         setOpenRoll
-    })
+    });
 
     useEffect(() => {
         if (audioRouletteRef.current && audioSrcName) {
@@ -54,7 +54,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
 
     const handleChangeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
         setVol(Number(e.target.value));
-    }
+    };
     return (
         <div className="fixed inset-0 bg-black/80">
             {!!audioSrcName && <audio ref={audioRouletteRef} src={`${audioPath}${audioSrcName}`}/>}
