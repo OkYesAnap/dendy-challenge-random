@@ -1,5 +1,5 @@
 import {buttonsClasses} from "@/app/roulette/MainInfo";
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState, useRef, useEffect, JSX} from "react";
 
 const SquareButton = ({
                           disabled = false,
@@ -8,7 +8,7 @@ const SquareButton = ({
                           hint,
                       }: {
     disabled?: boolean;
-    icon: string;
+    icon: string | JSX.Element;
     onClickButton?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
     hint?: string;
 }) => {

@@ -79,9 +79,9 @@ const gamesSlice = createSlice({
         },
         addSlots(state, action: PayloadAction<{ slots: CellData[] }>) {
             const {slots} = action.payload;
+            gamesSlice.caseReducers.resetStatistics(state);
             state.startSlots = [...state.allGamesList, ...slots];
             state.slotsList = state.startSlots;
-            gamesSlice.caseReducers.resetStatistics(state);
         },
         addRoll(state, action: PayloadAction<number>) {
             const winSlot = action.payload;
@@ -139,6 +139,7 @@ const gamesSlice = createSlice({
             state.statistics = {};
             state.currentRolls = [];
             state.eventsList = [];
+            state.slotsList = [];
             state.startSlots.forEach(item => state.statistics[item.formattedValue] = 0);
             state.blackFieldsCounter = 0;
             state.eventsCounter = 0;
@@ -149,6 +150,20 @@ const gamesSlice = createSlice({
         },
         resetStartSlots() {
             return initialState;
+        },
+        setValuesFromEditor(state, action: PayloadAction<string>) {
+            gamesSlice.caseReducers.resetStatistics(state);
+            const editorArray = action.payload.split('\n');
+            state.allData = [];
+            editorArray.forEach((item:string, i) => {
+                if (item) {
+                    const itemWithIndex = {formattedValue:`${i + 1}. ${item}` || ''};
+                    state.slotsList.push(itemWithIndex);
+                    state.allGamesList.push(itemWithIndex);
+                    state.allData.push([itemWithIndex, {formattedValue: item || ''}]);
+                }
+            });
+
         }
     },
     extraReducers: (builder) => {
@@ -192,7 +207,8 @@ export const {
     shuffleAllGamesList,
     sortAllGamesList,
     resetStartSlots,
-    setVolume
+    setVolume,
+    setValuesFromEditor
 } = gamesSlice.actions;
 
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;

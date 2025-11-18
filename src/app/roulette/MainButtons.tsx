@@ -1,33 +1,36 @@
 import SquareButton from "@/app/roulette/SquareButton";
 import {allGamesList as sAllGamesList, shuffleAllGamesList, sortAllGamesList} from "@/redux/slices/gamesSlice";
 import {motion} from "motion/react";
-import React, {useState} from "react";
+import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Modals, ReactSetState} from "@/app/roulette/types";
 import {AppDispatch} from "@/redux/store";
 
-const MainButtons = ({
+interface MainButtonsProps {
+    columns: number;
+    setColumns: ReactSetState<number>;
+    handleLoad: () => void;
+    getAndSetElementPos: (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
+    updateOpenModal: (openWindow: Partial<Modals>) => void;
+}
+
+const MainButtons: React.FC<MainButtonsProps> = ({
                          columns,
                          setColumns,
                          handleLoad,
                          getAndSetElementPos,
                          updateOpenModal,
-                     }:
-                     {
-                         columns: number;
-                         setColumns: ReactSetState<number>;
-                         handleLoad: () => void;
-                         getAndSetElementPos: (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
-                         updateOpenModal: (openWindow: Partial<Modals>) => void;
                      }) => {
 
     const [additionalFunctions, setAdditionalFunctions] = useState<boolean>(false);
     const allGamesList = useSelector(sAllGamesList);
     const dispatch = useDispatch<AppDispatch>();
 
-    const handleOpenChose = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    const handleOpenChose = ({e, openWindow}:{e?: React.MouseEvent<HTMLButtonElement>;
+    openWindow: Partial<Modals>
+}) => {
         if (e) getAndSetElementPos(e);
-        updateOpenModal({openChoseModal: true});
+        updateOpenModal(openWindow);
     };
 
     return (
@@ -39,21 +42,26 @@ const MainButtons = ({
             <div className="border rounded-full p-1 flex flex-row">
                 {!!allGamesList.length && (
                     <SquareButton
-                        onClickButton={() => updateOpenModal({openRouletteModal: true})}
+                        onClickButton={() => handleOpenChose({openWindow:{openRouletteModal: true}})}
                         icon={"🎰"}
                         hint={"Roulette"}
                     />
                 )}
                 <SquareButton
                     onClickButton={() => setAdditionalFunctions(p => !p)}
-                    icon={"..."}
+                    icon={"🛠️"}
                     hint={"Settings"}/>
             </div>
             {additionalFunctions && <div className="border rounded-full p-1 flex flex-row">
                 <SquareButton
-                    onClickButton={(e) => handleOpenChose(e)}
+                    onClickButton={(e) => handleOpenChose({e, openWindow:{openChoseModal: true}})}
                     icon={"📥"}
                     hint={"Load list"}
+                />
+                <SquareButton
+                    onClickButton={(e) => handleOpenChose({e, openWindow:{openEditorModal: true}})}
+                    icon={"🖊️"}
+                    hint={"Edit list"}
                 />
 
                 {!!allGamesList.length && (<>

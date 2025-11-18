@@ -8,6 +8,7 @@ import {Modals} from "@/app/roulette/types";
 import {CellData, GoogleSheetsParams} from "@/utils/getGamesList";
 import {useSelector} from "react-redux";
 import {loading as sLoading} from "@/redux/slices/gamesSlice";
+import Editor from "@/app/Editor";
 
 const ModalManager = ({openModals, updateOpenModal, paramsRef, infoData, handleLoad, elementPos}: {
     openModals: Modals,
@@ -23,19 +24,25 @@ const ModalManager = ({openModals, updateOpenModal, paramsRef, infoData, handleL
         <>
             {openModals.openRouletteModal && <Roulette {...{setOpenRoll: () => updateOpenModal({openRouletteModal: false})}} />}
             <ChoseUrlParamsModal {...{
-                startPos: elementPos,
                 isOpen: openModals.openChoseModal,
+                handleLoad,
                 onClose: (() => updateOpenModal({openChoseModal: false})),
                 paramsRef,
-                handleLoad,
+                startPos: elementPos,
                 startElement: <SquareButton icon={"📥"}/>
             }} />
             <Info {...{
-                startPos: elementPos,
-                startElement: <FontAwesomeIcon icon={faPlusSquare}/>,
                 infoData,
                 isOpen: openModals.openInfoModal,
                 onClose: (() => updateOpenModal({openInfoModal: false})),
+                startElement: <FontAwesomeIcon icon={faPlusSquare}/>,
+                startPos: elementPos,
+            }} />
+            <Editor {...{
+                isOpen: openModals.openEditorModal,
+                onClose: (() => updateOpenModal({openEditorModal: false})),
+                startElement: <SquareButton icon={"️️🖊️"}/>,
+                startPos: elementPos,
             }} />
             {loading && (
                 <div
