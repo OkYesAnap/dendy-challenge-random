@@ -50,7 +50,7 @@ const MainListItems = ({
                 </div>
             ) : null}
         </motion.div>
-    )))
-}
+    )));
+};
 
 export default MainListItems;

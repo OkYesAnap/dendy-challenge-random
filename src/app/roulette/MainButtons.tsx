@@ -86,7 +86,7 @@ const MainButtons = ({
                 </>)}
             </div>}
         </motion.div>
-    )
-}
+    );
+};
 
 export default MainButtons;
