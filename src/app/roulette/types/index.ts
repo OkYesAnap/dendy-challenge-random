@@ -23,10 +23,12 @@ export interface Modals {
     openChoseModal: boolean;
     openInfoModal: boolean;
     openRouletteModal: boolean;
+    openEditorModal: boolean;
 }
 
 export const defaultOpenModals = {
     openChoseModal: false,
     openInfoModal: false,
     openRouletteModal: false,
+    openEditorModal: false,
 };

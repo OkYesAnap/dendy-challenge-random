@@ -21,8 +21,7 @@ const ModalManager = ({openModals, updateOpenModal, paramsRef, infoData, handleL
 
     return (
         <>
-            {openModals.openRouletteModal &&
-                <Roulette {...{setOpenRoll: () => updateOpenModal({openRouletteModal: false})}} />}
+            {openModals.openRouletteModal && <Roulette {...{setOpenRoll: () => updateOpenModal({openRouletteModal: false})}} />}
             <ChoseUrlParamsModal {...{
                 startPos: elementPos,
                 isOpen: openModals.openChoseModal,
