@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {allData as sAllData, setValuesFromEditor} from "@/redux/slices/gamesSlice";
 import {CellData} from "@/utils/getGamesList";
 import {ReactSetState} from "@/app/roulette/types";
+import {useDragAndDrop} from "@/app/roulette/hooks/useDragAndDrop";
 
 interface EditorProps {
     startPos?: DOMRect;
@@ -29,30 +30,7 @@ const Editor: React.FC<EditorProps> = ({isOpen, onClose, startElement, startPos}
     const allData = useSelector(sAllData);
     const dispatch = useDispatch();
 
-
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            const file = files[0];
-
-            if (file.type === 'text/plain') {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const text = event.target?.result as string;
-                    setTextEdit(text);
-                };
-                reader.readAsText(file);
-            } else {
-                alert('Please use (.txt)');
-            }
-        }
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-    };
+    const {handleDrop, handleDragOver} = useDragAndDrop({setTextSlice: setValuesFromEditor, setTextEdit});
 
     useEffect(() => {
         const text = allData.reduce((collectText: string, item: CellData[]) => {
@@ -66,10 +44,10 @@ const Editor: React.FC<EditorProps> = ({isOpen, onClose, startElement, startPos}
         const currentTextArray = textEdit.split('\n');
         const lineLength = Math.max(...currentTextArray.map(str => str.length));
         widthChanger(lineLength, setWidth);
-        if (currentTextArray.length < 24) {
+        if (currentTextArray.length < 20) {
             heightChanger(currentTextArray.length, setHeight);
         } else {
-            heightChanger(24, setHeight);
+            heightChanger(20, setHeight);
         }
     }, [textEdit, allData, width]);
 

@@ -1,11 +1,16 @@
 import {useRouter, useSearchParams} from "next/navigation";
 import {templates, UrlParams} from "@/app/roulette/constants/urlParams";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {setValuesFromEditor} from "@/redux/slices/gamesSlice";
 
 const Template: React.FC = () => {
     const searchParams = useSearchParams();
+    const dispatch = useDispatch();
     const [url, setUrl] = useState<string>('');
     const router = useRouter();
+    const fmRef = useRef<HTMLInputElement>(null);
+
     useEffect(() => {
         setUrl(searchParams.get("url") || '');
     }, [setUrl, searchParams]);
@@ -14,6 +19,22 @@ const Template: React.FC = () => {
         const {range, url, header} = template;
         router.push(`?range=${range}&header=${header}&url=${url}`);
         setUrl(url);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const text = event.target?.result as string;
+                dispatch(setValuesFromEditor(text));
+            };
+            reader.readAsText(file);
+        }
+    };
+
+    const handleOpenFileManager = () => {
+        fmRef.current?.click();
     };
 
     return (
@@ -28,6 +49,14 @@ const Template: React.FC = () => {
                     </div>
                 )
             )}
+            <div className="text-4xl mx-auto mt-2 p-2 border cursor-pointer hover:bg-gray-700" onClick={handleOpenFileManager}>📂</div>
+            <input
+                ref={fmRef}
+                type="file"
+                accept=".txt"
+                onChange={handleFileChange}
+                className="hidden"
+            />
         </div>
     );
 };

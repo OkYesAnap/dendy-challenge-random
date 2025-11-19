@@ -21,8 +21,6 @@ import ModalManager from "@/app/roulette/ModalManager";
 import MainButtons from "@/app/roulette/MainButtons";
 import MainListItems from "@/app/MainListItems";
 
-export const buttonsClasses = "flex-1 p-1 border text-3xl rounded-full w-15 h-15";
-
 const MainInfo: React.FC = () => {
     const [openModals, setOpenModal] = useState<Modals>(defaultOpenModals);
     const [columns, setColumns] = useState<number>(3);
@@ -43,6 +41,10 @@ const MainInfo: React.FC = () => {
     const isName = names?.fileName || names?.sheetName;
 
     const updateOpenModal = useOpenModalsHandler(setOpenModal);
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+    };
 
     const getAndSetElementPos = (e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
         setElementPos(getElementPos(e));
@@ -79,6 +81,8 @@ const MainInfo: React.FC = () => {
                 className="border text-center text-3xl p-3">{errorMessage ? errorMessage : `${names?.fileName} - ${names?.sheetName}`}
             </div>}
             <div
+                onDragOver={handleDragOver}
+                onDrop={handleDragOver}
                 className="bg-black w-full h-screen overflow-y-auto text-gray-100 font-[family-name:var(--font-geist-sans)] pb-50">
                 <div className="grid grid-flow-col text-2xl top-1"
                      style={{

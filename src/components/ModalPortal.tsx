@@ -12,6 +12,9 @@ interface ModalPortalProps {
 
 const ModalPortal = ({ children, isOpen, onClose, startPos, startElement }: ModalPortalProps) => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
 
   const clearTmRef = () => {
     if (timeoutRef.current) {
@@ -49,7 +52,7 @@ const ModalPortal = ({ children, isOpen, onClose, startPos, startElement }: Moda
   };
 
   return ReactDOM.createPortal(
-    <div
+    <div onDrop={handleDragOver} onDragOver={handleDragOver}
       className="fixed inset-0 bg-black/50 flex justify-center items-center" onMouseDown={handleClose}>
       <motion.div
         layout

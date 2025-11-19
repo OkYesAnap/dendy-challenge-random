@@ -1,5 +1,6 @@
-import {buttonsClasses} from "@/app/roulette/MainInfo";
 import React, {useState, useRef, useEffect, JSX} from "react";
+
+export const buttonsClasses = "flex-1 p-1 border text-3xl rounded-full w-15 h-15";
 
 const SquareButton = ({
                           disabled = false,

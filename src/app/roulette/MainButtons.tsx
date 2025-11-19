@@ -38,8 +38,8 @@ const MainButtons: React.FC<MainButtonsProps> = ({
                     transition={{
                         layout: {duration: .1}
                     }}
-                    className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-3 border rounded">
-            <div className="border rounded-full p-1 flex flex-row">
+                    className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-1 border rounded">
+            <div className="border rounded-full p-1 flex flex-row gap-x-1">
                 {!!allGamesList.length && (
                     <SquareButton
                         onClickButton={() => handleOpenChose({openWindow:{openRouletteModal: true}})}
@@ -52,7 +52,7 @@ const MainButtons: React.FC<MainButtonsProps> = ({
                     icon={"🛠️"}
                     hint={"Settings"}/>
             </div>
-            {additionalFunctions && <div className="border rounded-full p-1 flex flex-row">
+            {additionalFunctions && <div className="border rounded-full p-1 flex flex-row gap-x-1">
                 <SquareButton
                     onClickButton={(e) => handleOpenChose({e, openWindow:{openChoseModal: true}})}
                     icon={"📥"}

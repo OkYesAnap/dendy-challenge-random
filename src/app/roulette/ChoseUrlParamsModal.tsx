@@ -3,6 +3,8 @@ import Template from "@/app/roulette/Template";
 import Instructions from "@/app/roulette/Instructions";
 import {ChoseParamsModalProps} from "@/app/roulette/types";
 import {useState} from "react";
+import {useDragAndDrop} from "@/app/roulette/hooks/useDragAndDrop";
+import {setValuesFromEditor} from "@/redux/slices/gamesSlice";
 
 const ChoseUrlParamsModal: React.FC<ChoseParamsModalProps> = (
     {
@@ -15,9 +17,11 @@ const ChoseUrlParamsModal: React.FC<ChoseParamsModalProps> = (
     }) => {
 
     const [isCustomLoad, setIsCustomLoad] = useState<boolean>(false);
+    const {handleDrop, handleDragOver} = useDragAndDrop({setTextSlice: setValuesFromEditor});
+
 
     return (<ModalPortal {...{isOpen, onClose, startPos, startElement}}>
-        <div className="flex flex-col text-gray-100">
+        <div onDrop={handleDrop} onDragOver={handleDragOver} className="flex flex-col text-gray-100">
             <div className="p-3 text-3xl w-auto border-2 hover:bg-gray-700 cursor-pointer"
                  onClick={() => setIsCustomLoad(prev => !prev)}>{isCustomLoad ? 'Load Templates' : 'Custom Load'}
             </div>
