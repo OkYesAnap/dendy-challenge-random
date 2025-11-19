@@ -81,7 +81,7 @@ const Roulette: React.FC<{ setOpenRoll: () => void }> = ({setOpenRoll}) => {
                     className="h-2 bg-gray-300 accent-blue-600 rounded-lg appearance-none cursor-pointer mb-1"
                 />
                 <div className={"flex-row"}>
-                    <div className="border rounded-full p-1 flex flex-row">
+                    <div className="border rounded-full p-1 flex flex-row gap-1">
                         <SquareButton disabled={newRollAvailable || slotsList.length <= 1}
                                       onClickButton={() => dispatch(shuffleRouletteList())}
                                       icon={"🔀"}
