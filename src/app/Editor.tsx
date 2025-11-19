@@ -29,6 +29,31 @@ const Editor: React.FC<EditorProps> = ({isOpen, onClose, startElement, startPos}
     const allData = useSelector(sAllData);
     const dispatch = useDispatch();
 
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+
+            if (file.type === 'text/plain') {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const text = event.target?.result as string;
+                    setTextEdit(text);
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Please use (.txt)');
+            }
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+    };
+
     useEffect(() => {
         const text = allData.reduce((collectText: string, item: CellData[]) => {
             return collectText + item[1].formattedValue + "\n";
@@ -50,10 +75,11 @@ const Editor: React.FC<EditorProps> = ({isOpen, onClose, startElement, startPos}
 
     return (
         <ModalPortal {...{isOpen, onClose, startPos, startElement}}>
-            <div className="flex flex-col border-2 p-2">
-            <textarea
-                className="px-2"
-                style={{height: `${height + 1}rem`, width: `${width + 4}rem`}}
+            <div onDrop={handleDrop} onDragOver={handleDragOver} className="flex flex-col border-2 p-2">
+                {!textEdit && <div>Drag and drop a .txt file, Copy/Paste, or Write custom text</div>}
+                <textarea
+                className="px-2 w-full"
+                style={{height: `${height + 1}rem`, width: textEdit ? `${width + 4}rem` : ''}}
                 value={textEdit}
                 onChange={(e) => {
                     setTextEdit(e.target.value);

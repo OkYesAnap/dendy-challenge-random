@@ -155,6 +155,7 @@ const gamesSlice = createSlice({
             gamesSlice.caseReducers.resetStatistics(state);
             const editorArray = action.payload.split('\n');
             state.allData = [];
+            state.names = undefined;
             editorArray.forEach((item:string, i) => {
                 if (item) {
                     const itemWithIndex = {formattedValue:`${i + 1}. ${item}` || ''};
