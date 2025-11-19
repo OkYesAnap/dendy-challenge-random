@@ -56,13 +56,13 @@ const Editor: React.FC<EditorProps> = ({isOpen, onClose, startElement, startPos}
             <div onDrop={handleDrop} onDragOver={handleDragOver} className="flex flex-col border-2 p-2">
                 {!textEdit && <div>Drag and drop a .txt file, Copy/Paste, or Write custom text</div>}
                 <textarea
-                className="px-2 w-full"
+                className="px-2 w-full bg-gray-800 text-white border-none focus:outline-none"
                 style={{height: `${height + 1}rem`, width: textEdit ? `${width + 4}rem` : ''}}
                 value={textEdit}
                 onChange={(e) => {
                     setTextEdit(e.target.value);
                 }}/>
-                <button className="hover:bg-gray-700 cursor-pointer border w-full"
+                <button className="hover:bg-gray-700 cursor-pointer border w-full mt-2"
                         onClick={() => {
                             onClose();
                             dispatch(setValuesFromEditor(textEdit));
