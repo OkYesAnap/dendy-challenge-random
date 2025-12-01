@@ -1,10 +1,19 @@
 import ModalPortal from "@/components/ModalPortal";
 import Template from "@/app/roulette/Template";
 import Instructions from "@/app/roulette/Instructions";
-import {ChoseParamsModalProps} from "@/app/roulette/types";
-import {useState} from "react";
+import {ReactNode, useState} from "react";
 import {useDragAndDrop} from "@/app/roulette/hooks/useDragAndDrop";
 import {setValuesFromEditor} from "@/redux/slices/gamesSlice";
+import {GoogleSheetsParams} from "@/utils/getGamesList";
+
+interface ChoseParamsModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    paramsRef: React.RefObject<GoogleSheetsParams>
+    handleLoad: () => void;
+    startPos?: DOMRect,
+    startElement?: ReactNode;
+}
 
 const ChoseUrlParamsModal: React.FC<ChoseParamsModalProps> = (
     {

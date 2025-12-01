@@ -9,20 +9,11 @@ export interface Cols {
     type?: string;
 }
 
-
-export interface ChoseParamsModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    paramsRef: React.RefObject<GoogleSheetsParams>
-    handleLoad: () => void;
-    startPos?: DOMRect,
-    startElement?: ReactNode;
-}
-
 export interface Modals {
     openChoseModal: boolean;
     openInfoModal: boolean;
     openRouletteModal: boolean;
+    openRoulette3dModal: boolean;
     openEditorModal: boolean;
 }
 
@@ -30,5 +21,6 @@ export const defaultOpenModals = {
     openChoseModal: false,
     openInfoModal: false,
     openRouletteModal: false,
+    openRoulette3dModal: false,
     openEditorModal: false,
 };

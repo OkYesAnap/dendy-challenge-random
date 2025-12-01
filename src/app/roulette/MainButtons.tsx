@@ -15,20 +15,21 @@ interface MainButtonsProps {
 }
 
 const MainButtons: React.FC<MainButtonsProps> = ({
-                         columns,
-                         setColumns,
-                         handleLoad,
-                         getAndSetElementPos,
-                         updateOpenModal,
-                     }) => {
+                                                     columns,
+                                                     setColumns,
+                                                     handleLoad,
+                                                     getAndSetElementPos,
+                                                     updateOpenModal,
+                                                 }) => {
 
     const [additionalFunctions, setAdditionalFunctions] = useState<boolean>(false);
     const allGamesList = useSelector(sAllGamesList);
     const dispatch = useDispatch<AppDispatch>();
 
-    const handleOpenChose = ({e, openWindow}:{e?: React.MouseEvent<HTMLButtonElement>;
-    openWindow: Partial<Modals>
-}) => {
+    const handleOpenChose = ({e, openWindow}: {
+        e?: React.MouseEvent<HTMLButtonElement>;
+        openWindow: Partial<Modals>
+    }) => {
         if (e) getAndSetElementPos(e);
         updateOpenModal(openWindow);
     };
@@ -41,11 +42,18 @@ const MainButtons: React.FC<MainButtonsProps> = ({
                     className="flex flex-row fixed text-xl left-1/2 transform -translate-x-1/2 bottom-0 bg-black p-1 border rounded">
             <div className="border rounded-full p-1 flex flex-row gap-x-1">
                 {!!allGamesList.length && (
-                    <SquareButton
-                        onClickButton={() => handleOpenChose({openWindow:{openRouletteModal: true}})}
-                        icon={"🎰"}
-                        hint={"Roulette"}
-                    />
+                    <>
+                        <SquareButton
+                            onClickButton={() => handleOpenChose({openWindow: {openRouletteModal: true}})}
+                            icon={"🎰"}
+                            hint={"Roulette"}
+                        />
+                        <SquareButton
+                            onClickButton={() => handleOpenChose({openWindow: {openRoulette3dModal: true}})}
+                            icon={"🎰"}
+                            hint={"Roulette"}
+                        />
+                    </>
                 )}
                 <SquareButton
                     onClickButton={() => setAdditionalFunctions(p => !p)}
@@ -54,12 +62,12 @@ const MainButtons: React.FC<MainButtonsProps> = ({
             </div>
             {additionalFunctions && <div className="border rounded-full p-1 flex flex-row gap-x-1">
                 <SquareButton
-                    onClickButton={(e) => handleOpenChose({e, openWindow:{openChoseModal: true}})}
+                    onClickButton={(e) => handleOpenChose({e, openWindow: {openChoseModal: true}})}
                     icon={"📥"}
                     hint={"Load list"}
                 />
                 <SquareButton
-                    onClickButton={(e) => handleOpenChose({e, openWindow:{openEditorModal: true}})}
+                    onClickButton={(e) => handleOpenChose({e, openWindow: {openEditorModal: true}})}
                     icon={"🖊️"}
                     hint={"Edit list"}
                 />

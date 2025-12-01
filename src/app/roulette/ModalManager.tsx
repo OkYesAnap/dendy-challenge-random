@@ -9,6 +9,7 @@ import {CellData, GoogleSheetsParams} from "@/utils/getGamesList";
 import {useSelector} from "react-redux";
 import {loading as sLoading} from "@/redux/slices/gamesSlice";
 import Editor from "@/app/Editor";
+import Roulette3d from "@/app/roulette/Roulette3d";
 
 const ModalManager = ({openModals, updateOpenModal, paramsRef, infoData, handleLoad, elementPos}: {
     openModals: Modals,
@@ -23,6 +24,7 @@ const ModalManager = ({openModals, updateOpenModal, paramsRef, infoData, handleL
     return (
         <>
             {openModals.openRouletteModal && <Roulette {...{setOpenRoll: () => updateOpenModal({openRouletteModal: false})}} />}
+            {openModals.openRoulette3dModal && <Roulette3d {...{isOpen: openModals.openRoulette3dModal,  onClose: (() => updateOpenModal({openRoulette3dModal: false}))}}/>}
             <ChoseUrlParamsModal {...{
                 isOpen: openModals.openChoseModal,
                 handleLoad,
