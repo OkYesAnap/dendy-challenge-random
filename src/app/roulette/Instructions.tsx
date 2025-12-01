@@ -1,6 +1,6 @@
 import {GoogleSheetsParams} from "@/utils/getGamesList";
-import {ChoseParamsModalProps} from "@/app/roulette/types";
 import {useState} from "react";
+import {ChoseParamsModalProps} from "@/app/roulette/ChoseUrlParamsModal";
 
 const Instructions = (
     {

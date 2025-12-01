@@ -6,7 +6,7 @@ import {useDragAndDrop} from "@/app/roulette/hooks/useDragAndDrop";
 import {setValuesFromEditor} from "@/redux/slices/gamesSlice";
 import {GoogleSheetsParams} from "@/utils/getGamesList";
 
-interface ChoseParamsModalProps {
+export interface ChoseParamsModalProps {
     isOpen: boolean;
     onClose: () => void;
     paramsRef: React.RefObject<GoogleSheetsParams>
