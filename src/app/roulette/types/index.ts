@@ -1,6 +1,3 @@
-import {GoogleSheetsParams} from "@/utils/getGamesList";
-import {ReactNode} from "react";
-
 export type ReactSetState<T> = React.Dispatch<React.SetStateAction<T>>;
 
 export interface Cols {

@@ -1,10 +1,9 @@
-"use client"
+"use client";
 import {Canvas} from '@react-three/fiber';
-import DynamicCylinder from "@/app/roulette/ThreeCylinder";
+import DynamicCylinder from "@/app/roulette/DynamicCylinder";
 import {useSelector} from "react-redux";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import ModalPortal from "@/components/ModalPortal";
-import {useRef} from "react";
 import {OrbitControls} from "@react-three/drei";
 import ThreeArrow from "@/app/roulette/ThreeArrow";
 
@@ -14,7 +13,6 @@ interface Roulette3dProps {
 }
 
 const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
-    const controlsRef = useRef<any>(null);
     const allGamesList = useSelector(sSlotsList);
 
     return (
@@ -25,7 +23,6 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                     <DynamicCylinder/>
                     <ThreeArrow/>
                     <OrbitControls
-                        ref={controlsRef}
                         enablePan={true}
                         enableZoom={true}
                         enableRotate={true}
@@ -41,6 +38,6 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
             </div>
         </ModalPortal>
     );
-}
+};
 
 export default Roulette3d;

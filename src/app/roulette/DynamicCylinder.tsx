@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import {Text} from '@react-three/drei';
 import {useMemo, useRef} from 'react';
 import {
     CylinderGeometry,
-    EdgesGeometry,
+    EdgesGeometry, Group,
     LineBasicMaterial,
-    LineSegments,
+    LineSegments, Mesh,
     Vector3,
 } from "three";
 import {useFrame} from "@react-three/fiber";
@@ -14,31 +14,31 @@ import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 
 const getShift = (segments: number) => {
     if ( segments <= 2){
-        return -0.19
+        return -0.19;
     } else if ( segments <= 3){
-        return -0.14
+        return -0.14;
     } else if ( segments <= 4){
-        return -0.1
+        return -0.1;
     } else if ( segments <= 5){
-        return -0.07
+        return -0.07;
     } else if ( segments <= 6){
-        return -0.06
+        return -0.06;
     } else if (segments <= 8) {
-        return -0.05
+        return -0.05;
     } else if (segments <= 12) {
-        return -0.04
+        return -0.04;
     }  else if (segments <= 16) {
-        return -0.03
+        return -0.03;
     }else if (segments <= 20) {
-        return -0.02
+        return -0.02;
     } else return 0;
-}
+};
 
 function DynamicCylinder() {
     const allGamesList = useSelector(sSlotsList);
 
-    const groupRef = useRef<any>(null);
-    const cylinderRef = useRef<any>(null);
+    const groupRef = useRef<Group>(null);
+    const cylinderRef = useRef<Mesh>(null);
     const segments = allGamesList.length;
     const maxLength = Math.max(...allGamesList.map(slot => slot.formattedValue.length));
     const shift = getShift(segments);
@@ -47,14 +47,14 @@ function DynamicCylinder() {
 
     const geometry = useMemo(
         () => new CylinderGeometry(radius, radius, height, segments),
-        [segments]
+        [segments, height, radius]
     );
 
     useFrame((state, delta) => {
         if (groupRef.current) {
             groupRef.current.rotation.y += delta * 0;
         }
-    })
+    });
 
     const edgesGeometry = useMemo(() => new EdgesGeometry(geometry), [geometry]);
 
