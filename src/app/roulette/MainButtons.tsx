@@ -50,8 +50,8 @@ const MainButtons: React.FC<MainButtonsProps> = ({
                         />
                         <SquareButton
                             onClickButton={() => handleOpenChose({openWindow: {openRoulette3dModal: true}})}
-                            icon={"🎰"}
-                            hint={"Roulette"}
+                            icon={"🃏"}
+                            hint={"Roulette 3D"}
                         />
                     </>
                 )}

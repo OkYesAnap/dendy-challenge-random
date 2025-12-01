@@ -21,7 +21,7 @@ function PulsingArrow() {
                 object={new Mesh(
                     new CylinderGeometry(0.4, 0.4, 2.5, 16),
                     new MeshStandardMaterial({
-                        color: "#2c3e50",
+                        color: "#f1c40f",
                         metalness: 0.3,
                         roughness: 0.7
                     })
@@ -45,7 +45,7 @@ function PulsingArrow() {
                     object={new Mesh(
                         new ConeGeometry(0.12, 0.3, 8),
                         new MeshStandardMaterial({
-                            color: "#e74c3c",
+                            color: "#f1c40f",
                             emissive: "#c0392b",
                             emissiveIntensity: 0.5
                         })

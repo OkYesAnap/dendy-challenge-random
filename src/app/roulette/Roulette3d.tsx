@@ -17,7 +17,8 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
 
     return (
         <ModalPortal {...{isOpen, onClose}}>
-            <div className="w-[75vw] h-[80vh] border">
+            <div className="w-[75vw] h-[80vh] border flex flex-col items-center">
+                <span>Develop in Progress!</span>
                 <Canvas camera={{position: [0, allGamesList.length / 2, allGamesList.length / 2], fov: 50}}>
                     <ambientLight/>
                     <DynamicCylinder/>
