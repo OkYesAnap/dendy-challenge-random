@@ -3,20 +3,29 @@ import {
     CylinderGeometry,
     ConeGeometry,
     Mesh,
-    MeshStandardMaterial,
+    MeshStandardMaterial, Group,
 } from "three";
 import {useSelector} from "react-redux";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
+import {useFrame} from "@react-three/fiber";
+import {useRef} from "react";
 
 function PulsingArrow() {
+    const groupRef = useRef<Group>(null);
     const allGamesList = useSelector(sSlotsList);
 
     const height = allGamesList.length * 0.1 - .2;
     const maxLength = Math.max(...allGamesList.map(slot => slot.formattedValue.length));
     const additionalHeight = maxLength * 0.1 + .5;
 
+    useFrame((state, delta) => {
+        if (groupRef.current) {
+            groupRef.current.rotation.y -= delta * 10;
+        }
+    });
+
     return (
-        <group position={[0, additionalHeight/2 - 0.5, 0]}>
+        <group ref={groupRef} position={[0, additionalHeight/2 - 0.5, 0]}>
             <primitive
                 object={new Mesh(
                     new CylinderGeometry(0.4, 0.4, 2.5, 16),

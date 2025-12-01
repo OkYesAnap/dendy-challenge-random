@@ -52,7 +52,7 @@ function ThreeDynamicTable() {
 
     useFrame((state, delta) => {
         if (groupRef.current) {
-            groupRef.current.rotation.y += delta * 0;
+            groupRef.current.rotation.y += delta * 0.1;
         }
     });
 
