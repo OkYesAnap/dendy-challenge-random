@@ -34,7 +34,7 @@ const getShift = (segments: number) => {
     } else return 0;
 };
 
-function DynamicCylinder() {
+function ThreeDynamicTable() {
     const allGamesList = useSelector(sSlotsList);
 
     const groupRef = useRef<Group>(null);
@@ -74,7 +74,6 @@ function DynamicCylinder() {
         const textY = y + normal.y * offset;
         const textZ = z + normal.z * offset;
 
-        // Ориентация текста (перпендикулярно нормали)
         const textRotation = Math.atan2(normal.z, normal.x);
 
         return (
@@ -106,4 +105,4 @@ function DynamicCylinder() {
     );
 }
 
-export default DynamicCylinder;
+export default ThreeDynamicTable;

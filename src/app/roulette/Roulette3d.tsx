@@ -1,6 +1,6 @@
 "use client";
 import {Canvas} from '@react-three/fiber';
-import DynamicCylinder from "@/app/roulette/DynamicCylinder";
+import ThreeDynamicTable from "@/app/roulette/ThreeDynamicTable";
 import {useSelector} from "react-redux";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import ModalPortal from "@/components/ModalPortal";
@@ -21,7 +21,7 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                 <span>Develop in Progress!</span>
                 <Canvas camera={{position: [0, allGamesList.length / 2, allGamesList.length / 2], fov: 50}}>
                     <ambientLight/>
-                    <DynamicCylinder/>
+                    <ThreeDynamicTable/>
                     <ThreeArrow/>
                     <OrbitControls
                         enablePan={true}
