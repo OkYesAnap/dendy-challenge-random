@@ -91,7 +91,7 @@ function ThreeDynamicTable() {
     }, [segments, radius, height]);
 
     const textMeshes = allGamesList.map((item, index) => {
-        const angle = (index / segments - .25) * Math.PI * 2;
+        const angle = (index / segments) * Math.PI * 2 + Math.PI/2;
         const segmentAngle = (2 * Math.PI) / segments;
         const centerAngle = angle + segmentAngle / 2;
 

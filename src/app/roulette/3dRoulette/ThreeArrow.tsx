@@ -46,7 +46,7 @@ function PulsingArrow() {
 
     useFrame((state, delta) => {
         if (groupRef.current) {
-            groupRef.current.rotation.y += Number((delta * rotationSpeed).toFixed(4));
+            groupRef.current.rotation.y -= Number((delta * rotationSpeed).toFixed(4));
         }
     });
 
