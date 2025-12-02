@@ -1,17 +1,17 @@
 "use client";
 import {Text} from '@react-three/drei';
-import {useMemo, useRef} from 'react';
+import {useEffect, useMemo, useRef} from 'react';
 import {
+    BufferGeometry,
     CylinderGeometry,
-    EdgesGeometry, Group,
-    LineBasicMaterial,
-    LineSegments, Mesh,
+    EdgesGeometry, Float32BufferAttribute, Group,
+    Mesh,
     Vector3,
 } from "three";
-import {useFrame} from "@react-three/fiber";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
-import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
+import {setSlotEdgeAngles, SlotEdgeAngle} from "@/redux/slices/roulette3dSlice";
+import {CellData} from "@/utils/getGamesList";
 
 const getShift = (segments: number) => {
     if (segments <= 2) {
@@ -37,7 +37,7 @@ const getShift = (segments: number) => {
 
 function ThreeDynamicTable() {
     const allGamesList = useSelector(sSlotsList);
-
+    const dispatch = useDispatch();
     const groupRef = useRef<Group>(null);
     const cylinderRef = useRef<Mesh>(null);
     const segments = allGamesList.length;
@@ -51,13 +51,44 @@ function ThreeDynamicTable() {
         [segments, height, radius]
     );
 
-    useFrame((state, delta) => {
-        if (groupRef.current) {
-            groupRef.current.rotation.y += delta * finalSpeed;
-        }
-    });
+    // useFrame((state, delta) => {
+    //     if (groupRef.current) {
+    //         groupRef.current.rotation.y += delta * finalSpeed;
+    //     }
+    // });
+
+    useEffect(() => {
+        const slotEdgeAngles: Array<SlotEdgeAngle> = allGamesList.map(({formattedValue}:CellData, index): SlotEdgeAngle => {
+            const edgeAngle = (index / segments) * Math.PI * 2;
+            return {formattedValue, edgeAngle};
+        });
+        dispatch(setSlotEdgeAngles(slotEdgeAngles));
+    }, [allGamesList, dispatch, segments]);
 
     const edgesGeometry = useMemo(() => new EdgesGeometry(geometry), [geometry]);
+
+    const spiderWebGeometry = useMemo<BufferGeometry>(() => {
+        const positions = new Float32Array(segments * 6);
+        const yTop = height / 2;
+        let idx = 0;
+
+        for (let i = 0; i < segments; i++) {
+            const angle = (i / segments) * Math.PI * 2;
+            const x = Math.cos(angle) * radius;
+            const z = Math.sin(angle) * radius;
+
+            positions[idx++] = x;
+            positions[idx++] = yTop;
+            positions[idx++] = z;
+
+            positions[idx++] = 0;
+            positions[idx++] = yTop;
+            positions[idx++] = 0;
+        }
+        const g = new BufferGeometry();
+        g.setAttribute('position', new Float32BufferAttribute(positions, 3));
+        return g;
+    }, [segments, radius, height]);
 
     const textMeshes = allGamesList.map((item, index) => {
         const angle = (index / segments + .25) * Math.PI * 2;
@@ -76,32 +107,47 @@ function ThreeDynamicTable() {
         const textZ = z + normal.z * offset;
 
         const textRotation = Math.atan2(normal.z, normal.x);
-        console.log(-textRotation + Math.PI / 2, index);
 
         return (
-            <Text
-                key={index}
-                position={[textX, textY, textZ]}
-                rotation={[0, -textRotation + Math.PI / 2, Math.PI / 2]}
-                fontSize={0.2}
-                color="white"
-                anchorX="center"
-                anchorY="middle"
-            >
-                {item.formattedValue}
-            </Text>
+            <group key={index}>
+                <Text
+                    position={[textX, textY, textZ]}
+                    rotation={[0, -textRotation + Math.PI / 2, Math.PI / 2]}
+                    fontSize={0.2}
+                    color="white"
+                    anchorX="center"
+                    anchorY="middle"
+                >
+                    {item.formattedValue}
+                </Text>
+                <group rotation={[0, -textRotation, 0]} key={index} position={[textX, textY + 0.01, textZ]}>
+                    <Text
+                        position={[-0.1, height / 2, 0]}
+                        rotation={[-Math.PI / 2, 0, 0]}
+                        fontSize={0.15}
+                        color="white"
+                        anchorX="right"
+                        anchorY="middle"
+                    >
+                        {item.formattedValue}
+                    </Text>
+                </group>
+            </group>
         );
     });
 
     return (<>
             <group ref={groupRef}>
-                <primitive
-                    object={new LineSegments(edgesGeometry, new LineBasicMaterial({color: "white"}))}
-                />
-
+                <lineSegments geometry={edgesGeometry}>
+                    <lineBasicMaterial attach="material" color={'white'} />
+                </lineSegments>
+                <lineSegments geometry={spiderWebGeometry}>
+                    <lineBasicMaterial attach="material" color={'white'} />
+                </lineSegments>
                 <mesh ref={cylinderRef} geometry={geometry}>
                     <meshStandardMaterial attach="material" color="#444"/>
                 </mesh>
+
                 {textMeshes}
             </group>
         </>

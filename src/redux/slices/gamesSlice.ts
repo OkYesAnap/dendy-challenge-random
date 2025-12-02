@@ -27,7 +27,7 @@ const addDisabledSlotsAction = createAction<CellData[]>('games/addDisabledSlots'
 
 export const defaultCellData: CellData = {formattedValue: ''};
 
-export interface GamesState {
+interface GamesState {
     allGamesList: CellData[];
     allData: CellData[][];
     headers: Cols[];

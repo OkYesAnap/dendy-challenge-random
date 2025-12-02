@@ -5,53 +5,54 @@ import {
     Mesh,
     MeshStandardMaterial, Group,
 } from "three";
-import {useSelector} from "react-redux";
-import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
+import {useDispatch, useSelector} from "react-redux";
 import {useFrame} from "@react-three/fiber";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef} from "react";
 import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
+import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
+import {
+    rotationSpeed as sRotationSpeed,
+    setRotationSpeed,
+    increaseDecreaseRotationSpeed, setCurrentGame
+} from "@/redux/slices/roulette3dSlice";
 
 function PulsingArrow() {
     const groupRef = useRef<Group>(null);
     const timerRef = useRef<ReturnType<typeof setInterval>>(null);
-    const [rotationSpeed, setRotationSpeed] = useState<number>(10);
     const allGamesList = useSelector(sSlotsList);
+    const rotationSpeed = useSelector(sRotationSpeed);
+    const dispatch = useDispatch();
 
     const height = allGamesList.length * 0.1 - .2;
     const maxLength = Math.max(...allGamesList.map(slot => slot.formattedValue.length));
     const additionalHeight = maxLength * 0.1 + .5;
 
     useEffect(() => {
-        if(rotationSpeed >= finalSpeed) {
+        if (rotationSpeed >= finalSpeed) {
             timerRef.current = setInterval(() => {
-                setRotationSpeed(prev => {
-                   if(prev > 1) {
-                       prev -= 0.01;
-                   } else {
-                       prev -= 0.001;
-                   }
-                   return prev;
-                });
+                dispatch(increaseDecreaseRotationSpeed());
             }, Math.random() * 20 + 10);
         } else if (timerRef.current) {
-            setRotationSpeed(finalSpeed);
+            dispatch(setRotationSpeed(finalSpeed));
+            dispatch(setCurrentGame(groupRef.current?.rotation.y || 0));
             clearInterval(timerRef.current);
         }
         return () => {
-            if(timerRef.current) {
-            clearInterval(timerRef.current);
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
             }
         };
-    }, [setRotationSpeed, rotationSpeed]);
+    }, [rotationSpeed, dispatch]);
 
     useFrame((state, delta) => {
         if (groupRef.current) {
-            groupRef.current.rotation.y -= delta * rotationSpeed;
+            groupRef.current.rotation.y += Number((delta * rotationSpeed).toFixed(4));
         }
     });
 
+
     return (
-        <group ref={groupRef} position={[0, additionalHeight / 2 - 0.5, 0]}>
+        <group ref={groupRef} position={[0, additionalHeight / 2 - 1.25, 0]}>
             <primitive
                 object={new Mesh(
                     new CylinderGeometry(0.4, 0.4, 2.5, 16),
