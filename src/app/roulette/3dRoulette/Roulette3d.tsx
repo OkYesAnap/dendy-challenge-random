@@ -1,11 +1,11 @@
 "use client";
 import {Canvas} from '@react-three/fiber';
-import ThreeDynamicTable from "@/app/roulette/ThreeDynamicTable";
+import ThreeDynamicTable from "@/app/roulette/3dRoulette/ThreeDynamicTable";
 import {useSelector} from "react-redux";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import ModalPortal from "@/components/ModalPortal";
 import {OrbitControls} from "@react-three/drei";
-import ThreeArrow from "@/app/roulette/ThreeArrow";
+import ThreeArrow from "@/app/roulette/3dRoulette/ThreeArrow";
 
 interface Roulette3dProps {
     isOpen: boolean;
@@ -36,6 +36,16 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                         target={[0, 0, 0]}
                     />
                 </Canvas>
+                <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-black/70 backdrop-blur-sm border border-white/20 rounded-lg px-6 py-4 shadow-2xl">
+                        <p className="text-white text-lg font-medium text-center">
+                            Ваш текст здесь
+                        </p>
+                        <p className="text-gray-300 text-sm text-center mt-1">
+                            Дополнительная информация
+                        </p>
+                    </div>
+                </div>
             </div>
         </ModalPortal>
     );

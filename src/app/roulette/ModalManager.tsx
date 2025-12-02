@@ -1,4 +1,5 @@
 import Roulette from "@/app/roulette/Roulette";
+import Roulette3d from "@/app/roulette/3dRoulette/Roulette3d";
 import ChoseUrlParamsModal from "@/app/roulette/ChoseUrlParamsModal";
 import SquareButton from "@/app/roulette/SquareButton";
 import Info from "@/app/roulette/Info";
@@ -9,7 +10,6 @@ import {CellData, GoogleSheetsParams} from "@/utils/getGamesList";
 import {useSelector} from "react-redux";
 import {loading as sLoading} from "@/redux/slices/gamesSlice";
 import Editor from "@/app/Editor";
-import Roulette3d from "@/app/roulette/Roulette3d";
 
 const ModalManager = ({openModals, updateOpenModal, paramsRef, infoData, handleLoad, elementPos}: {
     openModals: Modals,
