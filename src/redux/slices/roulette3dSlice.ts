@@ -54,8 +54,8 @@ const rouletteSlice = createSlice({
         },
         setCurrentGame(state: Roulette3dState, action: PayloadAction<number>) {
             const currentArrowAngle = wrapRadians(action.payload);
-            const getDiff = Math.PI / 180 * state.slotEdgeAngles.length;
-            const getGame = state.slotEdgeAngles.find(slot => currentArrowAngle < slot.edgeAngle + getDiff);
+            // const getDiff = Math.PI / 180 * state.slotEdgeAngles.length;
+            const getGame = state.slotEdgeAngles.find(slot => currentArrowAngle < slot.edgeAngle);
             state.currentSlot = {formattedValue: getGame?.formattedValue || ""};
         }
     }

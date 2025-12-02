@@ -73,7 +73,7 @@ function ThreeDynamicTable() {
         let idx = 0;
 
         for (let i = 0; i < segments; i++) {
-            const angle = (i / segments) * Math.PI * 2;
+            const angle = (i / segments - .25) * Math.PI * 2;
             const x = Math.cos(angle) * radius;
             const z = Math.sin(angle) * radius;
 
@@ -91,7 +91,7 @@ function ThreeDynamicTable() {
     }, [segments, radius, height]);
 
     const textMeshes = allGamesList.map((item, index) => {
-        const angle = (index / segments + .25) * Math.PI * 2;
+        const angle = (index / segments - .25) * Math.PI * 2;
         const segmentAngle = (2 * Math.PI) / segments;
         const centerAngle = angle + segmentAngle / 2;
 
