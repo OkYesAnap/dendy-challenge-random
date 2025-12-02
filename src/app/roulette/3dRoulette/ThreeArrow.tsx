@@ -26,20 +26,20 @@ function PulsingArrow() {
             timerRef.current = setInterval(() => {
                 setRotationSpeed(prev => {
                    if(prev > 1) {
-                       prev -= 0.01
+                       prev -= 0.01;
                    } else {
                        prev -= 0.001;
                    }
                    return prev;
-                })
+                });
             }, Math.random() * 20 + 10);
         } else if (timerRef.current) {
-            setRotationSpeed(finalSpeed)
-            clearInterval(timerRef.current)
+            setRotationSpeed(finalSpeed);
+            clearInterval(timerRef.current);
         }
         return () => {
             if(timerRef.current) {
-            clearInterval(timerRef.current)
+            clearInterval(timerRef.current);
             }
         };
     }, [setRotationSpeed, rotationSpeed]);

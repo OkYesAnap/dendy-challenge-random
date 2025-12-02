@@ -1,1 +1,1 @@
-export const finalSpeed = 0
+export const finalSpeed = 0;
