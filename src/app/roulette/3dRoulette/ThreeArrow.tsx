@@ -12,6 +12,7 @@ import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import {
     rotationSpeed as sRotationSpeed,
+    rotationOptions as sRotationOptions,
     setRotationSpeed,
     increaseDecreaseRotationSpeed, setCurrentGame
 } from "@/redux/slices/roulette3dSlice";
@@ -22,6 +23,7 @@ function PulsingArrow() {
     const timerRef = useRef<ReturnType<typeof setInterval>>(null);
     const allGamesList = useSelector(sSlotsList);
     const rotationSpeed = useSelector(sRotationSpeed);
+    const rotationOptions = useSelector(sRotationOptions);
     const dispatch = useDispatch();
 
     const segments = allGamesList.length;
@@ -47,7 +49,7 @@ function PulsingArrow() {
     }, [rotationSpeed, dispatch]);
 
     useFrame((state, delta) => {
-        if (groupRef.current) {
+        if (groupRef.current && rotationOptions.arrowSpin) {
             groupRef.current.rotation.y += Number((delta * rotationSpeed).toFixed(4));
         }
     });

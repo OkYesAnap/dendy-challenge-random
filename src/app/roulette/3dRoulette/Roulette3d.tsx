@@ -4,7 +4,12 @@ import {useDispatch, useSelector} from "react-redux";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import ModalPortal from "@/components/ModalPortal";
 import SquareButton from "@/app/roulette/SquareButton";
-import {current3dSlot as sCurrent3dSlot, increaseDecreaseRotationSpeed} from "@/redux/slices/roulette3dSlice";
+import {
+    current3dSlot as sCurrent3dSlot,
+    increaseDecreaseRotationSpeed, rotationOptions as sRotationOptions,
+    rotationSpeed as sRotationSpeed,
+    setSpinSwitcher,
+} from "@/redux/slices/roulette3dSlice";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faRotateLeft, faRotateRight} from "@fortawesome/free-solid-svg-icons";
 import ThreeMainCanvas from "@/app/roulette/3dRoulette/ThreeMainCanvas";
@@ -16,7 +21,9 @@ interface Roulette3dProps {
 
 const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
     const allGamesList = useSelector(sSlotsList);
+    const rotationSpeed = useSelector(sRotationSpeed);
     const current3dSlot = useSelector(sCurrent3dSlot);
+    const rotationOptions = useSelector(sRotationOptions);
     const dispatch = useDispatch();
     return (
         <ModalPortal {...{isOpen, onClose}}>
@@ -31,19 +38,35 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                         <p className="text-white text-lg font-medium text-center">
                             {current3dSlot.formattedValue}
                         </p>
-                        <div className={'flex-row'}>
-                        <SquareButton
-                            icon={<FontAwesomeIcon icon={faRotateRight} />}
-                            onClickButton={() => {
-                                dispatch(increaseDecreaseRotationSpeed(1));
-                            }}
-                        />
-                        <SquareButton
-                            icon={<FontAwesomeIcon icon={faRotateLeft} />}
-                            onClickButton={() => {
-                                dispatch(increaseDecreaseRotationSpeed(-1));
-                            }}
-                        />
+                        <div className={'flex flex-row gap-1'}>
+                            <SquareButton
+                                icon={<FontAwesomeIcon icon={faRotateRight}/>}
+                                active={rotationSpeed > 0}
+                                onClickButton={() => {
+                                    dispatch(increaseDecreaseRotationSpeed(5));
+                                }}
+                            />
+                            <SquareButton
+                                icon={"*"}
+                                active={rotationOptions.wheelSpin}
+                                onClickButton={() => {
+                                    dispatch(setSpinSwitcher({wheelSpin: !rotationOptions.wheelSpin}));
+                                }}
+                            />
+                            <SquareButton
+                                icon={"⇩"}
+                                active={rotationOptions.arrowSpin}
+                                onClickButton={() => {
+                                    dispatch(setSpinSwitcher({arrowSpin: !rotationOptions.arrowSpin}));
+                                }}
+                            />
+                            <SquareButton
+                                icon={<FontAwesomeIcon icon={faRotateLeft}/>}
+                                active={rotationSpeed < 0}
+                                onClickButton={() => {
+                                    dispatch(increaseDecreaseRotationSpeed(-5));
+                                }}
+                            />
                         </div>
                     </div>
                 </div>

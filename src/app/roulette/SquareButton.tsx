@@ -7,11 +7,13 @@ const SquareButton = ({
                           icon,
                           onClickButton,
                           hint,
+                          active,
                       }: {
     disabled?: boolean;
     icon: string | JSX.Element;
     onClickButton?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
     hint?: string;
+    active?: boolean;
 }) => {
     const [showHint, setShowHint] = useState(false);
     const timeoutRef = useRef<number | null>(null);
@@ -46,7 +48,9 @@ const SquareButton = ({
             <button
                 className={`${buttonsClasses} ${disabled
                     ? 'text-gray-500 grayscale'
-                    : 'hover:bg-gray-700'}`}
+                    : 'hover:bg-gray-700'} ${
+                    active ? 'bg-amber-700' : ''
+                }`}
                 disabled={disabled}
                 onClick={onClickButton}
                 onMouseEnter={handleMouseEnter}
@@ -55,7 +59,7 @@ const SquareButton = ({
             >
                 {icon}
             </button>
-            {showHint && hint && !disabled &&  (
+            {showHint && hint && !disabled && (
                 <div
                     className="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-black border border-gray-300 rounded px-2 py-1 text-sm shadow-lg z-10 whitespace-nowrap"
                 >

@@ -11,6 +11,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import {
+    rotationOptions as sRotationOptions,
     rotationSpeed as sRotationSpeed,
     setCurrentGame,
     setSlotEdgeAngles,
@@ -45,6 +46,7 @@ const getShift = (segments: number) => {
 function ThreeSpinningWheel() {
     const allGamesList = useSelector(sSlotsList);
     const rotationSpeed = useSelector(sRotationSpeed);
+    const rotationOptions = useSelector(sRotationOptions);
     const dispatch = useDispatch();
     const groupRef = useRef<Group>(null);
     const cylinderRef = useRef<Mesh>(null);
@@ -64,7 +66,7 @@ function ThreeSpinningWheel() {
     }, [rotationSpeed, dispatch]);
 
     useFrame((state, delta) => {
-        if (groupRef.current) {
+        if (groupRef.current && rotationOptions.wheelSpin) {
             groupRef.current.rotation.y -= Number((delta * rotationSpeed).toFixed(4));
         }
     });
