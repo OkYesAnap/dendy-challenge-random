@@ -1,5 +1,5 @@
 import {FC} from "react";
-import ThreeDynamicTable from "@/app/roulette/3dRoulette/ThreeDynamicTable";
+import ThreeSpinningWheel from "@/app/roulette/3dRoulette/ThreeSpinningWheel";
 import ThreeArrow from "@/app/roulette/3dRoulette/ThreeArrow";
 import {OrbitControls} from "@react-three/drei";
 import {useSelector} from "react-redux";
@@ -10,7 +10,7 @@ const ThreeMainCanvas: FC = () => {
     return (
         <>
             <ambientLight/>
-            <ThreeDynamicTable/>
+            <ThreeSpinningWheel/>
             <ThreeArrow/>
             <OrbitControls
                 enablePan={true}

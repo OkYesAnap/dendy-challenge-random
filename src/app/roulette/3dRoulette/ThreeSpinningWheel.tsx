@@ -10,8 +10,15 @@ import {
 } from "three";
 import {useDispatch, useSelector} from "react-redux";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
-import {setSlotEdgeAngles, SlotEdgeAngle} from "@/redux/slices/roulette3dSlice";
+import {
+    rotationSpeed as sRotationSpeed,
+    setCurrentGame,
+    setSlotEdgeAngles,
+    SlotEdgeAngle
+} from "@/redux/slices/roulette3dSlice";
 import {CellData} from "@/utils/getGamesList";
+import {calcHeight, calcRadius} from "@/app/roulette/3dRoulette/utils";
+import {useFrame} from "@react-three/fiber";
 
 const getShift = (segments: number) => {
     if (segments <= 2) {
@@ -35,27 +42,32 @@ const getShift = (segments: number) => {
     } else return 0;
 };
 
-function ThreeDynamicTable() {
+function ThreeSpinningWheel() {
     const allGamesList = useSelector(sSlotsList);
+    const rotationSpeed = useSelector(sRotationSpeed);
     const dispatch = useDispatch();
     const groupRef = useRef<Group>(null);
     const cylinderRef = useRef<Mesh>(null);
     const segments = allGamesList.length;
     const maxLength = Math.max(...allGamesList.map(slot => slot.formattedValue.length));
     const shift = getShift(segments);
-    const radius = segments / 10;
-    const height = maxLength * 0.1;
+    const radius = calcRadius(segments);
+    const height = calcHeight(maxLength);
 
     const geometry = useMemo(
         () => new CylinderGeometry(radius, radius, height, segments),
         [segments, height, radius]
     );
 
-    // useFrame((state, delta) => {
-    //     if (groupRef.current) {
-    //         groupRef.current.rotation.y += delta * finalSpeed;
-    //     }
-    // });
+    useEffect(() => {
+        if(rotationSpeed === 0) dispatch(setCurrentGame({wheelAngle: groupRef.current?.rotation.y}));
+    }, [rotationSpeed, dispatch]);
+
+    useFrame((state, delta) => {
+        if (groupRef.current) {
+            groupRef.current.rotation.y -= Number((delta * rotationSpeed).toFixed(4));
+        }
+    });
 
     useEffect(() => {
         const slotEdgeAngles: Array<SlotEdgeAngle> = allGamesList.map(({formattedValue}: CellData, index): SlotEdgeAngle => {
@@ -73,7 +85,7 @@ function ThreeDynamicTable() {
         let idx = 0;
 
         for (let i = 0; i < segments; i++) {
-            const angle = (i / segments - .25) * Math.PI * 2;
+            const angle = (i / segments + .25) * Math.PI * 2;
             const x = Math.cos(angle) * radius;
             const z = Math.sin(angle) * radius;
 
@@ -111,11 +123,11 @@ function ThreeDynamicTable() {
         return (
             <group key={index}>
                 <Text
-                    position={[textX, textY, textZ]}
+                    position={[textX, textY + height/2 - 0.1, textZ]}
                     rotation={[0, -textRotation + Math.PI / 2, Math.PI / 2]}
                     fontSize={0.2}
                     color="white"
-                    anchorX="center"
+                    anchorX="right"
                     anchorY="middle"
                 >
                     {item.formattedValue}
@@ -153,4 +165,4 @@ function ThreeDynamicTable() {
     );
 }
 
-export default ThreeDynamicTable;
+export default ThreeSpinningWheel;

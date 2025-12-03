@@ -35,13 +35,13 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                         <SquareButton
                             icon={<FontAwesomeIcon icon={faRotateRight} />}
                             onClickButton={() => {
-                                dispatch(increaseDecreaseRotationSpeed(5));
+                                dispatch(increaseDecreaseRotationSpeed(1));
                             }}
                         />
                         <SquareButton
                             icon={<FontAwesomeIcon icon={faRotateLeft} />}
                             onClickButton={() => {
-                                dispatch(increaseDecreaseRotationSpeed(-5));
+                                dispatch(increaseDecreaseRotationSpeed(-1));
                             }}
                         />
                         </div>

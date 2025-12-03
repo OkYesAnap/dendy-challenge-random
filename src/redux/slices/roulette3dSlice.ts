@@ -7,16 +7,23 @@ export interface SlotEdgeAngle {
     edgeAngle: number
 }
 
+export interface RotationAngles {
+    arrowAngle?: number,
+    wheelAngle?: number
+}
+
 interface Roulette3dState {
     rotationSpeed: number;
     slotEdgeAngles: Array<SlotEdgeAngle>
     currentSlot: CellData;
+    rotationAngles: RotationAngles;
 }
 
 const initialState: Roulette3dState = {
     rotationSpeed: 0,
     slotEdgeAngles: [],
-    currentSlot: defaultCellData
+    currentSlot: defaultCellData,
+    rotationAngles:{arrowAngle:0,wheelAngle:0}
 };
 
 const TWO_PI = Math.PI * 2;
@@ -35,14 +42,16 @@ const rouletteSlice = createSlice({
                 state.rotationSpeed += action.payload;
             }
             let newSpeed = state.rotationSpeed;
-            if (newSpeed < 0) { newSpeed *= -1;}
+            if (newSpeed < 0) {
+                newSpeed *= -1;
+            }
             if (newSpeed > 50) {
                 newSpeed -= 1;
             } else if (newSpeed > 40) {
                 newSpeed -= 0.8;
-            }else if (newSpeed > 30) {
+            } else if (newSpeed > 30) {
                 newSpeed -= 0.6;
-            }else if (newSpeed > 20) {
+            } else if (newSpeed > 20) {
                 newSpeed -= 0.4;
             } else if (newSpeed > 10) {
                 newSpeed -= 0.2;
@@ -60,10 +69,14 @@ const rouletteSlice = createSlice({
         setSlotEdgeAngles(state: Roulette3dState, action: PayloadAction<SlotEdgeAngle[]>) {
             state.slotEdgeAngles = action.payload;
         },
-        setCurrentGame(state: Roulette3dState, action: PayloadAction<number>) {
-            const currentArrowAngle = wrapRadians(action.payload);
+        setCurrentGame(state: Roulette3dState, action: PayloadAction<{ arrowAngle?: number, wheelAngle?: number }>) {
+            state.rotationAngles = {...state.rotationAngles, ...action.payload};
+            const {arrowAngle, wheelAngle} = state.rotationAngles;
+            const currentArrowAngle = wrapRadians(arrowAngle || 0);
+            const currentWheelAngle = wrapRadians(wheelAngle || 0);
+            console.log(state.rotationAngles);
             const diff = Math.PI * 2 / state.slotEdgeAngles.length;
-            const getGame = state.slotEdgeAngles.find(slot => currentArrowAngle < slot.edgeAngle + diff);
+            const getGame = state.slotEdgeAngles.find(slot => wrapRadians(currentWheelAngle - currentArrowAngle) < slot.edgeAngle + diff);
             state.currentSlot = {formattedValue: getGame?.formattedValue || ""};
         }
     }
@@ -79,5 +92,6 @@ export const {
 export const rotationSpeed = (state: { roulette3d: Roulette3dState }) => state.roulette3d.rotationSpeed;
 export const slotEdgeAngles = (state: { roulette3d: Roulette3dState }) => state.roulette3d.slotEdgeAngles;
 export const current3dSlot = (state: { roulette3d: Roulette3dState }) => state.roulette3d.currentSlot;
+export const rotationAngles = (state: { roulette3d: Roulette3dState }) => state.roulette3d.rotationAngles;
 
 export default rouletteSlice.reducer;
