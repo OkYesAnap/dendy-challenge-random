@@ -28,7 +28,7 @@ function PulsingArrow() {
     const additionalHeight = maxLength * 0.1 + .5;
 
     useEffect(() => {
-        if (rotationSpeed >= finalSpeed) {
+        if (rotationSpeed !== finalSpeed) {
             timerRef.current = setInterval(() => {
                 dispatch(increaseDecreaseRotationSpeed());
             }, Math.random() * 20 + 10);

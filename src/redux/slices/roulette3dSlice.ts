@@ -22,7 +22,7 @@ const initialState: Roulette3dState = {
 const TWO_PI = Math.PI * 2;
 
 function wrapRadians(angle: number): number {
-    const r = angle % TWO_PI;
+    const r = angle < 0 ? angle % TWO_PI : TWO_PI - angle % TWO_PI;
     return Math.abs((r) % TWO_PI);
 }
 
@@ -34,17 +34,25 @@ const rouletteSlice = createSlice({
             if (action.payload !== undefined) {
                 state.rotationSpeed += action.payload;
             }
-            if (state.rotationSpeed > 50) {
-                state.rotationSpeed -= 1;
-            } else if (state.rotationSpeed > 20) {
-                state.rotationSpeed -= 0.4;
-            } else if (state.rotationSpeed > 10) {
-                state.rotationSpeed -= 0.2;
-            } else if (state.rotationSpeed > 1) {
-                state.rotationSpeed -= 0.02;
+            let newSpeed = state.rotationSpeed;
+            if (newSpeed < 0) { newSpeed *= -1;}
+            if (newSpeed > 50) {
+                newSpeed -= 1;
+            } else if (newSpeed > 40) {
+                newSpeed -= 0.8;
+            }else if (newSpeed > 30) {
+                newSpeed -= 0.6;
+            }else if (newSpeed > 20) {
+                newSpeed -= 0.4;
+            } else if (newSpeed > 10) {
+                newSpeed -= 0.2;
+            } else if (newSpeed > 1) {
+                newSpeed -= 0.01;
             } else {
-                state.rotationSpeed -= 0.001;
+                newSpeed = Number((newSpeed - 0.001).toFixed(4));
             }
+            if (state.rotationSpeed < 0) { newSpeed *= -1;}
+            state.rotationSpeed = newSpeed;
         },
         setRotationSpeed(state: Roulette3dState, action: PayloadAction<number>) {
             state.rotationSpeed = action.payload;

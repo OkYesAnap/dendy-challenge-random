@@ -58,7 +58,7 @@ function ThreeDynamicTable() {
     // });
 
     useEffect(() => {
-        const slotEdgeAngles: Array<SlotEdgeAngle> = allGamesList.map(({formattedValue}:CellData, index): SlotEdgeAngle => {
+        const slotEdgeAngles: Array<SlotEdgeAngle> = allGamesList.map(({formattedValue}: CellData, index): SlotEdgeAngle => {
             const edgeAngle = (index / segments) * Math.PI * 2;
             return {formattedValue, edgeAngle};
         });
@@ -91,7 +91,7 @@ function ThreeDynamicTable() {
     }, [segments, radius, height]);
 
     const textMeshes = allGamesList.map((item, index) => {
-        const angle = (index / segments) * Math.PI * 2 + Math.PI/2;
+        const angle = (index / segments) * Math.PI * 2 + Math.PI / 2;
         const segmentAngle = (2 * Math.PI) / segments;
         const centerAngle = angle + segmentAngle / 2;
 
@@ -120,7 +120,7 @@ function ThreeDynamicTable() {
                 >
                     {item.formattedValue}
                 </Text>
-                <group rotation={[0, -textRotation, 0]} key={index} position={[textX, textY + 0.01, textZ]}>
+                <group rotation={[0, -textRotation, 0]} key={index} position={[textX, textY + 0.001, textZ]}>
                     <Text
                         position={[-0.1, height / 2, 0]}
                         rotation={[-Math.PI / 2, 0, 0]}
@@ -136,21 +136,20 @@ function ThreeDynamicTable() {
         );
     });
 
-    return (<>
-            <group ref={groupRef}>
-                <lineSegments geometry={edgesGeometry}>
-                    <lineBasicMaterial attach="material" color={'white'} />
-                </lineSegments>
-                <lineSegments geometry={spiderWebGeometry}>
-                    <lineBasicMaterial attach="material" color={'white'} />
-                </lineSegments>
-                <mesh ref={cylinderRef} geometry={geometry}>
-                    <meshStandardMaterial attach="material" color="#444"/>
-                </mesh>
+    return (
+        <group ref={groupRef}>
+            <lineSegments geometry={edgesGeometry}>
+                <lineBasicMaterial attach="material" color={'white'}/>
+            </lineSegments>
+            <lineSegments geometry={spiderWebGeometry} position={[0, 0.001, 0]}>
+                <lineBasicMaterial attach="material" color={'white'}/>
+            </lineSegments>
+            <mesh ref={cylinderRef} geometry={geometry}>
+                <meshStandardMaterial attach="material" color="#444"/>
+            </mesh>
 
-                {textMeshes}
-            </group>
-        </>
+            {textMeshes}
+        </group>
     );
 }
 
