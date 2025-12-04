@@ -61,11 +61,13 @@ const rouletteSlice = createSlice({
             } else if (newSpeed > 20) {
                 newSpeed -= 0.4;
             } else if (newSpeed > 10) {
-                newSpeed -= 0.2;
-            } else if (newSpeed > 1) {
+                newSpeed -= 0.3;
+            } else if (newSpeed > 4) {
+                newSpeed -= 0.04;
+            } else if (newSpeed > 2) {
                 newSpeed -= 0.01;
             } else {
-                newSpeed = Number((newSpeed - 0.001).toFixed(4));
+                newSpeed = Number((newSpeed - 0.01).toFixed(4));
             }
             if (state.rotationSpeed < 0) {
                 newSpeed *= -1;
@@ -83,13 +85,17 @@ const rouletteSlice = createSlice({
             const {arrowAngle, wheelAngle} = state.rotationOptions;
             const currentArrowAngle = wrapRadians(arrowAngle || 0);
             const currentWheelAngle = wrapRadians(wheelAngle || 0);
-            console.log(state.rotationOptions);
             const diff = Math.PI * 2 / state.slotEdgeAngles.length;
             const getGame = state.slotEdgeAngles.find(slot => wrapRadians(currentWheelAngle - currentArrowAngle) < slot.edgeAngle + diff);
             state.currentSlot = {formattedValue: getGame?.formattedValue || ""};
         },
         setSpinSwitcher (state: Roulette3dState, action: PayloadAction<RotationOptions>) {
-            state.rotationOptions = {...state.rotationOptions, ...action.payload};
+            const [key, val] = Object.entries(action.payload)[0];
+            const {arrowSpin, wheelSpin} = state.rotationOptions;
+            const disabled = !(arrowSpin && wheelSpin);
+            if(disabled){
+                state.rotationOptions = {...state.rotationOptions, [key]:[val]};
+            } else state.rotationOptions = {...state.rotationOptions, [key]:false};
         }
     }
 });

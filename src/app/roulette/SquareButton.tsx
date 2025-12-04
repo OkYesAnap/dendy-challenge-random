@@ -48,7 +48,7 @@ const SquareButton = ({
             <button
                 className={`${buttonsClasses} ${disabled
                     ? 'text-gray-500 grayscale'
-                    : 'hover:bg-gray-700'} ${
+                    : 'hover:brightness-70 transition duration-200'} ${
                     active ? 'bg-amber-700' : ''
                 }`}
                 disabled={disabled}
