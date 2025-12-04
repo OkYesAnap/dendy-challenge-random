@@ -49,27 +49,30 @@ const rouletteSlice = createSlice({
                 state.rotationSpeed += action.payload;
             }
             let newSpeed = state.rotationSpeed;
-            if (newSpeed < 0) {
+            const isNegative = newSpeed < 0;
+            if (isNegative) {
                 newSpeed *= -1;
             }
             if (newSpeed > 50) {
                 newSpeed -= 1;
             } else if (newSpeed > 40) {
-                newSpeed -= 0.8;
+                newSpeed -= 0.5;
             } else if (newSpeed > 30) {
-                newSpeed -= 0.6;
-            } else if (newSpeed > 20) {
                 newSpeed -= 0.4;
+            } else if (newSpeed > 20) {
+                newSpeed -= 0.2;
             } else if (newSpeed > 10) {
-                newSpeed -= 0.3;
+                newSpeed -= 0.1;
             } else if (newSpeed > 4) {
-                newSpeed -= 0.04;
+                newSpeed -= 0.05;
             } else if (newSpeed > 2) {
-                newSpeed -= 0.01;
+                newSpeed -= 0.04;
+            }else if (newSpeed > 1) {
+                newSpeed -= 0.03;
             } else {
-                newSpeed = Number((newSpeed - 0.01).toFixed(4));
+                newSpeed = Number((newSpeed - 0.002).toFixed(4));
             }
-            if (state.rotationSpeed < 0) {
+            if (isNegative) {
                 newSpeed *= -1;
             }
             state.rotationSpeed = newSpeed;

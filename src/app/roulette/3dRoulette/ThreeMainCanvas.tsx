@@ -17,7 +17,7 @@ const ThreeMainCanvas: FC = () => {
                 enableZoom={true}
                 enableRotate={true}
                 minDistance={5}
-                maxDistance={allGamesList.length}
+                maxDistance={allGamesList.length < 10 ? 10 : allGamesList.length}
                 minPolarAngle={0}
                 maxPolarAngle={Math.PI}
                 target={[0, 0, 0]}

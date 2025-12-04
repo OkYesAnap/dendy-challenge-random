@@ -20,26 +20,31 @@ import {
 import {CellData} from "@/utils/getGamesList";
 import {calcHeight, calcRadius} from "@/app/roulette/3dRoulette/utils";
 import {useFrame} from "@react-three/fiber";
+import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
 
 const getShift = (segments: number) => {
     if (segments <= 2) {
         return -0.19;
     } else if (segments <= 3) {
-        return -0.14;
+        return -1.74;
     } else if (segments <= 4) {
-        return -0.1;
+        return -1;
     } else if (segments <= 5) {
-        return -0.07;
+        return -0.66;
     } else if (segments <= 6) {
-        return -0.06;
+        return -0.45;
+    } else if (segments <= 7) {
+        return -0.33;
     } else if (segments <= 8) {
-        return -0.05;
-    } else if (segments <= 12) {
-        return -0.04;
+        return -0.25;
+    } else if (segments <= 10) {
+        return -0.17;
+    }else if (segments <= 12) {
+        return -0.10;
     } else if (segments <= 16) {
-        return -0.03;
+        return -0.06;
     } else if (segments <= 20) {
-        return -0.02;
+        return -0.04;
     } else return 0;
 };
 
@@ -62,7 +67,7 @@ function ThreeSpinningWheel() {
     );
 
     useEffect(() => {
-        if(rotationSpeed === 0) dispatch(setCurrentGame({wheelAngle: groupRef.current?.rotation.y}));
+        if (rotationSpeed === finalSpeed) dispatch(setCurrentGame({wheelAngle: groupRef.current?.rotation.y}));
     }, [rotationSpeed, dispatch]);
 
     useFrame((state, delta) => {
@@ -125,7 +130,7 @@ function ThreeSpinningWheel() {
         return (
             <group key={index}>
                 <Text
-                    position={[textX, textY + height/2 - 0.1, textZ]}
+                    position={[textX, textY + height / 2 - 0.1, textZ]}
                     rotation={[0, -textRotation + Math.PI / 2, Math.PI / 2]}
                     fontSize={0.2}
                     color="white"

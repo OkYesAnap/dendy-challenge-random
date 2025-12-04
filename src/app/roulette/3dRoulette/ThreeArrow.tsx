@@ -8,19 +8,16 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {useFrame} from "@react-three/fiber";
 import {useEffect, useRef} from "react";
-import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
 import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import {
     rotationSpeed as sRotationSpeed,
-    rotationOptions as sRotationOptions,
-    setRotationSpeed,
-    increaseDecreaseRotationSpeed, setCurrentGame
+    rotationOptions as sRotationOptions, setCurrentGame,
 } from "@/redux/slices/roulette3dSlice";
 import {calcRadius} from "@/app/roulette/3dRoulette/utils";
+import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
 
 function PulsingArrow() {
     const groupRef = useRef<Group>(null);
-    const timerRef = useRef<ReturnType<typeof setInterval>>(null);
     const allGamesList = useSelector(sSlotsList);
     const rotationSpeed = useSelector(sRotationSpeed);
     const rotationOptions = useSelector(sRotationOptions);
@@ -32,20 +29,7 @@ function PulsingArrow() {
     const additionalHeight = maxLength * 0.1 + .7;
 
     useEffect(() => {
-        if (rotationSpeed !== finalSpeed) {
-            timerRef.current = setInterval(() => {
-                dispatch(increaseDecreaseRotationSpeed());
-            }, Math.random() * 20 + 10);
-        } else if (timerRef.current) {
-            dispatch(setRotationSpeed(finalSpeed));
-            dispatch(setCurrentGame({arrowAngle: groupRef.current?.rotation.y || 0}));
-            clearInterval(timerRef.current);
-        }
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-        };
+        if (rotationSpeed === finalSpeed) dispatch(setCurrentGame({arrowAngle: groupRef.current?.rotation.y}));
     }, [rotationSpeed, dispatch]);
 
     useFrame((state, delta) => {
