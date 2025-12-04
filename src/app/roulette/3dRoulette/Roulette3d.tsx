@@ -32,7 +32,6 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
     return (
         <ModalPortal {...{isOpen, onClose}}>
             <div className="w-[75vw] h-[80vh] border flex flex-col items-center">
-                {rotationSpeed === finalSpeed && <span className={"absolute border p-2 mt-1"}>{current3dSlot.formattedValue}</span>}
                 {allGamesList.length >= 3 ? <Canvas camera={{position: [0, allGamesList.length / 3, 0], fov: 40}}>
                     <ThreeMainCanvas/>
                 </Canvas> : <div>Please add more 3 or more elements!</div>}
@@ -71,6 +70,7 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                         </div>
                     </div>
                 </div>
+                {rotationSpeed === finalSpeed && <span className={"absolute border p-2 mt-1 bg-black"}>{current3dSlot.formattedValue}</span>}
             </div>
         </ModalPortal>
     );
