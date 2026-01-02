@@ -2,9 +2,9 @@
 import {Text} from '@react-three/drei';
 import {useEffect, useMemo, useRef} from 'react';
 import {
-    BufferGeometry,
+    Color,
     CylinderGeometry,
-    EdgesGeometry, Float32BufferAttribute, Group,
+    Group,
     Mesh,
     Vector3,
 } from "three";
@@ -21,6 +21,7 @@ import {CellData} from "@/utils/getGamesList";
 import {calcHeight, calcRadius} from "@/app/roulette/3dRoulette/utils";
 import {useFrame} from "@react-three/fiber";
 import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
+import {fragmentShader, vertexShader} from "@/app/roulette/3dRoulette/shaders";
 
 const getShift = (segments: number) => {
     if (segments <= 2) {
@@ -84,31 +85,6 @@ function ThreeSpinningWheel() {
         dispatch(setSlotEdgeAngles(slotEdgeAngles));
     }, [allGamesList, dispatch, segments]);
 
-    const edgesGeometry = useMemo(() => new EdgesGeometry(geometry), [geometry]);
-
-    const spiderWebGeometry = useMemo<BufferGeometry>(() => {
-        const positions = new Float32Array(segments * 6);
-        const yTop = height / 2;
-        let idx = 0;
-
-        for (let i = 0; i < segments; i++) {
-            const angle = (i / segments + .25) * Math.PI * 2;
-            const x = Math.cos(angle) * radius;
-            const z = Math.sin(angle) * radius;
-
-            positions[idx++] = x;
-            positions[idx++] = yTop;
-            positions[idx++] = z;
-
-            positions[idx++] = 0;
-            positions[idx++] = yTop;
-            positions[idx++] = 0;
-        }
-        const g = new BufferGeometry();
-        g.setAttribute('position', new Float32BufferAttribute(positions, 3));
-        return g;
-    }, [segments, radius, height]);
-
     const textMeshes = allGamesList.map((item, index) => {
         const angle = (index / segments) * Math.PI * 2 + Math.PI / 2;
         const segmentAngle = (2 * Math.PI) / segments;
@@ -125,6 +101,8 @@ function ThreeSpinningWheel() {
         const textY = y + normal.y * offset;
         const textZ = z + normal.z * offset;
 
+        const color = ((index + segments % 2) % 2) ? "black" : "white";
+
         const textRotation = Math.atan2(normal.z, normal.x);
 
         return (
@@ -133,7 +111,7 @@ function ThreeSpinningWheel() {
                     position={[textX, textY + height / 2 - 0.1, textZ]}
                     rotation={[0, -textRotation + Math.PI / 2, Math.PI / 2]}
                     fontSize={0.2}
-                    color="white"
+                    color={color}
                     anchorX="right"
                     anchorY="middle"
                 >
@@ -144,7 +122,7 @@ function ThreeSpinningWheel() {
                         position={[-0.1, height / 2, 0]}
                         rotation={[-Math.PI / 2, 0, 0]}
                         fontSize={0.15}
-                        color="white"
+                        color={color}
                         anchorX="right"
                         anchorY="middle"
                     >
@@ -155,16 +133,20 @@ function ThreeSpinningWheel() {
         );
     });
 
+
     return (
         <group ref={groupRef}>
-            <lineSegments geometry={edgesGeometry}>
-                <lineBasicMaterial attach="material" color={'white'}/>
-            </lineSegments>
-            <lineSegments geometry={spiderWebGeometry} position={[0, 0.001, 0]}>
-                <lineBasicMaterial attach="material" color={'white'}/>
-            </lineSegments>
-            <mesh ref={cylinderRef} geometry={geometry}>
-                <meshStandardMaterial attach="material" color="#444"/>
+            <mesh geometry={geometry} ref={cylinderRef}>
+                <shaderMaterial
+                    vertexShader={vertexShader}
+                    fragmentShader={fragmentShader}
+                    uniforms={{
+                        uWhite: { value: new Color(0xffffff) },
+                        uBlack: { value: new Color(0x000000) },
+                        uSegments: { value: segments },
+                    }}
+                    lights={false}
+                />
             </mesh>
 
             {textMeshes}
