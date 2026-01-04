@@ -9,7 +9,14 @@ const ThreeMainCanvas: FC = () => {
     const allGamesList = useSelector(sSlotsList);
     return (
         <>
-            <ambientLight/>
+            <directionalLight
+                position={[3, 5, 3]}
+                intensity={1.5}
+            />
+            <directionalLight
+                position={[3, 5, -3]}
+                intensity={0.4}
+            />
             <ThreeSpinningWheel/>
             <ThreeArrow/>
             <OrbitControls
@@ -20,7 +27,7 @@ const ThreeMainCanvas: FC = () => {
                 maxDistance={allGamesList.length < 10 ? 10 : allGamesList.length}
                 minPolarAngle={0}
                 maxPolarAngle={Math.PI}
-                target={[0, 0, 0]}
+                target={[0, 2.5, 0]}
             />
         </>
     );

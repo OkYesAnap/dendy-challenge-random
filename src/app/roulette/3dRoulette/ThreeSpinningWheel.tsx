@@ -141,7 +141,7 @@ function ThreeSpinningWheel() {
                     vertexShader={vertexShader}
                     fragmentShader={fragmentShader}
                     uniforms={{
-                        uWhite: { value: new Color(0xffffff) },
+                        uWhite: { value: new Color(0xDFDFDFFF) },
                         uBlack: { value: new Color(0x000000) },
                         uSegments: { value: segments },
                     }}

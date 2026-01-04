@@ -31,8 +31,8 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
     useRorationAlgorithm();
     return (
         <ModalPortal {...{isOpen, onClose}}>
-            <div className="w-[75vw] h-[80vh] border flex flex-col items-center">
-                {allGamesList.length >= 3 ? <Canvas camera={{position: [0, allGamesList.length / 3, 0], fov: 40}}>
+            <div className="w-[75vw] h-[80vh] border flex flex-col items-center bg-gray-700">
+                {allGamesList.length >= 3 ? <Canvas shadows camera={{position: [0, allGamesList.length / 3, 0], fov: 40}}>
                     <ThreeMainCanvas/>
                 </Canvas> : <div>Please add more 3 or more elements!</div>}
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
