@@ -14,8 +14,8 @@ const ThreeMainCanvas: FC = () => {
                 intensity={1.5}
             />
             <directionalLight
-                position={[3, 5, -3]}
-                intensity={0.4}
+                position={[-3, 5, -3]}
+                intensity={1}
             />
             <ThreeSpinningWheel/>
             <ThreeArrow/>
