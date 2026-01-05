@@ -16,9 +16,8 @@ import {
 import {calcRadius} from "@/app/roulette/3dRoulette/utils";
 import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
 import {useGLTF} from "@react-three/drei";
-import {isDev} from "@/constants/audioEnv";
 
-const url = isDev ? '/models/dendy.glb' : '/dendy-challenge-random/models/dendy.glb';
+const url = '/models/dendy.glb';
 
 function DendyModel() {
     const { scene } = useGLTF(url);
