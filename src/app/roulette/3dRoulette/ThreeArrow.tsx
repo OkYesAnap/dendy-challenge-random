@@ -54,9 +54,7 @@ function PulsingArrow() {
                 object={new Mesh(
                     new CylinderGeometry(0.4, 0.4, 2.5, 10),
                     new MeshStandardMaterial({
-                        color: "#f1c40f",
-                        emissive: "#f39c12",
-                        emissiveIntensity: 0.3
+                        color: "#fff",
                     })
                 )}
             />
@@ -65,9 +63,7 @@ function PulsingArrow() {
                     object={new Mesh(
                         new CylinderGeometry(0.06, 0.06, height - 0.4, 4),
                         new MeshStandardMaterial({
-                            color: "#f1c40f",
-                            emissive: "#f39c12",
-                            emissiveIntensity: 0.3
+                            color: "#fff",
                         })
                     )}
                     position={[height / 2, 0, 0]}
@@ -78,9 +74,7 @@ function PulsingArrow() {
                     object={new Mesh(
                         new ConeGeometry(0.12, 0.3, 4),
                         new MeshStandardMaterial({
-                            color: "#f1c40f",
-                            emissive: "#c0392b",
-                            emissiveIntensity: 0.3
+                            color: "#fff",
                         })
                     )}
                     position={[height - .16, 0, 0]}
