@@ -11,11 +11,11 @@ const ThreeMainCanvas: FC = () => {
         <>
             <directionalLight
                 position={[3, 5, 3]}
-                intensity={1.5}
+                intensity={2.5}
             />
             <directionalLight
                 position={[-3, 5, -3]}
-                intensity={1}
+                intensity={2}
             />
             <ThreeSpinningWheel/>
             <ThreeArrow/>

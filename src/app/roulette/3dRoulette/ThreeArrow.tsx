@@ -21,7 +21,7 @@ const url = '/models/dendy.glb';
 
 function DendyModel() {
     const { scene } = useGLTF(url);
-    return <primitive position={[-0.1, 1.27, 0.2]} scale={0.3} object={scene} />;
+    return <primitive position={[0.05, 1.25, 0]} scale={0.25} object={scene} />;
 }
 
 function PulsingArrow() {
