@@ -5,7 +5,7 @@ import {
     Color,
     CylinderGeometry,
     Group,
-    Mesh,
+    Mesh, ShaderMaterial,
     Vector3,
 } from "three";
 import {useDispatch, useSelector} from "react-redux";
@@ -55,7 +55,6 @@ function ThreeSpinningWheel() {
     const rotationOptions = useSelector(sRotationOptions);
     const dispatch = useDispatch();
     const groupRef = useRef<Group>(null);
-    const cylinderRef = useRef<Mesh>(null);
     const segments = allGamesList.length;
     const maxLength = Math.max(...allGamesList.map(slot => slot.formattedValue.length));
     const shift = getShift(segments);
@@ -80,7 +79,7 @@ function ThreeSpinningWheel() {
     useEffect(() => {
         const slotEdgeAngles: Array<SlotEdgeAngle> = allGamesList.map(({formattedValue}: CellData, index): SlotEdgeAngle => {
             const edgeAngle = (index / segments) * Math.PI * 2;
-            return {formattedValue, edgeAngle};
+            return {formattedValue, edgeAngle, index};
         });
         dispatch(setSlotEdgeAngles(slotEdgeAngles));
     }, [allGamesList, dispatch, segments]);
@@ -136,7 +135,7 @@ function ThreeSpinningWheel() {
 
     return (
         <group ref={groupRef}>
-            <mesh geometry={geometry} ref={cylinderRef}>
+            <mesh geometry={geometry} key={`${geometry.uuid}-seg-${segments}`}>
                 <shaderMaterial
                     vertexShader={vertexShader}
                     fragmentShader={fragmentShader}
@@ -148,7 +147,6 @@ function ThreeSpinningWheel() {
                     lights={false}
                 />
             </mesh>
-
             {textMeshes}
         </group>
     );

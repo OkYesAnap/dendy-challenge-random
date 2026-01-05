@@ -1,10 +1,11 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {CellData} from "@/utils/getGamesList";
-import {defaultCellData} from "@/redux/slices/gamesSlice";
+import {addRoll, defaultCellData} from "@/redux/slices/gamesSlice";
 
 export interface SlotEdgeAngle {
     formattedValue: string;
     edgeAngle: number
+    index: number;
 }
 
 export interface RotationOptions {
@@ -14,17 +15,21 @@ export interface RotationOptions {
     wheelAngle?: number
 }
 
+interface ExtendedCellData extends CellData {
+    index: number | null;
+}
+
 interface Roulette3dState {
     rotationSpeed: number;
     slotEdgeAngles: Array<SlotEdgeAngle>
-    currentSlot: CellData;
+    currentSlot: ExtendedCellData;
     rotationOptions: RotationOptions;
 }
 
 const initialState: Roulette3dState = {
     rotationSpeed: 0,
     slotEdgeAngles: [],
-    currentSlot: defaultCellData,
+    currentSlot: {...defaultCellData, index: null},
     rotationOptions: {
         arrowSpin: true,
         arrowAngle: 0,
@@ -83,6 +88,9 @@ const rouletteSlice = createSlice({
         setSlotEdgeAngles(state: Roulette3dState, action: PayloadAction<SlotEdgeAngle[]>) {
             state.slotEdgeAngles = action.payload;
         },
+        setCurrent3dSlot(state: Roulette3dState, action: PayloadAction<ExtendedCellData>) {
+            state.currentSlot = action.payload;
+        },
         setCurrentGame(state: Roulette3dState, action: PayloadAction<{ arrowAngle?: number, wheelAngle?: number }>) {
             state.rotationOptions = {...state.rotationOptions, ...action.payload};
             const {arrowAngle, wheelAngle} = state.rotationOptions;
@@ -90,7 +98,7 @@ const rouletteSlice = createSlice({
             const currentWheelAngle = wrapRadians(wheelAngle || 0);
             const diff = Math.PI * 2 / state.slotEdgeAngles.length;
             const getGame = state.slotEdgeAngles.find(slot => wrapRadians(currentWheelAngle - currentArrowAngle) < slot.edgeAngle + diff);
-            state.currentSlot = {formattedValue: getGame?.formattedValue || ""};
+            state.currentSlot = {formattedValue: getGame?.formattedValue || "", index: getGame?.index || null};
         },
         setSpinSwitcher (state: Roulette3dState, action: PayloadAction<RotationOptions>) {
             const [key, val] = Object.entries(action.payload)[0];
@@ -105,6 +113,7 @@ const rouletteSlice = createSlice({
 
 export const {
     setRotationSpeed,
+    setCurrent3dSlot,
     increaseDecreaseRotationSpeed,
     setSlotEdgeAngles,
     setCurrentGame,

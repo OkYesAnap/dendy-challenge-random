@@ -1,17 +1,23 @@
 "use client";
 import {Canvas} from '@react-three/fiber';
 import {useDispatch, useSelector} from "react-redux";
-import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
+import {addRoll, slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import ModalPortal from "@/components/ModalPortal";
 import SquareButton from "@/app/roulette/SquareButton";
 import {
     current3dSlot as sCurrent3dSlot,
-    increaseDecreaseRotationSpeed, rotationOptions as sRotationOptions,
+    rotationOptions as sRotationOptions,
     rotationSpeed as sRotationSpeed,
-    setSpinSwitcher,
+    increaseDecreaseRotationSpeed,
+    setSpinSwitcher, setCurrent3dSlot,
 } from "@/redux/slices/roulette3dSlice";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faRotateLeft, faRotateRight} from "@fortawesome/free-solid-svg-icons";
+import {
+    faArrowDown,
+    faDharmachakra,
+    faRotateLeft,
+    faRotateRight,
+} from "@fortawesome/free-solid-svg-icons";
 import ThreeMainCanvas from "@/app/roulette/3dRoulette/ThreeMainCanvas";
 import useRorationAlgorithm from "@/app/roulette/3dRoulette/useRorationAlgorithm";
 import {calcRandomAddRollTime} from "@/app/roulette/3dRoulette/utils";
@@ -28,7 +34,10 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
     const current3dSlot = useSelector(sCurrent3dSlot);
     const rotationOptions = useSelector(sRotationOptions);
     const dispatch = useDispatch();
+    const currentSlot = useSelector(sCurrent3dSlot);
+
     useRorationAlgorithm();
+    const {wheelSpin, arrowSpin} = rotationOptions;
     return (
         <ModalPortal {...{isOpen, onClose}}>
             <div className="w-[75vw] h-[80vh] border flex flex-col items-center bg-gray-700">
@@ -44,20 +53,36 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                                 active={rotationSpeed > 0}
                                 onClickButton={() => {
                                     dispatch(increaseDecreaseRotationSpeed(calcRandomAddRollTime()));
+                                    dispatch(addRoll(currentSlot.index || null));
+                                    dispatch(setCurrent3dSlot({...currentSlot, index: null}));
                                 }}
                             />
                             <SquareButton
-                                icon={"*"}
-                                active={rotationOptions.wheelSpin}
+                                icon={<FontAwesomeIcon
+                                    className={`animate-spin`}
+                                    style={{
+                                        animationDuration: '5s',
+                                        animationDirection: rotationSpeed < 0 ? 'reverse' : '',
+                                        animationPlayState: wheelSpin && rotationSpeed !==0 ? 'running' : 'paused'
+                                    }}
+                                    icon={faDharmachakra} />}
+                                active={wheelSpin}
                                 onClickButton={() => {
-                                    dispatch(setSpinSwitcher({wheelSpin: !rotationOptions.wheelSpin}));
+                                    dispatch(setSpinSwitcher({wheelSpin: !wheelSpin}));
                                 }}
                             />
                             <SquareButton
-                                icon={"⇩"}
-                                active={rotationOptions.arrowSpin}
+                                icon={<FontAwesomeIcon
+                                    className={`animate-spin`}
+                                    style={{
+                                        animationDuration: '5s',
+                                        animationDirection: rotationSpeed > 0 ? 'reverse' : '',
+                                        animationPlayState: arrowSpin && rotationSpeed !==0 ? 'running' : 'paused'
+                                }}
+                                    icon={faArrowDown} />}
+                                active={arrowSpin}
                                 onClickButton={() => {
-                                    dispatch(setSpinSwitcher({arrowSpin: !rotationOptions.arrowSpin}));
+                                    dispatch(setSpinSwitcher({arrowSpin: !arrowSpin}));
                                 }}
                             />
                             <SquareButton
@@ -65,6 +90,8 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                                 active={rotationSpeed < 0}
                                 onClickButton={() => {
                                     dispatch(increaseDecreaseRotationSpeed(-calcRandomAddRollTime()));
+                                    dispatch(addRoll(currentSlot.index || null));
+                                    dispatch(setCurrent3dSlot({...currentSlot, index: null}));
                                 }}
                             />
                         </div>

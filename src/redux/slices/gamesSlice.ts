@@ -83,12 +83,14 @@ const gamesSlice = createSlice({
             state.startSlots = [...state.allGamesList, ...slots];
             state.slotsList = state.startSlots;
         },
-        addRoll(state, action: PayloadAction<number>) {
-            const winSlot = action.payload;
-            const value = state.slotsList[winSlot];
-            state.currentSlot = value;
-            state.slotsList.splice(winSlot, 1);
-            state.currentRolls.push(value);
+        addRoll(state, action: PayloadAction<number | null>) {
+            if (action.payload) {
+                const winSlot = action.payload;
+                const value = state.slotsList[winSlot];
+                state.currentSlot = value;
+                state.slotsList.splice(winSlot, 1);
+                state.currentRolls.push(value);
+            }
         },
         addDisabledSlots(state, action: PayloadAction<CellData[]>) {
             state.currentRolls = action.payload;
@@ -156,9 +158,9 @@ const gamesSlice = createSlice({
             const editorArray = action.payload.split('\n');
             state.allData = [];
             state.names = undefined;
-            editorArray.forEach((item:string, i) => {
+            editorArray.forEach((item: string, i) => {
                 if (item) {
-                    const itemWithIndex = {formattedValue:`${i + 1}. ${item}` || ''};
+                    const itemWithIndex = {formattedValue: `${i + 1}. ${item}` || ''};
                     state.slotsList.push(itemWithIndex);
                     state.allGamesList.push(itemWithIndex);
                     state.allData.push([itemWithIndex, {formattedValue: item || ''}]);
@@ -189,7 +191,7 @@ const gamesSlice = createSlice({
             //@ts-expect-error Thunk types is not working
             state.errorMessage = action?.payload?.error.message;
             //@ts-expect-error Thunk types is not working
-            if(action.payload?.error) console.error(action.payload.error);
+            if (action.payload?.error) console.error(action.payload.error);
         });
     },
 });

@@ -12,6 +12,11 @@ export const defaultParams: UrlParams = {
 };
 
 export const templates: Array<UrlParams> = [{
+    hint: "Dendy Challenge 2026",
+    range: "A1:C60",
+    url: "https://docs.google.com/spreadsheets/d/1n6U3iMoE8N06kuEX3oNTTDCwgCqWC1hQ85CZRXZfJ0I/edit?gid=1031682936#gid=1031682936",
+    header: false
+},{
     hint: "Dendy Challenge 2025",
     range: "A1:C60",
     url: "https://docs.google.com/spreadsheets/d/1lQKxm4V-xac7sl0mrwcgOg1BLpHGAy_f873ls0hoVeM/edit?gid=1031682936",
