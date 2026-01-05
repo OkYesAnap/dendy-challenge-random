@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "deploy": "gh-pages -d out"
+    "deploy": "gh-pages -d out",
+    "build:prod": "NODE_ENV=production next build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
