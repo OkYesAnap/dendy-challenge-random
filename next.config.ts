@@ -1,13 +1,15 @@
 /** @type {import('next').NextConfig} */
-import type { NextConfig } from "next";
-const nextConfig: NextConfig = {
+const nextConfig = {
   output: 'export',
-  reactStrictMode: true,
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
-  assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX || '',
+
+  // Динамически определяем basePath
+  basePath: process.env.GITHUB_ACTIONS ? '/dendy-challenge-random' : '',
+  assetPrefix: process.env.GITHUB_ACTIONS ? '/dendy-challenge-random' : '',
+
   images: {
     unoptimized: true,
-  }
+  },
+  trailingSlash: true,
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;
