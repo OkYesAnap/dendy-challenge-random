@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {CellData} from "@/utils/getGamesList";
-import {addRoll, defaultCellData} from "@/redux/slices/gamesSlice";
+import {defaultCellData} from "@/redux/slices/gamesSlice";
 
 export interface SlotEdgeAngle {
     formattedValue: string;

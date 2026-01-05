@@ -5,7 +5,6 @@ import {
     Color,
     CylinderGeometry,
     Group,
-    Mesh, ShaderMaterial,
     Vector3,
 } from "three";
 import {useDispatch, useSelector} from "react-redux";
