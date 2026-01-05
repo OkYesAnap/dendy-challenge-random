@@ -7,7 +7,6 @@ const nextConfig = {
   output: 'export',
   reactStrictMode: true,
 
-  // Динамический basePath
   basePath: process.env.NODE_ENV === 'production' ? `/${repositoryName}` : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? `/${repositoryName}/` : '',
 
