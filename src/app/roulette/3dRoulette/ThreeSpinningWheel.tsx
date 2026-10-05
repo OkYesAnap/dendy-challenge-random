@@ -21,6 +21,7 @@ import {calcHeight, calcRadius} from "@/app/roulette/3dRoulette/utils";
 import {useFrame} from "@react-three/fiber";
 import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
 import {fragmentShader, vertexShader} from "@/app/roulette/3dRoulette/shaders";
+import RoulettePocket from "@/app/roulette/3dRoulette/RoulettePocket";
 
 const getShift = (segments: number) => {
     if (segments <= 2) {
@@ -102,7 +103,7 @@ function ThreeSpinningWheel() {
         const color = ((index + segments % 2) % 2) ? "black" : "white";
 
         const textRotation = Math.atan2(normal.z, normal.x);
-
+        const pocketColor = ((index + segments % 2) % 2) ? "#2C3E50" : "#ECF0F1";
         return (
             <group key={index}>
                 <Text
@@ -127,6 +128,11 @@ function ThreeSpinningWheel() {
                         {item.formattedValue}
                     </Text>
                 </group>
+                <RoulettePocket
+                    position={[x, textY + height / 2 + 0.07, z]}
+                    rotationY={-textRotation}
+                    color={pocketColor}
+                />
             </group>
         );
     });

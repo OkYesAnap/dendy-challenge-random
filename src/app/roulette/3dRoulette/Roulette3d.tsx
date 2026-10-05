@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 import {Canvas} from '@react-three/fiber';
 import {useDispatch, useSelector} from "react-redux";
+import {useState, useEffect, useRef} from "react";
 import {addRoll, slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import ModalPortal from "@/components/ModalPortal";
 import SquareButton from "@/app/roulette/SquareButton";
@@ -10,6 +11,10 @@ import {
     rotationSpeed as sRotationSpeed,
     increaseDecreaseRotationSpeed,
     setSpinSwitcher, setCurrent3dSlot,
+    setMaxSpinMode,
+    setSpinTimer,
+    decrementSpinTimer,
+    spinTimer as sSpinTimer,
 } from "@/redux/slices/roulette3dSlice";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
@@ -17,11 +22,14 @@ import {
     faDharmachakra,
     faRotateLeft,
     faRotateRight,
+    faPowerOff,
+    faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 import ThreeMainCanvas from "@/app/roulette/3dRoulette/ThreeMainCanvas";
 import useRorationAlgorithm from "@/app/roulette/3dRoulette/useRorationAlgorithm";
 import {calcRandomAddRollTime} from "@/app/roulette/3dRoulette/utils";
 import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
+import TimerButton from "@/app/roulette/3dRoulette/TimerButton";
 
 interface Roulette3dProps {
     isOpen: boolean;
@@ -35,8 +43,41 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
     const rotationOptions = useSelector(sRotationOptions);
     const dispatch = useDispatch();
     const currentSlot = useSelector(sCurrent3dSlot);
+    const spinTimerValue = useSelector(sSpinTimer);
+    const [showSettings, setShowSettings] = useState(false);
+    const [timerInput, setTimerInput] = useState<string>("0");
+    const intervalRef = useRef<ReturnType<typeof setInterval>>(null);
+    const countdownActiveRef = useRef(false);
 
     useRorationAlgorithm();
+
+    // Timer countdown effect
+    useEffect(() => {
+        if (rotationOptions.maxSpinMode && spinTimerValue !== undefined && spinTimerValue > 0) {
+            countdownActiveRef.current = true;
+            intervalRef.current = setInterval(() => {
+                dispatch(decrementSpinTimer());
+            }, 1000);
+        } else {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
+        }
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [rotationOptions.maxSpinMode, spinTimerValue, dispatch]);
+
+    // Stop spin when timer reaches 0 (only if countdown was actually running)
+    useEffect(() => {
+        if (countdownActiveRef.current && rotationOptions.maxSpinMode && spinTimerValue !== undefined && spinTimerValue === 0) {
+            countdownActiveRef.current = false;
+            dispatch(setMaxSpinMode(false));
+        }
+    }, [spinTimerValue, rotationOptions.maxSpinMode, dispatch]);
     const {wheelSpin, arrowSpin} = rotationOptions;
     return (
         <ModalPortal {...{isOpen, onClose}}>
@@ -49,51 +90,92 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                         className="bg-black/70 backdrop-blur-sm border border-white/20 rounded-lg px-6 py-4 shadow-2xl flex flex-col items-center justify-center">
                         <div className={'flex flex-row gap-1'}>
                             <SquareButton
-                                icon={<FontAwesomeIcon icon={faRotateRight}/>}
-                                active={rotationSpeed > 0}
-                                onClickButton={() => {
-                                    dispatch(increaseDecreaseRotationSpeed(calcRandomAddRollTime()));
-                                    dispatch(addRoll(currentSlot.index || null));
-                                    dispatch(setCurrent3dSlot({...currentSlot, index: null}));
-                                }}
-                            />
-                            <SquareButton
                                 icon={<FontAwesomeIcon
-                                    className={`animate-spin`}
                                     style={{
-                                        animationDuration: '5s',
-                                        animationDirection: rotationSpeed < 0 ? 'reverse' : '',
-                                        animationPlayState: wheelSpin && rotationSpeed !==0 ? 'running' : 'paused'
+                                        color: rotationOptions.maxSpinMode ? '#ff0000' : undefined
                                     }}
-                                    icon={faDharmachakra} />}
-                                active={wheelSpin}
+                                    icon={faPowerOff} />}
+                                active={rotationOptions.maxSpinMode}
+                                hint="Start Stop/Spin"
                                 onClickButton={() => {
-                                    dispatch(setSpinSwitcher({wheelSpin: !wheelSpin}));
-                                }}
-                            />
-                            <SquareButton
-                                icon={<FontAwesomeIcon
-                                    className={`animate-spin`}
-                                    style={{
-                                        animationDuration: '5s',
-                                        animationDirection: rotationSpeed > 0 ? 'reverse' : '',
-                                        animationPlayState: arrowSpin && rotationSpeed !==0 ? 'running' : 'paused'
-                                }}
-                                    icon={faArrowDown} />}
-                                active={arrowSpin}
-                                onClickButton={() => {
-                                    dispatch(setSpinSwitcher({arrowSpin: !arrowSpin}));
-                                }}
-                            />
-                            <SquareButton
-                                icon={<FontAwesomeIcon icon={faRotateLeft}/>}
-                                active={rotationSpeed < 0}
-                                onClickButton={() => {
-                                    dispatch(increaseDecreaseRotationSpeed(-calcRandomAddRollTime()));
+                                    if (!rotationOptions.maxSpinMode) {
+                                        dispatch(increaseDecreaseRotationSpeed(calcRandomAddRollTime()+5));
+                                        const timerVal = parseInt(timerInput, 10);
+                                        if (!isNaN(timerVal) && timerVal > 0) {
+                                            dispatch(setSpinTimer(timerVal));
+                                        }
+                                    }
                                     dispatch(addRoll(currentSlot.index || null));
                                     dispatch(setCurrent3dSlot({...currentSlot, index: null}));
+                                    dispatch(setMaxSpinMode(!rotationOptions.maxSpinMode));
                                 }}
                             />
+                            <TimerButton
+                                value={spinTimerValue ?? 0}
+                                inputValue={timerInput}
+                                onChangeInput={setTimerInput}
+                                active={rotationOptions.maxSpinMode ?? false}
+                                spinning={rotationSpeed !== finalSpeed}
+                                hint={rotationOptions.maxSpinMode ? "Countdown..." : "Click to change timer"}
+                            />
+                            <SquareButton
+                                icon={<FontAwesomeIcon icon={faWrench}/>}
+                                active={showSettings}
+                                hint="Settings"
+                                onClickButton={() => setShowSettings(p => !p)}
+                            />
+                            {showSettings && <>
+                                <SquareButton
+                                    icon={<FontAwesomeIcon icon={faRotateRight}/>}
+                                    active={rotationSpeed > 0}
+                                    hint="Spin Right"
+                                    onClickButton={() => {
+                                        dispatch(increaseDecreaseRotationSpeed(calcRandomAddRollTime()));
+                                        dispatch(addRoll(currentSlot.index || null));
+                                        dispatch(setCurrent3dSlot({...currentSlot, index: null}));
+                                    }}
+                                />
+                                <SquareButton
+                                    icon={<FontAwesomeIcon
+                                        className={`animate-spin`}
+                                        style={{
+                                            animationDuration: '5s',
+                                            animationDirection: rotationSpeed < 0 ? 'reverse' : '',
+                                            animationPlayState: wheelSpin && rotationSpeed !==0 ? 'running' : 'paused'
+                                        }}
+                                        icon={faDharmachakra} />}
+                                    active={wheelSpin}
+                                    hint="Toggle Wheel Spin"
+                                    onClickButton={() => {
+                                        dispatch(setSpinSwitcher({wheelSpin: !wheelSpin}));
+                                    }}
+                                />
+                                <SquareButton
+                                    icon={<FontAwesomeIcon
+                                        className={`animate-spin`}
+                                        style={{
+                                            animationDuration: '5s',
+                                            animationDirection: rotationSpeed > 0 ? 'reverse' : '',
+                                            animationPlayState: arrowSpin && rotationSpeed !==0 ? 'running' : 'paused'
+                                    }}
+                                        icon={faArrowDown} />}
+                                    active={arrowSpin}
+                                    hint="Toggle Arrow Spin"
+                                    onClickButton={() => {
+                                        dispatch(setSpinSwitcher({arrowSpin: !arrowSpin}));
+                                    }}
+                                />
+                                <SquareButton
+                                    icon={<FontAwesomeIcon icon={faRotateLeft}/>}
+                                    active={rotationSpeed < 0}
+                                    hint="Spin Left"
+                                    onClickButton={() => {
+                                        dispatch(increaseDecreaseRotationSpeed(-calcRandomAddRollTime()));
+                                        dispatch(addRoll(currentSlot.index || null));
+                                        dispatch(setCurrent3dSlot({...currentSlot, index: null}));
+                                    }}
+                                />
+                            </>}
                         </div>
                     </div>
                 </div>

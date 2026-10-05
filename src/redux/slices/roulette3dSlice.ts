@@ -12,7 +12,9 @@ export interface RotationOptions {
     arrowSpin?: boolean;
     arrowAngle?: number,
     wheelSpin?: boolean;
-    wheelAngle?: number
+    wheelAngle?: number;
+    maxSpinMode?: boolean;
+    spinTimer?: number; // seconds, 0 = unlimited
 }
 
 interface ExtendedCellData extends CellData {
@@ -34,7 +36,9 @@ const initialState: Roulette3dState = {
         arrowSpin: true,
         arrowAngle: 0,
         wheelSpin: false,
-        wheelAngle: 0
+        wheelAngle: 0,
+        maxSpinMode: false,
+        spinTimer: 0
     }
 };
 
@@ -107,6 +111,20 @@ const rouletteSlice = createSlice({
             if(disabled){
                 state.rotationOptions = {...state.rotationOptions, [key]:[val]};
             } else state.rotationOptions = {...state.rotationOptions, [key]:false};
+        },
+        setMaxSpinMode(state: Roulette3dState, action: PayloadAction<boolean>) {
+            state.rotationOptions.maxSpinMode = action.payload;
+            if (action.payload) {
+                state.rotationOptions.arrowSpin = true;
+            }
+        },
+        setSpinTimer(state: Roulette3dState, action: PayloadAction<number>) {
+            state.rotationOptions.spinTimer = action.payload;
+        },
+        decrementSpinTimer(state: Roulette3dState) {
+            if (state.rotationOptions.spinTimer !== undefined && state.rotationOptions.spinTimer > 0) {
+                state.rotationOptions.spinTimer -= 1;
+            }
         }
     }
 });
@@ -117,12 +135,16 @@ export const {
     increaseDecreaseRotationSpeed,
     setSlotEdgeAngles,
     setCurrentGame,
-    setSpinSwitcher
+    setSpinSwitcher,
+    setMaxSpinMode,
+    setSpinTimer,
+    decrementSpinTimer
 } = rouletteSlice.actions;
 
 export const rotationSpeed = (state: { roulette3d: Roulette3dState }) => state.roulette3d.rotationSpeed;
 export const slotEdgeAngles = (state: { roulette3d: Roulette3dState }) => state.roulette3d.slotEdgeAngles;
 export const current3dSlot = (state: { roulette3d: Roulette3dState }) => state.roulette3d.currentSlot;
 export const rotationOptions = (state: { roulette3d: Roulette3dState }) => state.roulette3d.rotationOptions;
+export const spinTimer = (state: { roulette3d: Roulette3dState }) => state.roulette3d.rotationOptions.spinTimer;
 
 export default rouletteSlice.reducer;
