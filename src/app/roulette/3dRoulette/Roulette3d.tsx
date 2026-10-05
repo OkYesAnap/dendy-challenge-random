@@ -70,6 +70,10 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
             }
         };
     }, [rotationOptions.maxSpinMode, spinTimerValue, dispatch]);
+    const clearRolledItem = () => {
+        dispatch(addRoll(currentSlot.index || null));
+        dispatch(setCurrent3dSlot({...currentSlot, index: null}));
+    }
 
     // Stop spin when timer reaches 0 (only if countdown was actually running)
     useEffect(() => {
@@ -82,9 +86,9 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
     return (
         <ModalPortal {...{isOpen, onClose}}>
             <div className="w-[75vw] h-[80vh] border flex flex-col items-center bg-gray-700">
-                {allGamesList.length >= 3 ? <Canvas shadows camera={{position: [0, allGamesList.length / 3, 0], fov: 40}}>
+                <Canvas shadows camera={{position: [0, allGamesList.length / 3, 0], fov: 40}}>
                     <ThreeMainCanvas/>
-                </Canvas> : <div>Please add more 3 or more elements!</div>}
+                </Canvas>
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
                     <div
                         className="bg-black/70 backdrop-blur-sm border border-white/20 rounded-lg px-6 py-4 shadow-2xl flex flex-col items-center justify-center">
@@ -105,8 +109,7 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                                             dispatch(setSpinTimer(timerVal));
                                         }
                                     }
-                                    dispatch(addRoll(currentSlot.index || null));
-                                    dispatch(setCurrent3dSlot({...currentSlot, index: null}));
+                                    clearRolledItem();
                                     dispatch(setMaxSpinMode(!rotationOptions.maxSpinMode));
                                 }}
                             />
@@ -131,8 +134,7 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                                     hint="Spin Right"
                                     onClickButton={() => {
                                         dispatch(increaseDecreaseRotationSpeed(calcRandomAddRollTime()));
-                                        dispatch(addRoll(currentSlot.index || null));
-                                        dispatch(setCurrent3dSlot({...currentSlot, index: null}));
+                                        clearRolledItem();
                                     }}
                                 />
                                 <SquareButton
@@ -171,8 +173,7 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                                     hint="Spin Left"
                                     onClickButton={() => {
                                         dispatch(increaseDecreaseRotationSpeed(-calcRandomAddRollTime()));
-                                        dispatch(addRoll(currentSlot.index || null));
-                                        dispatch(setCurrent3dSlot({...currentSlot, index: null}));
+                                        clearRolledItem();
                                     }}
                                 />
                             </>}

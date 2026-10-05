@@ -62,7 +62,7 @@ function ThreeSpinningWheel() {
     const height = calcHeight(maxLength);
 
     const geometry = useMemo(
-        () => new CylinderGeometry(radius, radius, height, segments),
+        () => new CylinderGeometry(radius, radius, height, Math.max(segments, 24)),
         [segments, height, radius]
     );
 
