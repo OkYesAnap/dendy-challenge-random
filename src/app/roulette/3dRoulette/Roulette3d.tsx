@@ -71,8 +71,10 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
         };
     }, [rotationOptions.maxSpinMode, spinTimerValue, dispatch]);
     const clearRolledItem = () => {
-        dispatch(addRoll(currentSlot.index ?? null));
-        dispatch(setCurrent3dSlot({...currentSlot, index: null}));
+        if (rotationSpeed === finalSpeed) {
+            dispatch(addRoll(currentSlot.index ?? null));
+            dispatch(setCurrent3dSlot({...currentSlot, index: null}));
+        }
     }
 
     // Stop spin when timer reaches 0 (only if countdown was actually running)
@@ -102,6 +104,7 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                                 active={rotationOptions.maxSpinMode}
                                 hint="Start Stop/Spin"
                                 onClickButton={() => {
+                                    clearRolledItem();
                                     if (!rotationOptions.maxSpinMode) {
                                         dispatch(increaseDecreaseRotationSpeed(calcRandomAddRollTime()+5));
                                         const timerVal = parseInt(timerInput, 10);
@@ -109,7 +112,6 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                                             dispatch(setSpinTimer(timerVal));
                                         }
                                     }
-                                    clearRolledItem();
                                     dispatch(setMaxSpinMode(!rotationOptions.maxSpinMode));
                                 }}
                             />
@@ -133,8 +135,8 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                                     active={rotationSpeed > 0}
                                     hint="Spin Right"
                                     onClickButton={() => {
-                                        dispatch(increaseDecreaseRotationSpeed(calcRandomAddRollTime()));
                                         clearRolledItem();
+                                        dispatch(increaseDecreaseRotationSpeed(calcRandomAddRollTime()));
                                     }}
                                 />
                                 <SquareButton
@@ -172,15 +174,15 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
                                     active={rotationSpeed < 0}
                                     hint="Spin Left"
                                     onClickButton={() => {
-                                        dispatch(increaseDecreaseRotationSpeed(-calcRandomAddRollTime()));
                                         clearRolledItem();
+                                        dispatch(increaseDecreaseRotationSpeed(-calcRandomAddRollTime()));
                                     }}
                                 />
                             </>}
                         </div>
                     </div>
                 </div>
-                {rotationSpeed === finalSpeed && <span className={"absolute border p-2 mt-1 bg-black"}>{current3dSlot.formattedValue}</span>}
+                {rotationSpeed === finalSpeed && current3dSlot.formattedValue && <span className={"absolute border p-2 mt-1 bg-black"}>{current3dSlot.formattedValue}</span>}
             </div>
         </ModalPortal>
     );

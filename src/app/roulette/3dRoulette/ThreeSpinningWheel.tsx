@@ -1,6 +1,6 @@
 "use client";
 import {Text} from '@react-three/drei';
-import {useEffect, useMemo, useRef} from 'react';
+import {use, useEffect, useMemo, useRef} from 'react';
 import {
     Color,
     CylinderGeometry,
@@ -60,6 +60,7 @@ function ThreeSpinningWheel() {
     const shift = getShift(segments);
     const radius = calcRadius(segments);
     const height = calcHeight(maxLength);
+    const started = useRef(false);
 
     const geometry = useMemo(
         () => new CylinderGeometry(radius, radius, height, Math.max(segments, 24)),
@@ -67,7 +68,8 @@ function ThreeSpinningWheel() {
     );
 
     useEffect(() => {
-        if (rotationSpeed === finalSpeed) dispatch(setCurrentGame({wheelAngle: groupRef.current?.rotation.y}));
+        if (rotationSpeed === finalSpeed && started.current) dispatch(setCurrentGame({wheelAngle: groupRef.current?.rotation.y}))
+        if (rotationSpeed !== finalSpeed) {started.current = true}
     }, [rotationSpeed, dispatch]);
 
     useFrame((state, delta) => {

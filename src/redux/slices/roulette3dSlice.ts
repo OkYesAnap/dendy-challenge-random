@@ -93,7 +93,7 @@ const rouletteSlice = createSlice({
             state.slotEdgeAngles = action.payload;
         },
         setCurrent3dSlot(state: Roulette3dState, action: PayloadAction<ExtendedCellData>) {
-            state.currentSlot = action.payload;
+            // state.currentSlot = action.payload;
         },
         setCurrentGame(state: Roulette3dState, action: PayloadAction<{ arrowAngle?: number, wheelAngle?: number }>) {
             state.rotationOptions = {...state.rotationOptions, ...action.payload};
@@ -102,7 +102,7 @@ const rouletteSlice = createSlice({
             const currentWheelAngle = wrapRadians(wheelAngle || 0);
             const diff = Math.PI * 2 / state.slotEdgeAngles.length;
             const getGame = state.slotEdgeAngles.find(slot => wrapRadians(currentWheelAngle - currentArrowAngle) < slot.edgeAngle + diff);
-            state.currentSlot = {formattedValue: getGame?.formattedValue || "", index: getGame?.index || null};
+            state.currentSlot = {formattedValue: getGame?.formattedValue || "", index: getGame?.index ?? null};
         },
         setSpinSwitcher (state: Roulette3dState, action: PayloadAction<RotationOptions>) {
             const [key, val] = Object.entries(action.payload)[0];

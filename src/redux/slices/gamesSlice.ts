@@ -84,7 +84,7 @@ const gamesSlice = createSlice({
             state.slotsList = state.startSlots;
         },
         addRoll(state, action: PayloadAction<number | null>) {
-            if (action.payload) {
+            if (action.payload !== null) {
                 const winSlot = action.payload;
                 const value = state.slotsList[winSlot];
                 state.currentSlot = value;
