@@ -71,7 +71,7 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
         };
     }, [rotationOptions.maxSpinMode, spinTimerValue, dispatch]);
     const clearRolledItem = () => {
-        dispatch(addRoll(currentSlot.index || null));
+        dispatch(addRoll(currentSlot.index ?? null));
         dispatch(setCurrent3dSlot({...currentSlot, index: null}));
     }
 
@@ -86,7 +86,7 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
     return (
         <ModalPortal {...{isOpen, onClose}}>
             <div className="w-[75vw] h-[80vh] border flex flex-col items-center bg-gray-700">
-                <Canvas shadows camera={{position: [0, allGamesList.length / 3, 0], fov: 40}}>
+                <Canvas shadows camera={{position: [0, allGamesList.length > 30 ? allGamesList.length / 3 : 10, 0], fov: 40}}>
                     <ThreeMainCanvas/>
                 </Canvas>
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
