@@ -39,8 +39,8 @@ function PulsingArrow() {
     const additionalHeight = maxLength * 0.1 + .7;
 
     useEffect(() => {
-        if (rotationSpeed === finalSpeed && started.current) dispatch(setCurrentGame({arrowAngle: groupRef.current?.rotation.y}))
-        if (rotationSpeed !== finalSpeed) {started.current = true}
+        if (rotationSpeed === finalSpeed && started.current) dispatch(setCurrentGame({arrowAngle: groupRef.current?.rotation.y}));
+        if (rotationSpeed !== finalSpeed) {started.current = true;}
     }, [rotationSpeed, dispatch]);
 
     useFrame((state, delta) => {

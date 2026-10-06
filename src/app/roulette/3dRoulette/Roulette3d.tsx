@@ -75,7 +75,7 @@ const Roulette3d: React.FC<Roulette3dProps> = ({isOpen, onClose}) => {
             dispatch(addRoll(currentSlot.index ?? null));
             dispatch(setCurrent3dSlot({...currentSlot, index: null}));
         }
-    }
+    };
 
     // Stop spin when timer reaches 0 (only if countdown was actually running)
     useEffect(() => {

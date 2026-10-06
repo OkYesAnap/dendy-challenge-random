@@ -93,7 +93,7 @@ const rouletteSlice = createSlice({
             state.slotEdgeAngles = action.payload;
         },
         setCurrent3dSlot(state: Roulette3dState, action: PayloadAction<ExtendedCellData>) {
-            // state.currentSlot = action.payload;
+            state.currentSlot = action.payload;
         },
         setCurrentGame(state: Roulette3dState, action: PayloadAction<{ arrowAngle?: number, wheelAngle?: number }>) {
             state.rotationOptions = {...state.rotationOptions, ...action.payload};
