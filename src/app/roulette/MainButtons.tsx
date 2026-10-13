@@ -56,6 +56,11 @@ const MainButtons: React.FC<MainButtonsProps> = ({
                     </>
                 )}
                 <SquareButton
+                    onClickButton={() => handleOpenChose({openWindow: {openEmulatorModal: true}})}
+                    icon={"🎮"}
+                    hint={"Emulator"}
+                />
+                <SquareButton
                     onClickButton={() => setAdditionalFunctions(p => !p)}
                     icon={"🛠️"}
                     hint={"Settings"}/>

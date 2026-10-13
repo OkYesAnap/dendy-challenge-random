@@ -10,6 +10,7 @@ import {CellData, GoogleSheetsParams} from "@/utils/getGamesList";
 import {useSelector} from "react-redux";
 import {loading as sLoading} from "@/redux/slices/gamesSlice";
 import Editor from "@/app/Editor";
+import Emulator from "@/app/roulette/Emulator";
 
 const ModalManager = ({openModals, updateOpenModal, paramsRef, infoData, handleLoad, elementPos}: {
     openModals: Modals,
@@ -44,6 +45,12 @@ const ModalManager = ({openModals, updateOpenModal, paramsRef, infoData, handleL
                 isOpen: openModals.openEditorModal,
                 onClose: (() => updateOpenModal({openEditorModal: false})),
                 startElement: <SquareButton icon={"️️🖊️"}/>,
+                startPos: elementPos,
+            }} />
+            <Emulator {...{
+                isOpen: openModals.openEmulatorModal,
+                onClose: (() => updateOpenModal({openEmulatorModal: false})),
+                startElement: <SquareButton icon={"🎮"}/>,
                 startPos: elementPos,
             }} />
             {loading && (

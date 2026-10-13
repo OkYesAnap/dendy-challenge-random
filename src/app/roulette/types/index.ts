@@ -12,6 +12,7 @@ export interface Modals {
     openRouletteModal: boolean;
     openRoulette3dModal: boolean;
     openEditorModal: boolean;
+    openEmulatorModal: boolean;
 }
 
 export const defaultOpenModals = {
@@ -20,4 +21,5 @@ export const defaultOpenModals = {
     openRouletteModal: false,
     openRoulette3dModal: false,
     openEditorModal: false,
+    openEmulatorModal: false,
 };
