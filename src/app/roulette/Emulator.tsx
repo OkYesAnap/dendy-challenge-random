@@ -62,7 +62,7 @@ const Emulator = ({isOpen, onClose}: EmulatorProps) => {
                 e.preventDefault();
                 e.stopPropagation();
                 setShowExitConfirm(true);
-                nostalgistRef.current?.pause()
+                nostalgistRef.current?.pause();
             }
         };
 
