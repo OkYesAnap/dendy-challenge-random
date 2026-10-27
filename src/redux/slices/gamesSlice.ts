@@ -167,6 +167,14 @@ const gamesSlice = createSlice({
                 }
             });
 
+        },
+        updateItemWeight(state, action: PayloadAction<{ rowIndex: number; newWeight: number }>) {
+            const {rowIndex, newWeight} = action.payload;
+            const row = state.allData[rowIndex];
+            const oldWeight = row[1].weight || 0;
+            if (row && row.length > 1) {
+                row[1] = {...row[1], weight: oldWeight + newWeight < 0 ? 0 : oldWeight + newWeight };
+            }
         }
     },
     extraReducers: (builder) => {
@@ -211,7 +219,8 @@ export const {
     sortAllGamesList,
     resetStartSlots,
     setVolume,
-    setValuesFromEditor
+    setValuesFromEditor,
+    updateItemWeight
 } = gamesSlice.actions;
 
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;

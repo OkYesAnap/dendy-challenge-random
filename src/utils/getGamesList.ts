@@ -13,7 +13,8 @@ export interface GoogleSheetsParams {
 
 export interface CellData {
     formattedValue: string,
-    hyperlink?: string
+    hyperlink?: string,
+    weight?: number
 }
 
 export interface Names {
