@@ -9,7 +9,8 @@ import {
     allData as sAllData,
     currentRolls as sCurrentRolls,
     updateItemWeight,
-    addItem
+    addItem,
+    deleteItem
 } from "@/redux/slices/gamesSlice";
 import {Modals, ReactSetState} from "@/app/roulette/types";
 
@@ -51,7 +52,7 @@ const MainListItems = ({
     };
 
     const getWeight = (item: CellData[]) => {
-        return item[1]?.weight ?? 0;
+        return item[0]?.weight ?? 0;
     };
 
     const handleInputChange = (key: string, value: string) => {
@@ -93,6 +94,10 @@ const MainListItems = ({
         }
     };
 
+    const handleDeleteItem = (itemId: string) => {
+        dispatch(deleteItem(itemId));
+    };
+
     return (
         <>
             <div className="grid grid-flow-col text-2xl top-1"
@@ -130,6 +135,13 @@ const MainListItems = ({
                             >
                                 OK
                             </button>
+                        </div>
+                        <div
+                            className="cursor-pointer text-red-500 hover:text-red-700"
+                            onClick={() => handleDeleteItem(item[0].formattedValue)}
+                            title="Delete item"
+                        >
+                            <FontAwesomeIcon icon={faTimesSolid}/>
                         </div>
                         {(item.length > 2 && (item[0].formattedValue !== infoData[0].formattedValue || !openModals.openInfoModal)) ? (
                             <div className="cursor-pointer" onClick={(e) => handleOpenInfo(e, item)}>

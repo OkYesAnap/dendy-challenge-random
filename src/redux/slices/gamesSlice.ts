@@ -171,23 +171,33 @@ const gamesSlice = createSlice({
         updateItemWeight(state, action: PayloadAction<{ rowIndex: number; newWeight: number }>) {
             const {rowIndex, newWeight} = action.payload;
             const row = state.allData[rowIndex];
-            const oldWeight = row[1].weight || 0;
+            const oldWeight = row[0].weight || 0;
             if (row && row.length > 1) {
-                row[1] = {...row[1], weight: oldWeight + newWeight < 0 ? 0 : oldWeight + newWeight };
+                row[0] = {...row[0], weight: oldWeight + newWeight < 0 ? 0 : oldWeight + newWeight };
             }
         },
         addItem(state, action: PayloadAction<string>) {
             const newItemName = action.payload;
             const newIndex = state.allData.length + 1;
-            const newCellData: CellData = {formattedValue: newItemName, weight: 0};
+            const newCellData: CellData = {formattedValue: `${newIndex}. ${newItemName}`, weight: 0};
             const newRow: CellData[] = [
-                {formattedValue: `${newIndex}. ${newItemName}`},
-                newCellData
+                newCellData,
+                {formattedValue: newItemName}
             ];
             state.allData.push(newRow);
             state.allGamesList.push(newCellData);
             state.startSlots.push(newCellData);
             state.slotsList.push(newCellData);
+        },
+        deleteItem(state, action: PayloadAction<string>) {
+            const itemId = action.payload;
+            state.allGamesList = state.allGamesList.filter(item => item.formattedValue !== itemId);
+            state.startSlots = state.startSlots.filter(item => item.formattedValue !== itemId);
+            state.slotsList = state.slotsList.filter(item => item.formattedValue !== itemId);
+            state.allData = state.allData.filter(row => {
+                const cellData = row[0];
+                return !(cellData && cellData.formattedValue === itemId);
+            });
         }
     },
     extraReducers: (builder) => {
@@ -234,7 +244,8 @@ export const {
     setVolume,
     setValuesFromEditor,
     updateItemWeight,
-    addItem
+    addItem,
+    deleteItem
 } = gamesSlice.actions;
 
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;
