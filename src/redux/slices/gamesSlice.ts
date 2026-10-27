@@ -175,6 +175,19 @@ const gamesSlice = createSlice({
             if (row && row.length > 1) {
                 row[1] = {...row[1], weight: oldWeight + newWeight < 0 ? 0 : oldWeight + newWeight };
             }
+        },
+        addItem(state, action: PayloadAction<string>) {
+            const newItemName = action.payload;
+            const newIndex = state.allData.length + 1;
+            const newCellData: CellData = {formattedValue: newItemName, weight: 0};
+            const newRow: CellData[] = [
+                {formattedValue: `${newIndex}. ${newItemName}`},
+                newCellData
+            ];
+            state.allData.push(newRow);
+            state.allGamesList.push(newCellData);
+            state.startSlots.push(newCellData);
+            state.slotsList.push(newCellData);
         }
     },
     extraReducers: (builder) => {
@@ -220,7 +233,8 @@ export const {
     resetStartSlots,
     setVolume,
     setValuesFromEditor,
-    updateItemWeight
+    updateItemWeight,
+    addItem
 } = gamesSlice.actions;
 
 export const allGamesList = (state: { games: GamesState }) => state.games.allGamesList;
