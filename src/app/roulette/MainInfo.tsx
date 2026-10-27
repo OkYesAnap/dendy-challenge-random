@@ -1,6 +1,5 @@
 'use client';
 import {
-    allData as sAllData,
     startSlots as sStartSlots,
     allGamesList as sAllGamesList,
     loading as sLoading,
@@ -28,7 +27,6 @@ const MainInfo: React.FC = () => {
     const [infoData, setInfoData] = useState<CellData[]>([defaultCellData]);
     const paramsRef = useRef<GoogleSheetsParams>(defaultParams);
     const [elementPos, setElementPos] = useState<DOMRect | undefined>();
-    const allData = useSelector(sAllData);
     const loading = useSelector(sLoading);
     const startSlots = useSelector(sStartSlots);
     const allGamesList = useSelector(sAllGamesList);
