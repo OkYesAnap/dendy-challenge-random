@@ -27,6 +27,9 @@ const addDisabledSlotsAction = createAction<CellData[]>('games/addDisabledSlots'
 
 export const defaultCellData: CellData = {formattedValue: ''};
 
+const computeAllWeight = (allData: CellData[][]): number =>
+    allData.reduce((sum, row) => sum + (row[0]?.weight ?? 0), 0);
+
 export interface GamesState {
     allGamesList: CellData[];
     allData: CellData[][];
@@ -46,6 +49,7 @@ export interface GamesState {
     volume: number;
     names?: Names;
     errorMessage?: string;
+    allWeight: number;
 }
 
 const initialState: GamesState = {
@@ -65,6 +69,7 @@ const initialState: GamesState = {
     currentSlot: defaultCellData,
     loading: false,
     volume: 50,
+    allWeight: 0,
 };
 
 const gamesSlice = createSlice({
@@ -175,6 +180,7 @@ const gamesSlice = createSlice({
             if (row && row.length > 1) {
                 row[0] = {...row[0], weight: oldWeight + newWeight < 0 ? 0 : oldWeight + newWeight };
             }
+            state.allWeight = computeAllWeight(state.allData);
         },
         addItem(state, action: PayloadAction<string>) {
             const newItemName = action.payload;
@@ -188,6 +194,7 @@ const gamesSlice = createSlice({
             state.allGamesList.push(newCellData);
             state.startSlots.push(newCellData);
             state.slotsList.push(newCellData);
+            state.allWeight = computeAllWeight(state.allData);
         },
         deleteItem(state, action: PayloadAction<string>) {
             const itemId = action.payload;
@@ -198,6 +205,7 @@ const gamesSlice = createSlice({
                 const cellData = row[0];
                 return !(cellData && cellData.formattedValue === itemId);
             });
+            state.allWeight = computeAllWeight(state.allData);
         }
     },
     extraReducers: (builder) => {
@@ -211,6 +219,7 @@ const gamesSlice = createSlice({
             if (action.payload) {
                 state.allGamesList = action.payload.data.map(item => item[0]);
                 state.allData = action.payload.data;
+                state.allWeight = computeAllWeight(action.payload.data);
                 state.headers = action.payload.headers;
                 state.names = action.payload.names;
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}));
@@ -265,5 +274,7 @@ export const loading = (state: { games: GamesState }) => state.games.loading;
 export const volume = (state: { games: GamesState }) => state.games.volume;
 export const names = (state: { games: GamesState }) => state.games.names;
 export const errorMessage = (state: { games: GamesState }) => state.games.errorMessage;
+
+export const allWeight = (state: { games: GamesState }) => state.games.allWeight;
 
 export default gamesSlice.reducer;
