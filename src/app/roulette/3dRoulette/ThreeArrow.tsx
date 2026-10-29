@@ -18,11 +18,12 @@ import {finalSpeed} from "@/app/roulette/3dRoulette/threeConstants";
 import {useGLTF} from "@react-three/drei";
 import {isDev} from "@/constants/audioEnv";
 
-const url = isDev ? '/models/dendy.glb' : '/dendy-challenge-random/models/dendy.glb';
+// const url = isDev ? '/models/dendy.glb' : '/dendy-challenge-random/models/dendy.glb';
+const url = isDev ? '/models/ironman.glb' : '/dendy-challenge-random/models/ironman.glb';
 
 function DendyModel() {
     const { scene } = useGLTF(url);
-    return <primitive position={[0.05, 1.25, 0]} scale={0.25} object={scene} />;
+    return <primitive position={[0.05, 0.9, 1]} rotation= {[0, -9 * (Math.PI / 180) , 0]} scale={5} object={scene} />;
 }
 
 function PulsingArrow() {

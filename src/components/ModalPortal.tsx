@@ -64,7 +64,7 @@ const ModalPortal = ({ children, isOpen, onClose, startPos, startElement }: Moda
           top: startPos?.top,
           left: startPos?.left,
         }}
-        className="text-2xl overflow-y-auto bg-black max-w-[75%]  max-h-[90%]" onMouseDown={(e) => e.stopPropagation()}>
+        className="text-2xl overflow-y-auto bg-black max-w-[100%]  max-h-[90%]" onMouseDown={(e) => e.stopPropagation()}>
         {anim === 2 ? children : startElement}
       </motion.div>
     </div>,
