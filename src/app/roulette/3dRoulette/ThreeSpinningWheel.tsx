@@ -63,7 +63,7 @@ function ThreeSpinningWheel() {
 
     const geometry = useMemo(
         () => new CylinderGeometry(radius, radius, height, 100),
-        [segments, height, radius]
+        [height, radius]
     );
 
     useEffect(() => {
