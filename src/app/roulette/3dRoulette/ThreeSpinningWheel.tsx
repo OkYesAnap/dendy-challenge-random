@@ -7,7 +7,7 @@ import {
     Vector3,
 } from "three";
 import {useDispatch, useSelector} from "react-redux";
-import {slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
+import {allWeight as sAllWeight, slotsList as sSlotsList} from "@/redux/slices/gamesSlice";
 import {
     rotationOptions as sRotationOptions,
     rotationSpeed as sRotationSpeed,
@@ -49,13 +49,14 @@ const getShift = (segments: number) => {
 };
 
 function ThreeSpinningWheel() {
-    const allGamesList = useSelector(sSlotsList);
+    const slotsList = useSelector(sSlotsList);
     const rotationSpeed = useSelector(sRotationSpeed);
     const rotationOptions = useSelector(sRotationOptions);
+    const allWeight = useSelector(sAllWeight);
     const dispatch = useDispatch();
     const groupRef = useRef<Group>(null);
-    const segments = allGamesList.length;
-    const maxLength = Math.max(...allGamesList.map(slot => slot.formattedValue.length));
+    const segments = slotsList.length;
+    const maxLength = Math.max(...slotsList.map(slot => slot.formattedValue.length));
     const shift = getShift(segments);
     const radius = calcRadius(segments);
     const height = calcHeight(maxLength);
@@ -78,14 +79,14 @@ function ThreeSpinningWheel() {
     });
 
     useEffect(() => {
-        const slotEdgeAngles: Array<SlotEdgeAngle> = allGamesList.map(({formattedValue}: CellData, index): SlotEdgeAngle => {
+        const slotEdgeAngles: Array<SlotEdgeAngle> = slotsList.map(({formattedValue}: CellData, index): SlotEdgeAngle => {
             const edgeAngle = (index / segments) * Math.PI * 2;
             return {formattedValue, edgeAngle, index};
         });
         dispatch(setSlotEdgeAngles(slotEdgeAngles));
-    }, [allGamesList, dispatch, segments]);
+    }, [slotsList, dispatch, segments]);
 
-    const textMeshes = allGamesList.map((item, index) => {
+    const textMeshes = slotsList.map((item, index) => {
         const angle = (index / segments) * Math.PI * 2 + Math.PI / 2;
         const segmentAngle = (2 * Math.PI) / segments;
         const centerAngle = angle + segmentAngle / 2;

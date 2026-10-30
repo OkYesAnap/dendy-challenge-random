@@ -27,8 +27,8 @@ const addDisabledSlotsAction = createAction<CellData[]>('games/addDisabledSlots'
 
 export const defaultCellData: CellData = {formattedValue: ''};
 
-const computeAllWeight = (allData: CellData[][]): number =>
-    allData.reduce((sum, row) => sum + (row[0]?.weight ?? 0), 0);
+const computeAllWeight = (allData: CellData[]): number =>
+    allData.reduce((sum, row) => sum + (row?.weight ?? 0), 0);
 
 export interface GamesState {
     allGamesList: CellData[];
@@ -177,10 +177,10 @@ const gamesSlice = createSlice({
             const {rowIndex, newWeight} = action.payload;
             const row = state.allData[rowIndex];
             const oldWeight = row[0].weight || 0;
-            if (row && row.length > 1) {
-                row[0] = {...row[0], weight: oldWeight + newWeight < 0 ? 0 : oldWeight + newWeight };
-            }
-            state.allWeight = computeAllWeight(state.allData);
+            const addWeight = oldWeight + newWeight < 0 ? 0 : oldWeight + newWeight;
+            row[0].weight = addWeight;
+            state.slotsList[rowIndex].weight = addWeight;
+            state.allWeight = computeAllWeight(state.slotsList);
         },
         addItem(state, action: PayloadAction<string>) {
             const newItemName = action.payload;
@@ -194,7 +194,7 @@ const gamesSlice = createSlice({
             state.allGamesList.push(newCellData);
             state.startSlots.push(newCellData);
             state.slotsList.push(newCellData);
-            state.allWeight = computeAllWeight(state.allData);
+            state.allWeight = computeAllWeight(state.slotsList);
         },
         deleteItem(state, action: PayloadAction<string>) {
             const itemId = action.payload;
@@ -205,7 +205,7 @@ const gamesSlice = createSlice({
                 const cellData = row[0];
                 return !(cellData && cellData.formattedValue === itemId);
             });
-            state.allWeight = computeAllWeight(state.allData);
+            state.allWeight = computeAllWeight(state.slotsList);
         }
     },
     extraReducers: (builder) => {
@@ -219,7 +219,7 @@ const gamesSlice = createSlice({
             if (action.payload) {
                 state.allGamesList = action.payload.data.map(item => item[0]);
                 state.allData = action.payload.data;
-                state.allWeight = computeAllWeight(action.payload.data);
+                state.allWeight = computeAllWeight(action.payload.data[0]);
                 state.headers = action.payload.headers;
                 state.names = action.payload.names;
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}));
