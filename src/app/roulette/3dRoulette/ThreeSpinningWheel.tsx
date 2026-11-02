@@ -62,6 +62,18 @@ function ThreeSpinningWheel() {
     const height = calcHeight(maxLength);
     const started = useRef(false);
 
+    // Compute normalized cumulative boundaries for variable-segment shader
+    const boundaries = useMemo(() => {
+        const bounds = new Float32Array(100);
+        let cumAngle = 0;
+        for (let i = 0; i < segments; i++) {
+            const rotationPercent = ((slotsList[i].weight || 0) / allWeight);
+            cumAngle = allWeight > 0 ? (cumAngle + rotationPercent) : ((i + 1) / segments);
+            bounds[i] = cumAngle;
+        }
+        return bounds;
+    }, [slotsList, allWeight, segments]);
+
     const geometry = useMemo(
         () => new CylinderGeometry(radius, radius, height, 100),
         [height, radius]
@@ -153,6 +165,7 @@ function ThreeSpinningWheel() {
                         // uWhite: { value: new Color(0xDFDFDFFF) },
                         // uBlack: { value: new Color(0x000000) },
                         uSegments: { value: segments },
+                        uBoundaries: { value: boundaries },
                     }}
                     lights={false}
                 />

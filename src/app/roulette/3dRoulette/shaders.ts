@@ -28,6 +28,7 @@ export const blackWhiteShader = `
 
 export const randomColorShader = `
     uniform float uSegments;
+    uniform float uBoundaries[100];
     varying vec3 vLocalPosition;
     const float PI = 3.1415926535897932384626433832795;
 
@@ -36,11 +37,17 @@ export const randomColorShader = `
     }
 
     void main() {
-      float angle = atan(vLocalPosition.x, vLocalPosition.z);
+      float angle = atan(-vLocalPosition.x, vLocalPosition.z);
       if (angle < 0.0) angle += 2.0 * PI;
 
-      float segAngle = 2.0 * PI / uSegments;
-      float segIndex = floor(angle / segAngle);
+      float normalizedAngle = angle / (2.0 * PI);
+      
+      float segIndex = 0.0;
+      for (int i = 0; i < 100; i++) {
+        if (float(i) >= uSegments) break;
+        if (normalizedAngle < uBoundaries[i]) break;
+        segIndex += 1.0;
+      }
 
       vec3 color;
       color.r = hash(segIndex + 1.0);
