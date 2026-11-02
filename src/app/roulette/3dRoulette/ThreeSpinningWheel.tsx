@@ -103,7 +103,6 @@ function ThreeSpinningWheel() {
         totalAngles = allWeight > 0 ? ( rotationPercent + totalAngles) : (index / segments);
         const angle = (totalAngles) * Math.PI * 2 + Math.PI / 2;
         const segmentAngle = allWeight > 0 ? (2 * Math.PI) * (rotationPercent) : (2 * Math.PI) / segments;
-        console.log(segmentAngle, rotationPercent);
         const centerAngle = allWeight > 0 ? angle - segmentAngle / 2 : angle + segmentAngle / 2;
 
         const x = Math.cos(centerAngle) * (radius + shift);
