@@ -95,6 +95,7 @@ const gamesSlice = createSlice({
                 state.currentSlot = value;
                 state.slotsList.splice(winSlot, 1);
                 state.currentRolls.push(value);
+                state.allWeight = computeAllWeight(state.slotsList);
             }
         },
         addDisabledSlots(state, action: PayloadAction<CellData[]>) {
@@ -219,11 +220,11 @@ const gamesSlice = createSlice({
             if (action.payload) {
                 state.allGamesList = action.payload.data.map(item => item[0]);
                 state.allData = action.payload.data;
-                state.allWeight = computeAllWeight(action.payload.data[0]);
                 state.headers = action.payload.headers;
                 state.names = action.payload.names;
                 gamesSlice.caseReducers.addSlots(state, addSlotsAction({slots: []}));
                 const findDisabled = getDisabledSlots(action.payload.data);
+                state.allWeight = computeAllWeight(state.slotsList);
                 gamesSlice.caseReducers.addDisabledSlots(state, addDisabledSlotsAction(findDisabled));
             }
         }).addCase(getAllGamesList.rejected, (state, action) => {
