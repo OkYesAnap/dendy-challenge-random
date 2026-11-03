@@ -54,7 +54,7 @@ function ThreeSpinningWheel() {
     const rotationSpeed = useSelector(sRotationSpeed);
     const rotationOptions = useSelector(sRotationOptions);
     const allWeight = useSelector(sAllWeight);
-    const slotEdgeAngles = useSelector(sSlotEdgeAngles)
+    const slotEdgeAngles = useSelector(sSlotEdgeAngles);
     const dispatch = useDispatch();
     const groupRef = useRef<Group>(null);
     const segments = slotsList.length;
@@ -101,7 +101,7 @@ function ThreeSpinningWheel() {
             return {formattedValue, edgeStartAngle, rotationAngle, index};
         });
         dispatch(setSlotEdgeAngles(slotEdgeAngles));
-    }, [slotsList, dispatch, segments]);
+    }, [slotsList, dispatch, segments, allWeight]);
     const textMeshes = slotEdgeAngles.map((item, index) => {
         const angle = (item.edgeStartAngle);
         const centerAngle =  angle + Math.PI/2 + item.rotationAngle/2;
