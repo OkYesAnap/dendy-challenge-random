@@ -11,6 +11,7 @@ import {allWeight as sAllWeight, slotsList as sSlotsList} from "@/redux/slices/g
 import {
     rotationOptions as sRotationOptions,
     rotationSpeed as sRotationSpeed,
+    slotEdgeAngles as sSlotEdgeAngles,
     setCurrentGame,
     setSlotEdgeAngles,
     SlotEdgeAngle
@@ -53,6 +54,7 @@ function ThreeSpinningWheel() {
     const rotationSpeed = useSelector(sRotationSpeed);
     const rotationOptions = useSelector(sRotationOptions);
     const allWeight = useSelector(sAllWeight);
+    const slotEdgeAngles = useSelector(sSlotEdgeAngles)
     const dispatch = useDispatch();
     const groupRef = useRef<Group>(null);
     const segments = slotsList.length;
@@ -91,19 +93,18 @@ function ThreeSpinningWheel() {
     });
 
     useEffect(() => {
-        const slotEdgeAngles: Array<SlotEdgeAngle> = slotsList.map(({formattedValue}: CellData, index): SlotEdgeAngle => {
-            const edgeAngle = (index / segments) * Math.PI * 2;
-            return {formattedValue, edgeAngle, index};
+        let totalAngles = 0;
+        const slotEdgeAngles: Array<SlotEdgeAngle> = slotsList.map(({formattedValue, weight}: CellData, index): SlotEdgeAngle => {
+            const rotationAngle = (allWeight > 0 ? ((weight || 0) / allWeight) : 1 / segments) * 2 * Math.PI;
+            const edgeStartAngle = totalAngles;
+            totalAngles += rotationAngle;
+            return {formattedValue, edgeStartAngle, rotationAngle, index};
         });
         dispatch(setSlotEdgeAngles(slotEdgeAngles));
     }, [slotsList, dispatch, segments]);
-    let totalAngles = 0;
-    const textMeshes = slotsList.map((item, index) => {
-        const rotationPercent = ((item.weight || 0) / allWeight);
-        totalAngles = allWeight > 0 ? ( rotationPercent + totalAngles) : (index / segments);
-        const angle = (totalAngles) * Math.PI * 2 + Math.PI / 2;
-        const segmentAngle = allWeight > 0 ? (2 * Math.PI) * (rotationPercent) : (2 * Math.PI) / segments;
-        const centerAngle = allWeight > 0 ? angle - segmentAngle / 2 : angle + segmentAngle / 2;
+    const textMeshes = slotEdgeAngles.map((item, index) => {
+        const angle = (item.edgeStartAngle);
+        const centerAngle =  angle + Math.PI/2 + item.rotationAngle/2;
 
         const x = Math.cos(centerAngle) * (radius + shift);
         const y = 0;
@@ -117,6 +118,7 @@ function ThreeSpinningWheel() {
         const textZ = z + normal.z * offset;
 
         const color = ((index + segments % 2) % 2) ? "black" : "white";
+        // const color = "black";
 
         const textRotation = Math.atan2(normal.z, normal.x);
         // const pocketColor = ((index + segments % 2) % 2) ? "#2C3E50" : "#ECF0F1";

@@ -4,7 +4,8 @@ import {defaultCellData} from "@/redux/slices/gamesSlice";
 
 export interface SlotEdgeAngle {
     formattedValue: string;
-    edgeAngle: number
+    edgeStartAngle: number;
+    rotationAngle: number;
     index: number;
 }
 
@@ -100,8 +101,10 @@ const rouletteSlice = createSlice({
             const {arrowAngle, wheelAngle} = state.rotationOptions;
             const currentArrowAngle = wrapRadians(arrowAngle || 0);
             const currentWheelAngle = wrapRadians(wheelAngle || 0);
-            const diff = Math.PI * 2 / state.slotEdgeAngles.length;
-            const getGame = state.slotEdgeAngles.find(slot => wrapRadians(currentWheelAngle - currentArrowAngle) < slot.edgeAngle + diff);
+            const getGame = state.slotEdgeAngles.find(slot => {
+                const currentArrowAndWheelAngle = wrapRadians(currentWheelAngle - currentArrowAngle);
+                 return currentArrowAndWheelAngle >= slot.edgeStartAngle && currentArrowAndWheelAngle < (slot.edgeStartAngle + slot.rotationAngle);
+            });
             state.currentSlot = {formattedValue: getGame?.formattedValue || "", index: getGame?.index ?? null};
         },
         setSpinSwitcher (state: Roulette3dState, action: PayloadAction<RotationOptions>) {
