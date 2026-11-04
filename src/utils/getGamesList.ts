@@ -14,7 +14,8 @@ export interface GoogleSheetsParams {
 export interface CellData {
     formattedValue: string,
     hyperlink?: string,
-    weight?: number
+    weight?: number,
+    color?: string
 }
 
 export interface Names {

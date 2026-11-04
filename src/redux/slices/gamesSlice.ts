@@ -178,9 +178,8 @@ const gamesSlice = createSlice({
             const {rowIndex, newWeight} = action.payload;
             const row = state.allData[rowIndex];
             const oldWeight = row[0].weight || 0;
-            const addWeight = oldWeight + newWeight < 0 ? 0 : oldWeight + newWeight;
-            row[0].weight = addWeight;
-            state.slotsList[rowIndex].weight = addWeight;
+            row[0].weight = oldWeight + newWeight < 0 ? 0 : oldWeight + newWeight;
+            state.slotsList[rowIndex] = row[0];
             state.allWeight = computeAllWeight(state.slotsList);
         },
         addItem(state, action: PayloadAction<string>) {
